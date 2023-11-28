@@ -1,0 +1,40 @@
+{
+	"discharges": [
+		{
+			"date": "2023-11-03",
+			"amount": "60000",
+			"amountTotal": "165000",
+			"status": "warning"
+		},
+		{
+			"date": "2023-11-02",
+			"amount": "60000",
+			"amountTotal": "11000",
+			"status": "normal"
+		},
+		{
+			"date": "2023-11-01",
+			"amount": "60000",
+			"amountTotal": "180000",
+			"status": "normal"
+		},
+		{
+			"date": "2023-11-01",
+			"amount": "60000",
+			"amountTotal": "180000",
+			"status": "normal"
+		},
+		{
+			"date": "2023-11-01",
+			"amount": "60000",
+			"amountTotal": "180000",
+			"status": "normal"
+		},
+		{
+			"date": "2023-11-01",
+			"amount": "60000",
+			"amountTotal": "180000",
+			"status": "normal"
+		}
+	]
+}
