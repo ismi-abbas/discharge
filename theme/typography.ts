@@ -1,5 +1,4 @@
 import { Platform } from 'react-native';
-import { useFonts } from 'expo-font';
 import {
 	Inter_900Black as InterBlack,
 	Inter_100Thin as InterThin,

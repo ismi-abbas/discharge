@@ -1,4 +1,47 @@
 {
+	"stations": [
+		{
+			"stationId": "SA",
+			"name": "Station A",
+			"address": "Address, Road, 93000, Kuching, Sarawak",
+			"companyName": "Company A",
+			"companyAddress": "Address, Road, 93000, Kuching, Sarawak",
+			"compartments": [
+				{
+					"id": "C1",
+					"type": "R95",
+					"amount": 25000
+				},
+				{
+					"id": "C2",
+					"type": "R95",
+					"amount": 25000
+				},
+				{
+					"id": "C3",
+					"type": "V97",
+					"amount": 30000
+				},
+				{
+					"id": "C4",
+					"type": "R95",
+					"amount": 25000
+				},
+				{
+					"id": "C5",
+					"type": "E7",
+					"amount": 30000
+				}
+			]
+		},
+		{
+			"stationId": "SB",
+			"name": "Station B",
+			"address": "Address, Road, 93000, Kuching, Sarawak",
+			"companyName": "Company A",
+			"companyAddress": "Address, Road, 93000, Kuching, Sarawak"
+		}
+	],
 	"discharges": [
 		{
 			"date": "2023-11-03",
