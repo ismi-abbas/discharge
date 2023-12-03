@@ -1,6 +1,6 @@
 import { View, TouchableOpacity, Text, SectionList, StyleSheet } from 'react-native';
 import FeatherIcons from '@expo/vector-icons/Feather';
-import DUMMYDATA from './../dummyData.json';
+import DUMMYDATA from '../dummyData.json';
 import { typography } from '../theme/typography';
 import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
@@ -12,7 +12,7 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
 				<View>
 					<Text style={styles.newItemText}>New Discharge</Text>
 				</View>
-				<TouchableOpacity onPress={() => navigation.navigate('AddDischarge')}>
+				<TouchableOpacity onPress={() => navigation.navigate('CompartmentInfo')}>
 					<FeatherIcons name="chevron-down" size={25} />
 				</TouchableOpacity>
 			</View>

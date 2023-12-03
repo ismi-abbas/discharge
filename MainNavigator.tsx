@@ -1,11 +1,17 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import AddDischarge from './screens/AddDischarge';
+import CompartmentInfo from './screens/CompartmentInfo';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Home } from './screens/Home';
+import TankInfo from './screens/TankInfo';
+import CompartmentTankVerify from './screens/CompartmentTankVerify';
+import DischargeReport from './screens/DischargeReport';
 
 type AppStackParamList = {
 	Home: undefined;
-	AddDischarge: undefined;
+	CompartmentInfo: undefined;
+	TankInfo: undefined;
+	CompartmentTankVerify: undefined;
+	DischargeReport: undefined;
 };
 
 export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStackScreenProps<AppStackParamList, T>;
@@ -20,7 +26,10 @@ export default function MainNavigator() {
 				headerShown: false,
 			}}>
 			<Stack.Screen name="Home" component={Home} />
-			<Stack.Screen name="AddDischarge" component={AddDischarge} />
+			<Stack.Screen name="CompartmentInfo" component={CompartmentInfo} />
+			<Stack.Screen name="TankInfo" component={TankInfo} />
+			<Stack.Screen name="CompartmentTankVerify" component={CompartmentTankVerify} />
+			<Stack.Screen name="DischargeReport" component={DischargeReport} />
 		</Stack.Navigator>
 	);
 }

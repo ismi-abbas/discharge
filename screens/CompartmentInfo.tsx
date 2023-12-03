@@ -1,4 +1,4 @@
-import { Button, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import React, { useState } from 'react';
 import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
@@ -6,14 +6,7 @@ import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
 import DUMMY_DATA from '../dummyData.json';
 
-type GridItem = {
-	value: string;
-	isVerified: boolean;
-};
-
-type GridValue = GridItem[][];
-
-const AddDischarge = ({ navigation }: AppStackScreenProps<'AddDischarge'>) => {
+const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>) => {
 	const [editable, setEditable] = useState(false);
 	const [gridValues, setGridValues] = useState([
 		[
@@ -61,6 +54,7 @@ const AddDischarge = ({ navigation }: AppStackScreenProps<'AddDischarge'>) => {
 
 		if (verified) {
 			setIsVerified(true);
+			navigation.navigate('TankInfo');
 		} else {
 			setIsVerified(false);
 		}
@@ -197,7 +191,7 @@ const AddDischarge = ({ navigation }: AppStackScreenProps<'AddDischarge'>) => {
 	);
 };
 
-export default AddDischarge;
+export default CompartmentInfo;
 
 const styles = StyleSheet.create({
 	dischargeBox: {
