@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "discharge",
-    "slug": "discharge",
+    "slug": "discharge-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,23 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ismiabbas.dischargeapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f865876f-626f-4b76-a657-06b81d616a05"
+      }
+    },
+    "owner": "ismi-abbas",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f865876f-626f-4b76-a657-06b81d616a05"
     }
   }
 }

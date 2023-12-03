@@ -6,19 +6,64 @@ import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
 import DUMMY_DATA from '../dummyData.json';
 
+type GridItem = {
+	value: string;
+	isVerified: boolean;
+};
+
+type GridValue = GridItem[][];
+
 const AddDischarge = ({ navigation }: AppStackScreenProps<'AddDischarge'>) => {
 	const [editable, setEditable] = useState(false);
 	const [gridValues, setGridValues] = useState([
-		['C1', 'C2', 'C3', 'C4', 'C5'],
-		['', '', '', '', ''],
-		['', '', '', '', ''],
+		[
+			{ value: 'C1', isVerified: true },
+			{ value: 'C2', isVerified: true },
+			{ value: 'C3', isVerified: true },
+			{ value: 'C4', isVerified: true },
+			{ value: 'C5', isVerified: true },
+		],
+		[
+			{ value: '', isVerified: false },
+			{ value: '', isVerified: false },
+			{ value: '', isVerified: false },
+			{ value: '', isVerified: false },
+			{ value: '', isVerified: false },
+		],
+		[
+			{ value: '', isVerified: false },
+			{ value: '', isVerified: false },
+			{ value: '', isVerified: false },
+			{ value: '', isVerified: false },
+			{ value: '', isVerified: false },
+		],
 	]);
+	const [isVerified, setIsVerified] = useState(false);
 
 	const handleInputChange = (row: any, col: any, value: string) => {
-		console.log(row, col, value);
-		const newGridValues = [...gridValues];
-		newGridValues[row][col] = value;
-		setGridValues(newGridValues);
+		const field = gridValues[row][col];
+		if (value.trim() !== '' && value !== '0') {
+			field.isVerified = true;
+		} else {
+			field.isVerified = false;
+		}
+		if (row !== 0) {
+			const newGridValues = [...gridValues];
+			newGridValues[row][col].value = value;
+			setGridValues(newGridValues);
+		}
+	};
+
+	const verifyAll = () => {
+		const verified =
+			gridValues[1].every(column => column.value.trim() !== '') &&
+			gridValues[2].every(column => column.value.trim() !== '');
+
+		if (verified) {
+			setIsVerified(true);
+		} else {
+			setIsVerified(false);
+		}
 	};
 
 	const date = new Date();
@@ -106,10 +151,14 @@ const AddDischarge = ({ navigation }: AppStackScreenProps<'AddDischarge'>) => {
 						<View key={rowIndex} style={styles.row}>
 							{row.map((col, colIndex) => (
 								<TextInput
-									editable={editable}
+									editable={editable && rowIndex !== 0}
 									key={colIndex}
-									style={styles.box}
-									value={gridValues[rowIndex][colIndex]}
+									style={{
+										color: rowIndex !== 0 ? (editable ? 'gray' : 'black') : 'black',
+										backgroundColor: !col.isVerified && rowIndex !== 0 ? 'red' : 'rgba(3, 244, 28, 1)',
+										...styles.box,
+									}}
+									value={gridValues[rowIndex][colIndex].value}
 									onChangeText={value => handleInputChange(rowIndex, colIndex, value)}
 									keyboardType={`${rowIndex == 2 ? 'numeric' : 'default'}`}
 								/>
@@ -121,26 +170,25 @@ const AddDischarge = ({ navigation }: AppStackScreenProps<'AddDischarge'>) => {
 			<View
 				style={{
 					display: 'flex',
-					flexDirection: 'row',
 					marginTop: 20,
 					alignItems: 'flex-start',
 					width: '85%',
 				}}>
+				{!isVerified ? <Text>Please fill up all columns</Text> : <View></View>}
 				<View
 					style={{
 						display: 'flex',
 						flexDirection: 'row',
 						gap: 10,
+						marginTop: 4,
 					}}>
 					<Pressable
 						onPress={() => setEditable(!editable)}
-						style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}>
+						style={{ ...styles.button, backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray' }}>
 						<Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
 					</Pressable>
 
-					<Pressable
-						onPress={() => console.log('Verify')}
-						style={{ ...styles.button, backgroundColor: 'rgba(215, 215, 215, 0.8)' }}>
+					<Pressable onPress={verifyAll} style={{ ...styles.button, backgroundColor: 'rgba(215, 215, 215, 0.8)' }}>
 						<Text style={styles.text}>Verify</Text>
 					</Pressable>
 				</View>
@@ -180,7 +228,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: 'auto',
 		height: 40,
-		backgroundColor: 'rgba(3, 244, 28, 1)',
+		// backgroundColor: 'rgba(3, 244, 28, 1)',
 		borderWidth: 0.5,
 		textAlign: 'center',
 	},
