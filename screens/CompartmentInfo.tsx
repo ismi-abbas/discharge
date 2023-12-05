@@ -1,37 +1,27 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
 import DUMMY_DATA from '../dummyData.json';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { compartmentData } from '../utils/constant';
 
 const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>) => {
+	const [gridValues, setGridValues] = useState(compartmentData);
 	const [editable, setEditable] = useState(false);
-	const [gridValues, setGridValues] = useState([
-		[
-			{ value: 'C1', isVerified: true },
-			{ value: 'C2', isVerified: true },
-			{ value: 'C3', isVerified: true },
-			{ value: 'C4', isVerified: true },
-			{ value: 'C5', isVerified: true },
-		],
-		[
-			{ value: '', isVerified: false },
-			{ value: '', isVerified: false },
-			{ value: '', isVerified: false },
-			{ value: '', isVerified: false },
-			{ value: '', isVerified: false },
-		],
-		[
-			{ value: '', isVerified: false },
-			{ value: '', isVerified: false },
-			{ value: '', isVerified: false },
-			{ value: '', isVerified: false },
-			{ value: '', isVerified: false },
-		],
-	]);
 	const [isVerified, setIsVerified] = useState(false);
+	const [isSaved, setSaved] = useState(false);
+
+	useEffect(() => {
+		getGridData();
+	}, []);
+
+	const getGridData = async () => {
+		const data = await AsyncStorage.getItem('gridData');
+		setGridValues(JSON.parse(data || ''));
+	};
 
 	const handleInputChange = (row: any, col: any, value: string) => {
 		const field = gridValues[row][col];
@@ -53,6 +43,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 			gridValues[2].every(column => column.value.trim() !== '');
 
 		if (verified) {
+			AsyncStorage.setItem('gridData', JSON.stringify(gridValues));
 			setIsVerified(true);
 			navigation.navigate('TankInfo');
 		} else {
@@ -177,14 +168,26 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 						marginTop: 4,
 					}}>
 					<Pressable
-						onPress={() => setEditable(!editable)}
+						onPress={() => {
+							setEditable(!editable);
+							setSaved(false);
+						}}
 						style={{ ...styles.button, backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray' }}>
 						<Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
 					</Pressable>
 
-					<Pressable onPress={verifyAll} style={{ ...styles.button, backgroundColor: 'rgba(215, 215, 215, 0.8)' }}>
-						<Text style={styles.text}>Verify</Text>
-					</Pressable>
+					{isSaved ? (
+						<Pressable onPress={verifyAll} style={{ ...styles.button, backgroundColor: 'rgba(215, 215, 215, 0.8)' }}>
+							<Text style={styles.text}>Verify</Text>
+						</Pressable>
+					) : (
+						<Pressable
+							aria-disabled={isVerified}
+							onPress={() => setSaved(true)}
+							style={{ ...styles.button, backgroundColor: 'rgba(215, 215, 215, 0.8)' }}>
+							<Text style={styles.text}>Save</Text>
+						</Pressable>
+					)}
 				</View>
 			</View>
 		</MainLayout>

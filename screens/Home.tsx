@@ -4,8 +4,23 @@ import DUMMYDATA from '../dummyData.json';
 import { typography } from '../theme/typography';
 import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
+import { FuelData } from '../types';
 
 export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
+	const [dummyData, setDummyData] = useState<FuelData>(DUMMYDATA);
+
+	useEffect(() => {
+		loadDummyData();
+	}, []);
+
+	const loadDummyData = async () => {
+		const data = await AsyncStorage.getItem('dummyData');
+		console.log(data);
+		setDummyData(JSON.parse(data || ''));
+	};
+
 	return (
 		<MainLayout>
 			<View style={styles.newItemBox}>
@@ -46,7 +61,7 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
 			<SectionList
 				style={styles.sectionListBox}
 				showsVerticalScrollIndicator={false}
-				sections={[{ data: DUMMYDATA.discharges }]}
+				sections={[{ data: dummyData.discharges }]}
 				renderItem={({ item }) => (
 					<View style={styles.dischargeBoxItem}>
 						<View
