@@ -5,6 +5,7 @@ import { Home } from './screens/Home';
 import TankInfo from './screens/TankInfo';
 import CompartmentTankVerify from './screens/CompartmentTankVerify';
 import DischargeReport from './screens/DischargeReport';
+import TankValuePreset from './screens/TankValuePreset';
 
 type AppStackParamList = {
 	Home: undefined;
@@ -12,6 +13,7 @@ type AppStackParamList = {
 	TankInfo: undefined;
 	CompartmentTankVerify: undefined;
 	DischargeReport: undefined;
+	TankValuePreset: undefined;
 };
 
 export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStackScreenProps<AppStackParamList, T>;
@@ -30,6 +32,7 @@ export default function MainNavigator() {
 			<Stack.Screen name="TankInfo" component={TankInfo} />
 			<Stack.Screen name="CompartmentTankVerify" component={CompartmentTankVerify} />
 			<Stack.Screen name="DischargeReport" component={DischargeReport} />
+			<Stack.Screen name="TankValuePreset" component={TankValuePreset} />
 		</Stack.Navigator>
 	);
 }

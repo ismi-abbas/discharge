@@ -1,27 +1,15 @@
-import { View, Text, Pressable, TextInput, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { MainLayout } from '../components/MainLayout';
 import { AppStackScreenProps } from '../MainNavigator';
+import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
+import FeatherIcons from '@expo/vector-icons/Feather';
+import { tankData } from '../utils/constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
-import { compartmentData, tankData } from '../utils/constant';
-import FeatherIcons from '@expo/vector-icons/Feather';
 
-const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>) => {
-	const [tankDataGrid, setTankDataGrid] = useState(tankData);
-	const [compartmentDataGrid, setCompartmentDataGrid] = useState(compartmentData);
-	const [mergeDataGrid, setMergeDataGrid] = useState([
-		[{ value: 'Final Volume at Tank', isVerified: true }],
-		[
-			{ value: '35000', isVerified: true },
-			{ value: '11000', isVerified: true },
-			{ value: '39000', isVerified: true },
-			{ value: '40000', isVerified: true },
-			{ value: '55000', isVerified: true },
-		],
-	]);
-
+const TankValuePreset = ({ navigation }: AppStackScreenProps<'TankValuePreset'>) => {
+	const [gridValues, setGridValues] = useState(tankData);
 	const [editable, setEditable] = useState(false);
 	const [isVerified, setIsVerified] = useState(false);
 	const [isSaved, setSaved] = useState(false);
@@ -31,26 +19,32 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
 	}, []);
 
 	const getGridData = async () => {
-		const data = await AsyncStorage.getItem('tankData');
-		setTankDataGrid(JSON.parse(data || ''));
+		try {
+			const data = await AsyncStorage.getItem('tankData');
+			if (data) {
+				setGridValues(JSON.parse(data || ''));
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const handleInputChange = (row: any, col: any, value: string) => {
-		const field = tankDataGrid[row][col];
+		const field = gridValues[row][col];
 		if (value.trim() !== '' && value !== '0') {
 			field.isVerified = true;
 		} else {
 			field.isVerified = false;
 		}
 		if (row !== 0) {
-			const newGridValues = [...tankDataGrid];
+			const newGridValues = [...gridValues];
 			newGridValues[row][col].value = value;
-			setTankDataGrid(newGridValues);
+			setGridValues(newGridValues);
 		}
 	};
 
 	const saveData = async () => {
-		AsyncStorage.setItem('tankData', JSON.stringify(tankDataGrid));
+		AsyncStorage.setItem('tankData', JSON.stringify(gridValues));
 		Toast.show({
 			type: 'success',
 			text1: 'Data Saved',
@@ -61,10 +55,10 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
 	};
 
 	const verifyAll = () => {
-		console.log(tankDataGrid);
+		console.log(gridValues);
 		const verified =
-			tankDataGrid[1].every(column => column.value.trim() !== '') &&
-			tankDataGrid[2].every(column => column.value.trim() !== '');
+			gridValues[1].every(column => column.value.trim() !== '') &&
+			gridValues[2].every(column => column.value.trim() !== '');
 
 		if (verified) {
 			setIsVerified(true);
@@ -76,7 +70,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
 				visibilityTime: 2000,
 			});
 			setTimeout(() => {
-				navigation.navigate('DischargeReport');
+				navigation.navigate('CompartmentTankVerify');
 			}, 2000);
 		} else {
 			Toast.show({
@@ -97,80 +91,8 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
 			<View style={styles.dischargeBox}>
 				<View style={styles.titleBox}>
 					<View>
-						<Text style={styles.titleBoxText}>New Discharge</Text>
-						<Text
-							style={{
-								marginTop: 20,
-								fontFamily: typography.primary.bold,
-								fontSize: 20,
-							}}>
-							Discharge Report
-						</Text>
-
-						<Text
-							style={{
-								marginTop: 4,
-								fontFamily: typography.primary.normal,
-								fontSize: 15,
-							}}>
-							Compartment Details
-						</Text>
-						{/* Compartment Data from the previous keyin */}
-						<View style={{ marginTop: 5 }}>
-							{compartmentDataGrid.map((row, rowIndex) => (
-								<View key={rowIndex} style={styles.row}>
-									{row.slice(0, 5).map((col, colIndex) => (
-										<TextInput
-											editable={editable && rowIndex !== 0}
-											key={colIndex}
-											style={{
-												fontFamily: rowIndex === 0 ? typography.primary.bold : typography.primary.semibold,
-												color: rowIndex !== 0 ? (editable ? 'gray' : 'black') : 'black',
-												...styles.box,
-											}}
-											value={tankDataGrid[rowIndex][colIndex].value}
-											onChangeText={value => handleInputChange(rowIndex, colIndex, value)}
-											keyboardType={`${rowIndex == 2 ? 'numeric' : 'default'}`}
-										/>
-									))}
-								</View>
-							))}
-						</View>
-						{/* Station Tank Data from the previous keyin */}
-						<Text
-							style={{
-								marginTop: 10,
-								fontFamily: typography.primary.normal,
-								fontSize: 15,
-							}}>
-							Tank Details
-						</Text>
-						<View style={{ marginTop: 5 }}>
-							{tankDataGrid.map((row, rowIndex) => (
-								<View key={rowIndex} style={styles.row}>
-									{row.slice(0, 5).map((col, colIndex) => (
-										<TextInput
-											editable={editable && rowIndex !== 0}
-											key={colIndex}
-											style={{
-												fontFamily: rowIndex === 0 ? typography.primary.bold : typography.primary.semibold,
-												color: rowIndex !== 0 ? (editable ? 'gray' : 'black') : 'black',
-												...styles.box,
-											}}
-											value={tankDataGrid[rowIndex][colIndex].value}
-											onChangeText={value => handleInputChange(rowIndex, colIndex, value)}
-											keyboardType={`${rowIndex == 2 ? 'numeric' : 'default'}`}
-										/>
-									))}
-								</View>
-							))}
-						</View>
-
 						<Pressable
-							onPress={() => {
-								console.log('Hommmmmmmmmmmmmmmmmmmmmme');
-								navigation.navigate('Home');
-							}}
+							onPress={() => navigation.navigate('Home')}
 							style={{
 								backgroundColor: 'rgba(215, 215, 215, 0.8)',
 								padding: 2,
@@ -178,8 +100,84 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
 								position: 'absolute',
 								top: 0,
 								right: 0,
+								zIndex: 20,
 							}}>
 							<FeatherIcons name="x" size={20} />
+						</Pressable>
+						<Text style={styles.titleBoxText}>Tank Preset Value</Text>
+						<Text
+							style={{
+								marginTop: 20,
+								fontFamily: typography.primary.light,
+								fontSize: 17,
+							}}>
+							Please Key In Your Station Tank Preset Value, Tank(T)
+						</Text>
+
+						<View style={{ marginTop: 20 }}>
+							{gridValues.map((row, rowIndex) => (
+								<View key={rowIndex} style={styles.row}>
+									{row.slice(0, 5).map((col, colIndex) => (
+										<TextInput
+											editable={editable && rowIndex > 1}
+											key={colIndex}
+											style={{
+												color: rowIndex > 1 ? (editable ? 'gray' : 'black') : 'black',
+												backgroundColor: !col.isVerified && rowIndex > 1 ? 'red' : 'rgba(3, 244, 28, 1)',
+												...styles.box,
+											}}
+											value={gridValues[rowIndex][colIndex].value}
+											onChangeText={value => handleInputChange(rowIndex, colIndex, value)}
+											keyboardType={`${rowIndex == 2 ? 'numeric' : 'default'}`}
+										/>
+									))}
+								</View>
+							))}
+						</View>
+
+						<View style={{ marginTop: 20 }}>
+							{gridValues.map((row, rowIndex) => (
+								<View key={rowIndex} style={styles.row}>
+									{row.slice(5, 9).map((col, colIndex) => (
+										<TextInput
+											editable={editable && rowIndex > 1}
+											key={colIndex}
+											style={{
+												color: rowIndex > 1 ? (editable ? 'gray' : 'black') : 'black',
+												backgroundColor: !col.isVerified && rowIndex > 1 ? 'red' : 'rgba(3, 244, 28, 1)',
+												...styles.box,
+											}}
+											value={gridValues[rowIndex][colIndex + 5].value}
+											onChangeText={value => handleInputChange(rowIndex, colIndex + 5, value)}
+											keyboardType={`${rowIndex == 2 ? 'numeric' : 'default'}`}
+										/>
+									))}
+								</View>
+							))}
+						</View>
+					</View>
+				</View>
+				<View
+					style={{
+						display: 'flex',
+						marginTop: 20,
+						alignItems: 'flex-start',
+						width: '95%',
+					}}>
+					<View
+						style={{
+							display: 'flex',
+							flexDirection: 'row',
+							gap: 10,
+							marginTop: 4,
+						}}>
+						<Pressable
+							onPress={() => {
+								setEditable(!editable);
+								setSaved(false);
+							}}
+							style={{ ...styles.button, backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray' }}>
+							<Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
 						</Pressable>
 					</View>
 				</View>
@@ -191,12 +189,20 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
 					display: 'flex',
 					flexDirection: 'row',
 					alignItems: 'center',
-					justifyContent: 'center',
-					width: '85%',
+					justifyContent: 'flex-start',
+					width: '95%',
 					gap: 10,
 					paddingLeft: 20,
 				}}>
-				<Text style={{ ...styles.text, backgroundColor: 'rgba(208, 208, 208, 1)' }}>Verify and Close Report</Text>
+				<Pressable
+					aria-disabled={isVerified}
+					onPress={saveData}
+					style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}>
+					<Text style={{ ...styles.text, color: 'white' }}>Save</Text>
+				</Pressable>
+				<Pressable onPress={verifyAll} style={{ ...styles.button, backgroundColor: 'rgba(215, 215, 215, 0.8)' }}>
+					<Text style={styles.text}>Verify</Text>
+				</Pressable>
 			</View>
 		</MainLayout>
 	);
@@ -210,7 +216,7 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		backgroundColor: '#fff',
 		height: 500,
-		width: '85%',
+		width: '95%',
 	},
 	titleBox: {
 		display: 'flex',
@@ -227,7 +233,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-evenly',
 	},
 	box: {
-		// fontFamily: typography.primary.semibold,
+		fontFamily: typography.primary.semibold,
 		flex: 1,
 		width: 'auto',
 		height: 40,
@@ -243,13 +249,11 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 	},
 	text: {
-		fontSize: 20,
+		fontSize: 16,
 		lineHeight: 21,
-		fontFamily: typography.primary.normal,
+		fontFamily: typography.primary.medium,
 		letterSpacing: 0.25,
-		padding: 5,
-		borderRadius: 5,
 	},
 });
 
-export default DischargeReport;
+export default TankValuePreset;

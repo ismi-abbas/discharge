@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { compartmentData, tankData } from '../utils/constant';
 import FeatherIcons from '@expo/vector-icons/Feather';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentTankVerify'>) => {
 	const [tankDataGrid, setTankDataGrid] = useState(tankData);
@@ -127,6 +128,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 							}}>
 							Please match Compartment (C)to Tank (V)
 						</Text>
+						{/* <ScrollView horizontal> */}
 						{/* Compartment Data */}
 						<View style={{ marginTop: 20 }}>
 							{compartmentDataGrid.map((row, rowIndex) => (
@@ -193,6 +195,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 								</View>
 							))}
 						</View>
+						{/* </ScrollView> */}
 					</View>
 				</View>
 				<View
@@ -200,7 +203,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 						display: 'flex',
 						marginTop: 20,
 						alignItems: 'flex-start',
-						width: '85%',
+						width: '95%',
 					}}>
 					<View
 						style={{
@@ -228,7 +231,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 					flexDirection: 'row',
 					alignItems: 'center',
 					justifyContent: 'flex-start',
-					width: '85%',
+					width: '95%',
 					gap: 10,
 					paddingLeft: 20,
 				}}>
@@ -254,7 +257,7 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		backgroundColor: '#fff',
 		height: 600,
-		width: '85%',
+		width: '95%',
 	},
 	titleBox: {
 		display: 'flex',

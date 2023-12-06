@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		display: 'flex',
-		width: 50,
-		height: 50,
+		width: 40,
+		height: 40,
 		backgroundColor: '#0553',
 		borderRadius: 50,
 	},
@@ -54,10 +54,10 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		width: '100%',
 		paddingHorizontal: 20,
-		height: 90,
+		height: 70,
 	},
 	barTitle: {
 		fontFamily: typography.primary.medium,
-		fontSize: 25,
+		fontSize: 22,
 	},
 });

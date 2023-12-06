@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, ScrollView, FlatList } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
@@ -7,47 +7,73 @@ import { typography } from '../theme/typography';
 import DUMMY_DATA from '../dummyData.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { compartmentData } from '../utils/constant';
+import TableBase, { CompartmentData } from '../components/TableBase';
+import Toast from 'react-native-toast-message';
 
 const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>) => {
-	const [gridValues, setGridValues] = useState(compartmentData);
 	const [editable, setEditable] = useState(false);
-	const [isVerified, setIsVerified] = useState(false);
 	const [isSaved, setSaved] = useState(false);
+	const [tableData, setTableData] = useState<CompartmentData[] | undefined>(compartmentData);
 
 	useEffect(() => {
 		getGridData();
 	}, []);
 
 	const getGridData = async () => {
-		const data = await AsyncStorage.getItem('gridData');
-		setGridValues(JSON.parse(data || ''));
+		try {
+			const data = await AsyncStorage.getItem('gridData');
+			if (data) {
+				setTableData(JSON.parse(data || ''));
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const saveData = async () => {
+		try {
+			await AsyncStorage.setItem('gridData', JSON.stringify(tableData));
+			setSaved(true);
+			Toast.show({
+				type: 'success',
+				text1: 'Data Saved',
+				text2: 'Tank details has been saved 👍🏻',
+				position: 'bottom',
+				visibilityTime: 2000,
+			});
+		} catch (error) {}
+	};
+
+	const addCompartment = () => {
+		console.log('addCompartment');
 	};
 
 	const handleInputChange = (row: any, col: any, value: string) => {
-		const field = gridValues[row][col];
-		if (value.trim() !== '' && value !== '0') {
-			field.isVerified = true;
-		} else {
-			field.isVerified = false;
-		}
-		if (row !== 0) {
-			const newGridValues = [...gridValues];
-			newGridValues[row][col].value = value;
-			setGridValues(newGridValues);
-		}
+		console.log('inputChange');
 	};
 
 	const verifyAll = () => {
-		const verified =
-			gridValues[1].every(column => column.value.trim() !== '') &&
-			gridValues[2].every(column => column.value.trim() !== '');
+		const verified = tableData?.every(data => data.fuelType !== '' && data.volume !== '');
 
 		if (verified) {
-			AsyncStorage.setItem('gridData', JSON.stringify(gridValues));
-			setIsVerified(true);
-			navigation.navigate('TankInfo');
+			Toast.show({
+				type: 'success',
+				text1: 'Data Verified',
+				text2: 'Tank details has been saved 👍🏻',
+				position: 'bottom',
+				visibilityTime: 2000,
+			});
+			setTimeout(() => {
+				navigation.navigate('TankInfo');
+			}, 1500);
 		} else {
-			setIsVerified(false);
+			Toast.show({
+				type: 'error',
+				text1: 'Data Error',
+				text2: 'Please fill up all columns',
+				position: 'bottom',
+				visibilityTime: 2000,
+			});
 		}
 	};
 
@@ -120,38 +146,22 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 			<View
 				style={{
 					marginTop: 10,
-					width: '85%',
+					width: '90%',
 				}}>
 				<Text
 					style={{
 						fontFamily: typography.primary.bold,
-						width: '85%',
+						width: '90%',
 						fontSize: 15,
 						textTransform: 'capitalize',
 					}}>
 					Please key in truck delivery details compartment(C)
 				</Text>
-				<View style={{ marginTop: 20 }}>
-					{gridValues.map((row, rowIndex) => (
-						<View key={rowIndex} style={styles.row}>
-							{row.map((col, colIndex) => (
-								<TextInput
-									editable={editable && rowIndex !== 0}
-									key={colIndex}
-									style={{
-										color: rowIndex !== 0 ? (editable ? 'gray' : 'black') : 'black',
-										backgroundColor: !col.isVerified && rowIndex !== 0 ? 'red' : 'rgba(3, 244, 28, 1)',
-										...styles.box,
-									}}
-									value={gridValues[rowIndex][colIndex].value}
-									onChangeText={value => handleInputChange(rowIndex, colIndex, value)}
-									keyboardType={`${rowIndex == 2 ? 'numeric' : 'default'}`}
-								/>
-							))}
-						</View>
-					))}
-				</View>
+
+				<TableBase setTableData={setTableData} editable={editable} data={tableData} />
 			</View>
+
+			{/* Button */}
 			<View
 				style={{
 					display: 'flex',
@@ -159,7 +169,11 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 					alignItems: 'flex-start',
 					width: '85%',
 				}}>
-				{!isVerified ? <Text>Please fill up all columns</Text> : <View></View>}
+				<Pressable
+					onPress={addCompartment}
+					style={{ ...styles.compartmentButton, backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray' }}>
+					<Text style={{ ...styles.buttonText, color: 'white' }}>Add Compartment</Text>
+				</Pressable>
 				<View
 					style={{
 						display: 'flex',
@@ -173,19 +187,16 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 							setSaved(false);
 						}}
 						style={{ ...styles.button, backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray' }}>
-						<Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
+						<Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
 					</Pressable>
 
 					{isSaved ? (
 						<Pressable onPress={verifyAll} style={{ ...styles.button, backgroundColor: 'rgba(215, 215, 215, 0.8)' }}>
-							<Text style={styles.text}>Verify</Text>
+							<Text style={styles.buttonText}>Verify</Text>
 						</Pressable>
 					) : (
-						<Pressable
-							aria-disabled={isVerified}
-							onPress={() => setSaved(true)}
-							style={{ ...styles.button, backgroundColor: 'rgba(215, 215, 215, 0.8)' }}>
-							<Text style={styles.text}>Save</Text>
+						<Pressable onPress={saveData} style={{ ...styles.button, backgroundColor: 'rgba(215, 215, 215, 0.8)' }}>
+							<Text style={styles.buttonText}>Save</Text>
 						</Pressable>
 					)}
 				</View>
@@ -204,7 +215,7 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		backgroundColor: '#fff',
 		height: 220,
-		width: '85%',
+		width: '90%',
 	},
 	titleBox: {
 		display: 'flex',
@@ -225,7 +236,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: 'auto',
 		height: 40,
-		// backgroundColor: 'rgba(3, 244, 28, 1)',
+		backgroundColor: 'rgba(64, 175, 247, 0.69)',
 		borderWidth: 0.5,
 		textAlign: 'center',
 	},
@@ -233,8 +244,19 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		paddingVertical: 5,
-		paddingHorizontal: 22,
+		paddingHorizontal: 20,
 		borderRadius: 4,
+	},
+	compartmentButton: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		paddingVertical: 5,
+		paddingHorizontal: 5,
+		borderRadius: 4,
+	},
+	buttonText: {
+		fontSize: 14,
+		fontFamily: typography.primary.medium,
 	},
 	text: {
 		fontSize: 16,

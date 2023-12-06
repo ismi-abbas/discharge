@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Text, SectionList, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, SectionList, StyleSheet, ScrollView, Pressable } from 'react-native';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import DUMMYDATA from '../dummyData.json';
 import { typography } from '../theme/typography';
@@ -7,18 +7,24 @@ import { MainLayout } from '../components/MainLayout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { FuelData } from '../types';
+import TableBase from '../components/TableBase';
 
 export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
 	const [dummyData, setDummyData] = useState<FuelData>(DUMMYDATA);
 
 	useEffect(() => {
 		loadDummyData();
-	}, []);
+	});
 
 	const loadDummyData = async () => {
-		const data = await AsyncStorage.getItem('dummyData');
-		console.log(data);
-		setDummyData(JSON.parse(data || ''));
+		try {
+			const data = await AsyncStorage.getItem('dummyData');
+			if (data) {
+				setDummyData(JSON.parse(data!));
+			}
+		} catch (err) {
+			console.log('===============> error here', err);
+		}
 	};
 
 	return (
@@ -118,7 +124,7 @@ const styles = StyleSheet.create({
 		fontSize: 25,
 	},
 	newItemBox: {
-		width: '85%',
+		width: '90%',
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',
@@ -132,7 +138,7 @@ const styles = StyleSheet.create({
 		fontSize: 25,
 	},
 	dischargeRecordBox: {
-		width: '85%',
+		width: '90%',
 	},
 	dischargeBoxItem: {
 		backgroundColor: '#fff',
@@ -157,7 +163,7 @@ const styles = StyleSheet.create({
 		color: 'rgb(0, 186, 78)',
 	},
 	sectionListBox: {
-		width: '85%',
+		width: '90%',
 	},
 	sortingTab: {
 		display: 'flex',
@@ -165,7 +171,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		paddingVertical: 15,
 		paddingHorizontal: 10,
-		width: '85%',
+		width: '90%',
 	},
 	sortingTabItem: {
 		display: 'flex',

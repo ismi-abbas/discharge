@@ -19,8 +19,14 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 	}, []);
 
 	const getGridData = async () => {
-		const data = await AsyncStorage.getItem('tankData');
-		setGridValues(JSON.parse(data || ''));
+		try {
+			const data = await AsyncStorage.getItem('tankData');
+			if (data) {
+				setGridValues(JSON.parse(data || ''));
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const handleInputChange = (row: any, col: any, value: string) => {
@@ -84,19 +90,20 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 		<MainLayout>
 			<View style={styles.dischargeBox}>
 				<View style={styles.titleBox}>
-					<Pressable
-						onPress={() => navigation.navigate('Home')}
-						style={{
-							backgroundColor: 'rgba(215, 215, 215, 0.8)',
-							padding: 2,
-							borderRadius: 5,
-							position: 'absolute',
-							top: 0,
-							right: 0,
-						}}>
-						<FeatherIcons name="x" size={20} />
-					</Pressable>
 					<View>
+						<Pressable
+							onPress={() => navigation.navigate('Home')}
+							style={{
+								backgroundColor: 'rgba(215, 215, 215, 0.8)',
+								padding: 2,
+								borderRadius: 5,
+								position: 'absolute',
+								top: 0,
+								right: 0,
+								zIndex: 20,
+							}}>
+							<FeatherIcons name="x" size={20} />
+						</Pressable>
 						<Text style={styles.titleBoxText}>New Discharge</Text>
 						<Text
 							style={{
@@ -112,11 +119,11 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 								<View key={rowIndex} style={styles.row}>
 									{row.slice(0, 5).map((col, colIndex) => (
 										<TextInput
-											editable={editable && rowIndex !== 0}
+											editable={editable && rowIndex > 1}
 											key={colIndex}
 											style={{
-												color: rowIndex !== 0 ? (editable ? 'gray' : 'black') : 'black',
-												backgroundColor: !col.isVerified && rowIndex !== 0 ? 'red' : 'rgba(3, 244, 28, 1)',
+												color: rowIndex > 1 ? (editable ? 'gray' : 'black') : 'black',
+												backgroundColor: !col.isVerified && rowIndex > 1 ? 'red' : 'rgba(3, 244, 28, 1)',
 												...styles.box,
 											}}
 											value={gridValues[rowIndex][colIndex].value}
@@ -133,11 +140,11 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 								<View key={rowIndex} style={styles.row}>
 									{row.slice(5, 9).map((col, colIndex) => (
 										<TextInput
-											editable={editable && rowIndex !== 0}
+											editable={editable && rowIndex > 1}
 											key={colIndex}
 											style={{
-												color: rowIndex !== 0 ? (editable ? 'gray' : 'black') : 'black',
-												backgroundColor: !col.isVerified && rowIndex !== 0 ? 'red' : 'rgba(3, 244, 28, 1)',
+												color: rowIndex > 1 ? (editable ? 'gray' : 'black') : 'black',
+												backgroundColor: !col.isVerified && rowIndex > 1 ? 'red' : 'rgba(3, 244, 28, 1)',
 												...styles.box,
 											}}
 											value={gridValues[rowIndex][colIndex + 5].value}
@@ -155,9 +162,8 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 						display: 'flex',
 						marginTop: 20,
 						alignItems: 'flex-start',
-						width: '85%',
+						width: '95%',
 					}}>
-					{!isVerified ? <Text>Please fill up all columns</Text> : <View></View>}
 					<View
 						style={{
 							display: 'flex',
@@ -184,7 +190,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 					flexDirection: 'row',
 					alignItems: 'center',
 					justifyContent: 'flex-start',
-					width: '85%',
+					width: '95%',
 					gap: 10,
 					paddingLeft: 20,
 				}}>
@@ -210,7 +216,7 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		backgroundColor: '#fff',
 		height: 500,
-		width: '85%',
+		width: '95%',
 	},
 	titleBox: {
 		display: 'flex',
