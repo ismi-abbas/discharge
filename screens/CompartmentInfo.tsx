@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, TextInput, View, ScrollView, FlatList } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
@@ -7,8 +7,9 @@ import { typography } from '../theme/typography';
 import DUMMY_DATA from '../dummyData.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { compartmentData } from '../utils/constant';
-import TableBase, { CompartmentData } from '../components/TableBase';
+import CompartmentInfoTable, { CompartmentData } from '../components/CompartmentInfoTable';
 import Toast from 'react-native-toast-message';
+import { DropdownList } from '../components/CompartmentVSTankTable';
 
 const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>) => {
 	const [editable, setEditable] = useState(false);
@@ -21,7 +22,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 
 	const getGridData = async () => {
 		try {
-			const data = await AsyncStorage.getItem('gridData');
+			const data = await AsyncStorage.getItem('compartmentData');
 			if (data) {
 				setTableData(JSON.parse(data || ''));
 			}
@@ -32,7 +33,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 
 	const saveData = async () => {
 		try {
-			await AsyncStorage.setItem('gridData', JSON.stringify(tableData));
+			await AsyncStorage.setItem('compartmentData', JSON.stringify(tableData));
 			setSaved(true);
 			Toast.show({
 				type: 'success',
@@ -41,15 +42,28 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 				position: 'bottom',
 				visibilityTime: 2000,
 			});
+			console.log(tableData);
 		} catch (error) {}
 	};
 
-	const addCompartment = () => {
-		console.log('addCompartment');
-	};
+	const handleCompartment = (action: string) => {
+		if (action === 'add') {
+			const id = (tableData?.length || 0) + 1;
 
-	const handleInputChange = (row: any, col: any, value: string) => {
-		console.log('inputChange');
+			const newCompartment: CompartmentData = {
+				compartmentId: 'C' + id.toString(),
+				fuelType: '',
+				id: (tableData?.length || 0) + 1,
+				volume: '',
+			};
+			const updatedTableData = [...(tableData || []), newCompartment];
+			setTableData(updatedTableData);
+		} else if (action === 'remove') {
+			if (tableData && tableData.length > 0) {
+				const updatedTableData = tableData.slice(0, -1);
+				setTableData(updatedTableData);
+			}
+		}
 	};
 
 	const verifyAll = () => {
@@ -75,6 +89,44 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 				visibilityTime: 2000,
 			});
 		}
+	};
+
+	const handleFuelTypeChange = (rowIndex: number, col: string, value: string) => {
+		const updatedData = tableData?.map((row, index) => {
+			if (index === rowIndex) {
+				return {
+					...row,
+					[col]: value,
+				};
+			}
+			return row;
+		});
+
+		setTableData(updatedData);
+	};
+
+	const handleVolumeChange = (id: number, value: string) => {
+		const updatedData = tableData?.map(compartment =>
+			compartment.id === id ? { ...compartment, volume: value } : compartment,
+		);
+
+		setTableData(updatedData);
+	};
+
+	const handleCompartmentSelect = (item: DropdownList, compartmentId: string) => {
+		const compartment = tableData?.find(data => data.compartmentId === compartmentId);
+		if (!compartment) {
+			return;
+		}
+		const updatedData = tableData?.map(data =>
+			data.compartmentId == compartmentId
+				? {
+						...data,
+						fuelType: item.value,
+				  }
+				: data,
+		);
+		setTableData(updatedData!);
 	};
 
 	const date = new Date();
@@ -158,7 +210,14 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 					Please key in truck delivery details compartment(C)
 				</Text>
 
-				<TableBase setTableData={setTableData} editable={editable} data={tableData} />
+				<CompartmentInfoTable
+					setTableData={setTableData}
+					editable={editable}
+					tableData={tableData}
+					handleFuelTypeChange={handleFuelTypeChange}
+					handleVolumeChange={handleVolumeChange}
+					handleCompartmentSelect={handleCompartmentSelect}
+				/>
 			</View>
 
 			{/* Button */}
@@ -169,11 +228,21 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 					alignItems: 'flex-start',
 					width: '85%',
 				}}>
-				<Pressable
-					onPress={addCompartment}
-					style={{ ...styles.compartmentButton, backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray' }}>
-					<Text style={{ ...styles.buttonText, color: 'white' }}>Add Compartment</Text>
-				</Pressable>
+				<View style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
+					<Pressable
+						disabled={editable}
+						onPress={() => handleCompartment('add')}
+						style={{ ...styles.compartmentButton, backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray' }}>
+						<Text style={{ ...styles.buttonText, color: 'white' }}>Add</Text>
+					</Pressable>
+					<Pressable
+						disabled={editable}
+						onPress={() => handleCompartment('remove')}
+						style={{ ...styles.compartmentButton, backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray' }}>
+						<Text style={{ ...styles.buttonText, color: 'white' }}>Remove</Text>
+					</Pressable>
+				</View>
+
 				<View
 					style={{
 						display: 'flex',

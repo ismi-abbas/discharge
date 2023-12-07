@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
@@ -7,58 +7,51 @@ import FeatherIcons from '@expo/vector-icons/Feather';
 import { tankData } from '../utils/constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import TankInfoTable, { TankData } from '../components/TankInfoTable';
+import { DropdownList } from '../components/CompartmentVSTankTable';
 
 const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
-	const [gridValues, setGridValues] = useState(tankData);
+	const [tableData, setTableData] = useState<TankData[]>(tankData);
 	const [editable, setEditable] = useState(false);
 	const [isVerified, setIsVerified] = useState(false);
-	const [isSaved, setSaved] = useState(false);
 
 	useEffect(() => {
-		getGridData();
+		getTableData();
 	}, []);
 
-	const getGridData = async () => {
+	const getTableData = async () => {
 		try {
-			const data = await AsyncStorage.getItem('tankData');
-			if (data) {
-				setGridValues(JSON.parse(data || ''));
+			const tankData = await AsyncStorage.getItem('tankData');
+			if (tankData) {
+				setTableData(JSON.parse(tankData || ''));
 			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	const handleInputChange = (row: any, col: any, value: string) => {
-		const field = gridValues[row][col];
-		if (value.trim() !== '' && value !== '0') {
-			field.isVerified = true;
-		} else {
-			field.isVerified = false;
-		}
-		if (row !== 0) {
-			const newGridValues = [...gridValues];
-			newGridValues[row][col].value = value;
-			setGridValues(newGridValues);
-		}
+		} catch (error) {}
 	};
 
 	const saveData = async () => {
-		AsyncStorage.setItem('tankData', JSON.stringify(gridValues));
-		Toast.show({
-			type: 'success',
-			text1: 'Data Saved',
-			text2: 'Tank details has been saved 👍🏻',
-			position: 'bottom',
-			visibilityTime: 2000,
-		});
+		try {
+			AsyncStorage.setItem('tankData', JSON.stringify(tableData));
+			Toast.show({
+				type: 'success',
+				text1: 'Data Saved',
+				text2: 'Tank details has been saved 👍🏻',
+				position: 'bottom',
+				visibilityTime: 2000,
+			});
+			console.log(tableData);
+		} catch (error) {
+			Toast.show({
+				type: 'error',
+				text1: 'Error saving data',
+				text2: 'Please try again',
+				position: 'bottom',
+				visibilityTime: 2000,
+			});
+		}
 	};
 
 	const verifyAll = () => {
-		console.log(gridValues);
-		const verified =
-			gridValues[1].every(column => column.value.trim() !== '') &&
-			gridValues[2].every(column => column.value.trim() !== '');
+		const verified = tankData.every(tank => tank.volume !== '' && tank.fuelType !== '');
 
 		if (verified) {
 			setIsVerified(true);
@@ -84,7 +77,21 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 		}
 	};
 
-	const date = new Date();
+	const handleCompartmentSelect = (item: DropdownList, tankId: string) => {
+		const compartment = tableData?.find(data => data.tankId === tankId);
+		if (!compartment) {
+			return;
+		}
+		const updatedData = tableData?.map(data =>
+			data.tankId == tankId
+				? {
+						...data,
+						fuelType: item.value,
+				  }
+				: data,
+		);
+		setTableData(updatedData!);
+	};
 
 	return (
 		<MainLayout>
@@ -114,47 +121,21 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 							Please Key In Your Station Tank Latest Details, Tank(T)
 						</Text>
 
-						<View style={{ marginTop: 20 }}>
-							{gridValues.map((row, rowIndex) => (
-								<View key={rowIndex} style={styles.row}>
-									{row.slice(0, 5).map((col, colIndex) => (
-										<TextInput
-											editable={editable && rowIndex > 1}
-											key={colIndex}
-											style={{
-												color: rowIndex > 1 ? (editable ? 'gray' : 'black') : 'black',
-												backgroundColor: !col.isVerified && rowIndex > 1 ? 'red' : 'rgba(3, 244, 28, 1)',
-												...styles.box,
-											}}
-											value={gridValues[rowIndex][colIndex].value}
-											onChangeText={value => handleInputChange(rowIndex, colIndex, value)}
-											keyboardType={`${rowIndex == 2 ? 'numeric' : 'default'}`}
-										/>
-									))}
-								</View>
-							))}
-						</View>
-
-						<View style={{ marginTop: 20 }}>
-							{gridValues.map((row, rowIndex) => (
-								<View key={rowIndex} style={styles.row}>
-									{row.slice(5, 9).map((col, colIndex) => (
-										<TextInput
-											editable={editable && rowIndex > 1}
-											key={colIndex}
-											style={{
-												color: rowIndex > 1 ? (editable ? 'gray' : 'black') : 'black',
-												backgroundColor: !col.isVerified && rowIndex > 1 ? 'red' : 'rgba(3, 244, 28, 1)',
-												...styles.box,
-											}}
-											value={gridValues[rowIndex][colIndex + 5].value}
-											onChangeText={value => handleInputChange(rowIndex, colIndex + 5, value)}
-											keyboardType={`${rowIndex == 2 ? 'numeric' : 'default'}`}
-										/>
-									))}
-								</View>
-							))}
-						</View>
+						<TankInfoTable
+							tableData={tableData}
+							editable={editable}
+							setTableData={setTableData}
+							handleCompartmentSelect={handleCompartmentSelect}
+						/>
+						<Text
+							style={{
+								marginTop: 5,
+								marginBottom: 2,
+								fontFamily: typography.primary.light,
+								fontSize: 12,
+							}}>
+							*Scroll to the right for more info
+						</Text>
 					</View>
 				</View>
 				<View
@@ -172,10 +153,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 							marginTop: 4,
 						}}>
 						<Pressable
-							onPress={() => {
-								setEditable(!editable);
-								setSaved(false);
-							}}
+							onPress={() => setEditable(!editable)}
 							style={{ ...styles.button, backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray' }}>
 							<Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
 						</Pressable>

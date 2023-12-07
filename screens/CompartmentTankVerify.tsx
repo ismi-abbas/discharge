@@ -5,67 +5,84 @@ import { AppStackScreenProps } from '../MainNavigator';
 import { typography } from '../theme/typography';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
-import { compartmentData, tankData } from '../utils/constant';
+import { compartmentData, compartmentToTank, tankData } from '../utils/constant';
 import FeatherIcons from '@expo/vector-icons/Feather';
-import { ScrollView } from 'react-native-gesture-handler';
+import CompartmentVSTankTable, { MergeData } from '../components/CompartmentVSTankTable';
+import { TankData } from '../components/TankInfoTable';
 
 const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentTankVerify'>) => {
-	const [tankDataGrid, setTankDataGrid] = useState(tankData);
-	const [compartmentDataGrid, setCompartmentDataGrid] = useState(compartmentData);
-	const [mergeDataGrid, setMergeDataGrid] = useState([
-		[{ value: 'New Merged Volume', isVerified: true }],
-		[
-			{ value: '35000', isVerified: true },
-			{ value: '11000', isVerified: true },
-			{ value: '39000', isVerified: true },
-			{ value: '40000', isVerified: true },
-			{ value: '55000', isVerified: true },
-		],
-	]);
+	const [tankTableData, setTankTableData] = useState<TankData[]>([]);
+	const [compartmentTableData, setCompartmentTableData] = useState(compartmentData);
+	const [mergedData, setMergedData] = useState<MergeData[]>(compartmentToTank);
 
 	const [editable, setEditable] = useState(false);
 	const [isVerified, setIsVerified] = useState(false);
-	const [isSaved, setSaved] = useState(false);
 
 	useEffect(() => {
-		getGridData();
+		const fetchData = async () => {
+			try {
+				const keys = await AsyncStorage.getAllKeys();
+				const data = await AsyncStorage.multiGet(['tankData', 'mergedData', 'compartmentData']);
+
+				data.forEach(([key, value]) => {
+					if (key === 'tankData') {
+						let json: TankData[] = JSON.parse(value!);
+						setTankTableData(json);
+
+						let tableD: MergeData[] = [];
+
+						json.map(tank => {
+							tableD.push({
+								tankId: tank.tankId,
+								id: tank.id,
+								tankFuelType: tank.fuelType,
+								tankVolume: tank.volume,
+								compartmentId: '',
+								mergedVolume: '',
+								compartmenFuelType: '',
+								compartmentVolume: '',
+							});
+						});
+						setMergedData(tableD);
+					} else if (key === 'compartmentData') {
+						setCompartmentTableData(JSON.parse(value!));
+					}
+				});
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
+		fetchData();
 	}, []);
 
-	const getGridData = async () => {
-		const data = await AsyncStorage.getItem('tankData');
-		setTankDataGrid(JSON.parse(data || ''));
-	};
-
-	const handleInputChange = (row: any, col: any, value: string) => {
-		const field = tankDataGrid[row][col];
-		if (value.trim() !== '' && value !== '0') {
-			field.isVerified = true;
-		} else {
-			field.isVerified = false;
-		}
-		if (row !== 0) {
-			const newGridValues = [...tankDataGrid];
-			newGridValues[row][col].value = value;
-			setTankDataGrid(newGridValues);
-		}
+	const calculateTotal = (compartmentVolume: string, tankVolume: string): string => {
+		const compartment = parseInt(compartmentVolume) || 0;
+		const tank = parseInt(tankVolume) || 0;
+		return (compartment + tank).toString();
 	};
 
 	const saveData = async () => {
-		AsyncStorage.setItem('tankData', JSON.stringify(tankDataGrid));
-		Toast.show({
-			type: 'success',
-			text1: 'Data Saved',
-			text2: 'Tank details has been saved 👍🏻',
-			position: 'bottom',
-			visibilityTime: 2000,
-		});
+		try {
+			AsyncStorage.setItem('tankData', JSON.stringify(tankTableData));
+			AsyncStorage.setItem('compartmentData', JSON.stringify(compartmentTableData));
+			AsyncStorage.setItem('mergedData', JSON.stringify(mergedData));
+			mergedData.map(item => {
+				item.mergedVolume = calculateTotal(item.tankVolume, item.compartmentVolume);
+			});
+			Toast.show({
+				type: 'success',
+				text1: 'Data Saved',
+				text2: 'Tank details has been saved 👍🏻',
+				position: 'bottom',
+				visibilityTime: 2000,
+			});
+			console.log(mergedData);
+		} catch (error) {}
 	};
 
 	const verifyAll = () => {
-		console.log(tankDataGrid);
-		const verified =
-			tankDataGrid[1].every(column => column.value.trim() !== '') &&
-			tankDataGrid[2].every(column => column.value.trim() !== '');
+		const verified = mergedData.every(x => x.tankId !== '' && x.mergedVolume !== '');
 
 		if (verified) {
 			setIsVerified(true);
@@ -91,8 +108,6 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 		}
 	};
 
-	const date = new Date();
-
 	return (
 		<MainLayout>
 			<View style={styles.dischargeBox}>
@@ -114,88 +129,30 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 						<Text
 							style={{
 								marginTop: 20,
-								fontFamily: typography.primary.bold,
+								fontFamily: typography.primary.semibold,
 								fontSize: 17,
 							}}>
-							Truck Compartment (C) toStation Tank (T) Petrol Match
+							Truck Compartment (C) to Station Tank (T) Petrol Match
 						</Text>
 
 						<Text
 							style={{
 								marginTop: 20,
 								fontFamily: typography.primary.light,
-								fontSize: 17,
+								fontSize: 14,
 							}}>
 							Please match Compartment (C)to Tank (V)
 						</Text>
-						{/* <ScrollView horizontal> */}
-						{/* Compartment Data */}
-						<View style={{ marginTop: 20 }}>
-							{compartmentDataGrid.map((row, rowIndex) => (
-								<View key={rowIndex} style={styles.row}>
-									{row.slice(0, 5).map((col, colIndex) => (
-										<TextInput
-											editable={editable && rowIndex !== 0}
-											key={colIndex}
-											style={{
-												fontFamily: rowIndex === 0 ? typography.primary.bold : typography.primary.semibold,
-												color: rowIndex !== 0 ? (editable ? 'gray' : 'black') : 'black',
-												backgroundColor: !col.isVerified && rowIndex !== 0 ? 'red' : 'rgba(3, 244, 28, 1)',
-												...styles.box,
-											}}
-											value={tankDataGrid[rowIndex][colIndex].value}
-											onChangeText={value => handleInputChange(rowIndex, colIndex, value)}
-											keyboardType={`${rowIndex == 2 ? 'numeric' : 'default'}`}
-										/>
-									))}
-								</View>
-							))}
-						</View>
-						{/* Station Tank Data */}
-						<View>
-							{tankDataGrid.map((row, rowIndex) => (
-								<View key={rowIndex} style={styles.row}>
-									{row.slice(0, 5).map((col, colIndex) => (
-										<TextInput
-											editable={editable && rowIndex !== 0}
-											key={colIndex}
-											style={{
-												fontFamily: rowIndex === 0 ? typography.primary.bold : typography.primary.semibold,
-												color: rowIndex !== 0 ? (editable ? 'gray' : 'black') : 'black',
-												backgroundColor: 'yellow',
-												...styles.box,
-											}}
-											value={tankDataGrid[rowIndex][colIndex].value}
-											onChangeText={value => handleInputChange(rowIndex, colIndex, value)}
-											keyboardType={`${rowIndex == 2 ? 'numeric' : 'default'}`}
-										/>
-									))}
-								</View>
-							))}
-						</View>
-						{/* Merged Data */}
-						<View>
-							{mergeDataGrid.map((row, rowIndex) => (
-								<View key={rowIndex} style={styles.row}>
-									{row.map((col, colIndex) => (
-										<TextInput
-											editable={editable && rowIndex !== 0}
-											key={colIndex}
-											style={{
-												fontFamily: typography.primary.bold,
-												color: rowIndex !== 0 ? (editable ? 'gray' : 'black') : 'black',
-												backgroundColor: 'rgba(0, 199, 227, 0.9)',
-												...styles.box,
-											}}
-											value={mergeDataGrid[rowIndex][colIndex].value}
-											onChangeText={value => handleInputChange(rowIndex, colIndex, value)}
-											keyboardType={`${rowIndex == 2 ? 'numeric' : 'default'}`}
-										/>
-									))}
-								</View>
-							))}
-						</View>
-						{/* </ScrollView> */}
+
+						<CompartmentVSTankTable
+							tankData={tankTableData}
+							setTankData={setTankTableData}
+							compartmentData={compartmentTableData}
+							setCompartmentData={setCompartmentTableData}
+							setMergedData={setMergedData}
+							mergedData={mergedData}
+							editable={editable}
+						/>
 					</View>
 				</View>
 				<View
@@ -215,7 +172,6 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 						<Pressable
 							onPress={() => {
 								setEditable(!editable);
-								setSaved(false);
 							}}
 							style={{ ...styles.button, backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray' }}>
 							<Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
@@ -256,7 +212,7 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 		borderRadius: 10,
 		backgroundColor: '#fff',
-		height: 600,
+		height: 550,
 		width: '95%',
 	},
 	titleBox: {

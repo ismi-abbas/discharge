@@ -7,14 +7,73 @@ import { MainLayout } from '../components/MainLayout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { FuelData } from '../types';
-import TableBase from '../components/TableBase';
+import { MergeData } from '../components/CompartmentVSTankTable';
+import { useRoute } from '@react-navigation/native';
+
+export type ReportData = {
+	date: Date;
+	report: MergeData[];
+};
+
+export interface ResultItem {
+	date: Date;
+	totalTankVolume: number;
+	totalCompartmentVolume: number;
+	status: string;
+}
 
 export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
 	const [dummyData, setDummyData] = useState<FuelData>(DUMMYDATA);
+	const [reportData, setReportData] = useState<ReportData[]>();
+	const [listData, setListData] = useState<ResultItem[]>();
+
+	const fetchReportData = async () => {
+		try {
+			const data = await AsyncStorage.getItem('reportData');
+			if (data) {
+				setReportData(JSON.parse(data || ''));
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
 	useEffect(() => {
-		loadDummyData();
-	});
+		const fetchData = async () => {
+			await loadDummyData();
+			await fetchReportData();
+		};
+
+		if (reportData) {
+			const totalsByDate = reportData.reduce((result, array) => {
+				const date = array.date;
+
+				const { totalTankVolume, totalCompartmentVolume } = array.report.reduce(
+					(accumulator, tank) => {
+						accumulator.totalTankVolume += parseInt(tank.tankVolume) || 0;
+						accumulator.totalCompartmentVolume += parseInt(tank.compartmentVolume) || 0;
+						return accumulator;
+					},
+					{ totalTankVolume: 0, totalCompartmentVolume: 0 },
+				);
+
+				result.push({
+					date,
+					totalTankVolume,
+					totalCompartmentVolume,
+					status: 'normal',
+				});
+
+				console.log(result);
+
+				return result;
+			}, [] as ResultItem[]);
+
+			setListData(totalsByDate);
+		}
+
+		fetchData();
+	}, []);
 
 	const loadDummyData = async () => {
 		try {
@@ -29,14 +88,14 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
 
 	return (
 		<MainLayout>
-			<View style={styles.newItemBox}>
+			<TouchableOpacity onPress={() => navigation.navigate('CompartmentInfo')} style={styles.newItemBox}>
 				<View>
 					<Text style={styles.newItemText}>New Discharge</Text>
 				</View>
-				<TouchableOpacity onPress={() => navigation.navigate('CompartmentInfo')}>
+				<View>
 					<FeatherIcons name="chevron-down" size={25} />
-				</TouchableOpacity>
-			</View>
+				</View>
+			</TouchableOpacity>
 
 			<View style={styles.sortingTab}>
 				<View style={styles.sortingTabItem}>
@@ -67,7 +126,7 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
 			<SectionList
 				style={styles.sectionListBox}
 				showsVerticalScrollIndicator={false}
-				sections={[{ data: dummyData.discharges }]}
+				sections={[{ data: listData ? listData : [] }]}
 				renderItem={({ item }) => (
 					<View style={styles.dischargeBoxItem}>
 						<View
@@ -78,12 +137,12 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
 							<FeatherIcons name="dollar-sign" size={30} color="white" />
 						</View>
 						<View>
-							<Text style={styles.textSemiBold}>{item.date}</Text>
-							<Text>{item.amount}L</Text>
+							<Text style={styles.textSemiBold}>{item.date.toString().split('T')[0]}</Text>
+							<Text>{item.totalTankVolume}L</Text>
 						</View>
 						<View>
-							<Text style={styles.textSemiBold}>{item.amountTotal}L</Text>
-							<Text style={styles.amountIndicatorText}>+{item.amount}L</Text>
+							<Text style={styles.textSemiBold}>{item.totalCompartmentVolume}L</Text>
+							<Text style={styles.amountIndicatorText}>+{item.totalCompartmentVolume + item.totalTankVolume}L</Text>
 						</View>
 					</View>
 				)}

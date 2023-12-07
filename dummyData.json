@@ -9,12 +9,12 @@
 			"compartments": [
 				{
 					"id": "C1",
-					"type": "R95",
+					"type": "U95",
 					"amount": 25000
 				},
 				{
 					"id": "C2",
-					"type": "R95",
+					"type": "U95",
 					"amount": 25000
 				},
 				{
@@ -24,7 +24,7 @@
 				},
 				{
 					"id": "C4",
-					"type": "R95",
+					"type": "U95",
 					"amount": 25000
 				},
 				{
