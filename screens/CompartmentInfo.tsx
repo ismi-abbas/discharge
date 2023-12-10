@@ -1,15 +1,15 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
 import DUMMY_DATA from '../dummyData.json';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { compartmentData } from '../utils/constant';
 import CompartmentInfoTable, { CompartmentData } from '../components/CompartmentInfoTable';
 import Toast from 'react-native-toast-message';
 import { DropdownList } from '../components/CompartmentVSTankTable';
+import { load, save } from '../utils/storage';
 
 const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>) => {
   const [editable, setEditable] = useState(false);
@@ -22,9 +22,10 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 
   const getGridData = async () => {
     try {
-      const data = await AsyncStorage.getItem('compartmentData');
+      const data = (await load('compartmentData')) as CompartmentData[];
+
       if (data) {
-        setTableData(JSON.parse(data || ''));
+        setTableData(data);
       }
     } catch (error) {
       console.log(error);
@@ -33,8 +34,10 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 
   const saveData = async () => {
     try {
-      await AsyncStorage.setItem('compartmentData', JSON.stringify(tableData));
+      await save('compartmentData', tableData);
+
       setSaved(true);
+
       Toast.show({
         type: 'success',
         text1: 'Data Saved',

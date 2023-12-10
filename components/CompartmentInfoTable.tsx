@@ -2,16 +2,9 @@ import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { typography } from '../theme/typography';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
-import { DropdownList } from './CompartmentVSTankTable';
 import { Dropdown } from 'react-native-element-dropdown';
 import { petrolType } from '../utils/constant';
-
-export type CompartmentData = {
-  id: number;
-  compartmentId: string;
-  fuelType: string;
-  volume: string;
-};
+import { CompartmentData, DropdownList } from '../utils/types';
 
 type Props = {
   tableData: CompartmentData[] | undefined;

@@ -7,20 +7,9 @@ import { MainLayout } from '../components/MainLayout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { FuelData } from '../types';
-import { MergeData } from '../components/CompartmentVSTankTable';
-import { useRoute } from '@react-navigation/native';
-
-export type ReportData = {
-  date: Date;
-  report: MergeData[];
-};
-
-export interface ResultItem {
-  date: Date;
-  totalTankVolume: number;
-  totalCompartmentVolume: number;
-  status: string;
-}
+import { load } from '../utils/storage';
+import { InitialSetupInfo, StationInfo } from './OneTimeSetup';
+import { ReportData, ResultItem } from '../utils/types';
 
 export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
   const [dummyData, setDummyData] = useState<FuelData>(DUMMYDATA);
@@ -29,9 +18,14 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
 
   const fetchReportData = async () => {
     try {
-      const data = await AsyncStorage.getItem('reportData');
-      if (data) {
-        setReportData(JSON.parse(data || ''));
+      const reportData = (await load('reportData')) as ReportData[];
+      const initialData = (await load('initialSetup')) as InitialSetupInfo[];
+      console.log('🚀 ~ file: Home.tsx:37 ~ fetchReportData ~ initialData:', initialData);
+      const stationInfoData = (await load('stationInfo')) as StationInfo;
+      console.log('🚀 ~ file: Home.tsx:39 ~ fetchReportData ~ stationInfoData:', stationInfoData);
+
+      if (reportData) {
+        setReportData(reportData);
       }
     } catch (err) {
       console.log(err);

@@ -5,15 +5,7 @@ import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { Dropdown } from 'react-native-element-dropdown';
 import { petrolType } from '../utils/constant';
-import { DropdownList } from './CompartmentVSTankTable';
-
-export type TankData = {
-  id: number;
-  tankId: string;
-  fuelType: string;
-  volume: string;
-  maxVolume: string;
-};
+import { DropdownList, TankData } from '../utils/types';
 
 type Props = {
   tableData: TankData[] | undefined;

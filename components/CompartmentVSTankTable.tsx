@@ -2,9 +2,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { typography } from '../theme/typography';
 import { ScrollView } from 'react-native-gesture-handler';
-import { CompartmentData } from './CompartmentInfoTable';
-import { TankData } from './TankInfoTable';
 import { Dropdown } from 'react-native-element-dropdown';
+import { CompartmentData, DropdownList, MergeData, TankData } from '../utils/types';
 
 type Props = {
   tankData: TankData[];
@@ -14,21 +13,6 @@ type Props = {
   editable: boolean;
   mergedData: MergeData[] | undefined;
   setMergedData: (data: MergeData[]) => void;
-};
-export type MergeData = {
-  id: number | string;
-  tankId: string;
-  tankFuelType: string;
-  tankVolume: string;
-  compartmentId: string;
-  compartmenFuelType: string;
-  compartmentVolume: string;
-  mergedVolume: string;
-};
-
-export type DropdownList = {
-  label: string;
-  value: string;
 };
 
 const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, setMergedData }: Props) => {

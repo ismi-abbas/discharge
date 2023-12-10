@@ -4,18 +4,12 @@ import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
 import { petrolType, tankData } from '../utils/constant';
-import { DropdownList } from '../components/CompartmentVSTankTable';
 import { Dropdown } from 'react-native-element-dropdown';
-import FeatherIcons from '@expo/vector-icons/Feather';
 import Toast from 'react-native-toast-message';
-import { TankData } from '../components/TankInfoTable';
 import { load, save } from '../utils/storage';
 import DUMMY_DATA from '../dummyData.json';
-
-interface InitialSetupInfo {
-  done: boolean;
-  data: TankData[];
-}
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
 
 const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
   const [tableData, setTableData] = useState<TankData[]>(tankData);
@@ -25,23 +19,35 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
     done: false,
     data: []
   });
+  const [stationInfo, setStationInfo] = useState<StationInfo>({
+    stationId: '',
+    name: '',
+    address: '',
+    companyAddress: '',
+    companyName: ''
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const initialSetupData = (await load('initialSetupData')) as InitialSetupInfo;
+        console.log(await AsyncStorage.getAllKeys());
+        const initialSetup = (await load('initialSetup')) as InitialSetupInfo;
+        const stationInfoData = (await load('stationInfo')) as StationInfo;
 
-        if (initialSetupData) {
-          setInitialSetup({
-            done: initialSetup.done,
-            data: initialSetup.data
-          });
+        if (initialSetup) {
+          setInitialSetup(initialSetup);
 
           setTableData(initialSetup.data);
 
           navigation.navigate('Home');
         } else {
-          console.log('No yet finished initial setup');
+          console.log('Not yet finished initial setup');
+        }
+
+        if (stationInfoData) {
+          setStationInfo(stationInfoData);
+        } else {
+          setStationInfo(DUMMY_DATA.stations[0]);
         }
       } catch (error) {
         console.log('Fetch Data Error: ', error);
@@ -117,8 +123,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
     }
   };
 
-  const saveDetails = async ({ data }: { data: any }) => {
-    console.log('🚀 ~ file: OneTimeSetup.tsx:77 ~ saveDetails ~ data:', data);
+  const saveDetails = async ({ data }: { data: TankData[] }) => {
     setInitialSetup({
       done: false,
       data: data
@@ -135,11 +140,24 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
 
   const verifyData = async () => {
     let verified = initialSetup.data.every((d) => d.volume !== '' && d.fuelType !== '');
-    if (verified) {
+    const { address, companyAddress, companyName, name } = stationInfo;
+    let stationInfoVerified = address !== '' && companyAddress !== '' && companyName !== '' && name !== '';
+
+    setInitialSetup({ ...initialSetup, done: true });
+
+    if (verified && stationInfoVerified) {
       try {
         await save('initialSetup', initialSetup);
+        await save('stationInfo', stationInfo);
+
         navigation.navigate('Home');
-      } catch (error) {}
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error saving data',
+          text2: 'Error saving preset data'
+        });
+      }
     } else {
       Toast.show({
         type: 'error',
@@ -157,24 +175,61 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
         <View style={styles.dischargeBox}>
           <View style={styles.titleBox}>
             <View>
-              <Text style={styles.titleBoxText}>One time setup</Text>
+              <Text style={styles.titleBoxText}>Tank Preset</Text>
+              <View style={{ marginTop: 2 }}>
+                <TextInput
+                  keyboardType="default"
+                  editable={editable}
+                  style={{
+                    fontFamily: typography.primary.semibold,
+                    fontSize: 17,
+                    color: editable ? 'gray' : 'black'
+                  }}
+                  value={stationInfo?.name}
+                  onChangeText={(name) => setStationInfo({ ...stationInfo, name: name })}
+                />
 
-              <Text style={{ fontFamily: typography.primary.semibold, fontSize: 25 }}>
-                {DUMMY_DATA.stations[0].name}
-              </Text>
+                <TextInput
+                  keyboardType="default"
+                  editable={editable}
+                  style={{
+                    fontFamily: typography.primary.light,
+                    fontSize: 14,
+                    color: editable ? 'gray' : 'black'
+                  }}
+                  value={stationInfo?.address}
+                  onChangeText={(address) => setStationInfo({ ...stationInfo, address: address })}
+                />
 
-              <Text style={{ fontFamily: typography.primary.light, fontSize: 14 }}>
-                {DUMMY_DATA.stations[0].address}
-              </Text>
+                <View>
+                  <TextInput
+                    keyboardType="default"
+                    editable={editable}
+                    style={{
+                      fontFamily: typography.primary.semibold,
+                      fontSize: 16,
+                      color: editable ? 'gray' : 'black'
+                    }}
+                    value={stationInfo.companyName}
+                    onChangeText={(companyName) => setStationInfo({ ...stationInfo, companyName: companyName })}
+                  />
 
-              <View style={{ marginTop: 10 }}>
-                <Text style={{ fontFamily: typography.primary.semibold, fontSize: 17 }}>
-                  {DUMMY_DATA.stations[0].companyName}
-                </Text>
-                <Text style={{ fontFamily: typography.primary.light, fontSize: 14 }}>
-                  {DUMMY_DATA.stations[0].companyAddress}
-                </Text>
+                  <TextInput
+                    keyboardType="default"
+                    editable={editable}
+                    style={{
+                      fontFamily: typography.primary.light,
+                      fontSize: 14,
+                      color: editable ? 'gray' : 'black'
+                    }}
+                    value={stationInfo.companyAddress}
+                    onChangeText={(companyAddress) =>
+                      setStationInfo({ ...stationInfo, companyAddress: companyAddress })
+                    }
+                  />
+                </View>
               </View>
+
               <Text style={{ marginTop: 10, fontFamily: typography.primary.normal, fontSize: 12 }}>
                 Date: {new Date().toDateString()}
               </Text>

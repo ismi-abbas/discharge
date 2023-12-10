@@ -6,17 +6,7 @@ import TankInfo from './screens/TankInfo';
 import CompartmentTankVerify from './screens/CompartmentTankVerify';
 import DischargeReport from './screens/DischargeReport';
 import OneTimeSetup from './screens/OneTimeSetup';
-
-type AppStackParamList = {
-  OneTimeSetup: undefined;
-  Home: undefined;
-  CompartmentInfo: undefined;
-  TankInfo: undefined;
-  CompartmentTankVerify: undefined;
-  DischargeReport: undefined;
-};
-
-export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStackScreenProps<AppStackParamList, T>;
+import { AppStackParamList } from './utils/types';
 
 const Stack = createStackNavigator<AppStackParamList>();
 
