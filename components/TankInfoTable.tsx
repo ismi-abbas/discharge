@@ -1,11 +1,11 @@
-import { View, Text, StyleSheet } from "react-native";
-import React, { useState } from "react";
-import { typography } from "../theme/typography";
-import { ScrollView, TextInput } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
-import { Dropdown } from "react-native-element-dropdown";
-import { petrolType } from "../utils/constant";
-import { DropdownList } from "./CompartmentVSTankTable";
+import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { typography } from '../theme/typography';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
+import { Dropdown } from 'react-native-element-dropdown';
+import { petrolType } from '../utils/constant';
+import { DropdownList } from './CompartmentVSTankTable';
 
 export type TankData = {
   id: number;
@@ -22,41 +22,27 @@ type Props = {
   handleCompartmentSelect: Function;
 };
 
-const TankInfoTable = ({
-  tableData,
-  setTableData,
-  editable,
-  handleCompartmentSelect
-}: Props) => {
+const TankInfoTable = ({ tableData, setTableData, editable, handleCompartmentSelect }: Props) => {
   const [tankTableData, setTanktData] = useState(tableData!);
   const [dropdownList, setDropDownList] = useState<DropdownList[]>(petrolType);
 
   const handleTypeChange = (id: number, value: string) => {
-    const updateTankData = tankTableData.map((tank) =>
-      tank.id === id ? { ...tank, fuelType: value } : tank
-    );
+    const updateTankData = tankTableData.map((tank) => (tank.id === id ? { ...tank, fuelType: value } : tank));
 
     setTanktData(updateTankData);
     setTableData(updateTankData);
   };
 
   const handleVolumeChange = (id: number, value: string) => {
-    const updatedTankData = tankTableData.map((tank) =>
-      tank.id === id ? { ...tank, volume: value } : tank
-    );
+    const updatedTankData = tankTableData.map((tank) => (tank.id === id ? { ...tank, volume: value } : tank));
 
-    const tankWithUpdatedVolume = updatedTankData.find(
-      (tank) => tank.id === id
-    )!;
-    if (
-      parseInt(tankWithUpdatedVolume.volume) >
-      parseInt(tankWithUpdatedVolume.maxVolume)
-    ) {
+    const tankWithUpdatedVolume = updatedTankData.find((tank) => tank.id === id)!;
+    if (parseInt(tankWithUpdatedVolume.volume) > parseInt(tankWithUpdatedVolume.maxVolume)) {
       Toast.show({
-        type: "error",
-        text1: "Max volume exceeded",
+        type: 'error',
+        text1: 'Max volume exceeded',
         text2: `Volume exceeds max volume for tank ${tankWithUpdatedVolume.tankId}. Max ${tankWithUpdatedVolume.maxVolume}`,
-        position: "bottom",
+        position: 'bottom',
         visibilityTime: 3000
       });
     }
@@ -80,7 +66,7 @@ const TankInfoTable = ({
               disable={!editable}
               style={{
                 ...styles.dropdown,
-                backgroundColor: editable ? "yellow" : "white"
+                backgroundColor: editable ? 'yellow' : 'white'
               }}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
@@ -95,16 +81,13 @@ const TankInfoTable = ({
             <View
               style={{
                 ...styles.box,
-                backgroundColor:
-                  parseInt(column.volume) > parseInt(column.maxVolume)
-                    ? "red"
-                    : "green"
+                backgroundColor: parseInt(column.volume) > parseInt(column.maxVolume) ? 'red' : 'green'
               }}
             >
               <TextInput
                 keyboardType="number-pad"
                 editable={editable}
-                style={{ ...styles.input, color: "white" }}
+                style={{ ...styles.input, color: 'white' }}
                 value={column.volume}
                 onChangeText={(volume) => handleVolumeChange(column.id, volume)}
               />
@@ -120,36 +103,36 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
     borderWidth: 0.5,
-    borderColor: "black",
-    display: "flex",
-    flexDirection: "column"
+    borderColor: 'black',
+    display: 'flex',
+    flexDirection: 'column'
   },
   box: {
-    justifyContent: "center",
+    justifyContent: 'center',
     width: 70,
     borderWidth: 0.5,
     height: 40,
-    backgroundColor: "#fff"
+    backgroundColor: '#fff'
   },
   input: {
     fontSize: 14,
     fontFamily: typography.primary.medium,
-    textAlign: "center",
-    color: "black"
+    textAlign: 'center',
+    color: 'black'
   },
   header: {
     fontSize: 14,
     fontFamily: typography.primary.semibold,
-    textAlign: "center",
-    color: "black"
+    textAlign: 'center',
+    color: 'black'
   },
   dropdown: {
     height: 40,
     borderWidth: 0.5,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   placeholderStyle: {
     fontSize: 12,
@@ -160,7 +143,7 @@ const styles = StyleSheet.create({
     fontFamily: typography.primary.bold
   },
   iconStyle: {
-    display: "none"
+    display: 'none'
   }
 });
 

@@ -1,22 +1,14 @@
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  SectionList,
-  StyleSheet,
-  ScrollView,
-  Pressable
-} from "react-native";
-import FeatherIcons from "@expo/vector-icons/Feather";
-import DUMMYDATA from "../dummyData.json";
-import { typography } from "../theme/typography";
-import { AppStackScreenProps } from "../MainNavigator";
-import { MainLayout } from "../components/MainLayout";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
-import { FuelData } from "../types";
-import { MergeData } from "../components/CompartmentVSTankTable";
-import { useRoute } from "@react-navigation/native";
+import { View, TouchableOpacity, Text, SectionList, StyleSheet, ScrollView, Pressable } from 'react-native';
+import FeatherIcons from '@expo/vector-icons/Feather';
+import DUMMYDATA from '../dummyData.json';
+import { typography } from '../theme/typography';
+import { AppStackScreenProps } from '../MainNavigator';
+import { MainLayout } from '../components/MainLayout';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
+import { FuelData } from '../types';
+import { MergeData } from '../components/CompartmentVSTankTable';
+import { useRoute } from '@react-navigation/native';
 
 export type ReportData = {
   date: Date;
@@ -30,16 +22,16 @@ export interface ResultItem {
   status: string;
 }
 
-export const Home = ({ navigation }: AppStackScreenProps<"Home">) => {
+export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
   const [dummyData, setDummyData] = useState<FuelData>(DUMMYDATA);
   const [reportData, setReportData] = useState<ReportData[]>();
   const [listData, setListData] = useState<ResultItem[]>();
 
   const fetchReportData = async () => {
     try {
-      const data = await AsyncStorage.getItem("reportData");
+      const data = await AsyncStorage.getItem('reportData');
       if (data) {
-        setReportData(JSON.parse(data || ""));
+        setReportData(JSON.parse(data || ''));
       }
     } catch (err) {
       console.log(err);
@@ -59,8 +51,7 @@ export const Home = ({ navigation }: AppStackScreenProps<"Home">) => {
         const { totalTankVolume, totalCompartmentVolume } = array.report.reduce(
           (accumulator, tank) => {
             accumulator.totalTankVolume += parseInt(tank.tankVolume) || 0;
-            accumulator.totalCompartmentVolume +=
-              parseInt(tank.compartmentVolume) || 0;
+            accumulator.totalCompartmentVolume += parseInt(tank.compartmentVolume) || 0;
             return accumulator;
           },
           { totalTankVolume: 0, totalCompartmentVolume: 0 }
@@ -70,7 +61,7 @@ export const Home = ({ navigation }: AppStackScreenProps<"Home">) => {
           date,
           totalTankVolume,
           totalCompartmentVolume,
-          status: "normal"
+          status: 'normal'
         });
 
         console.log(result);
@@ -86,19 +77,19 @@ export const Home = ({ navigation }: AppStackScreenProps<"Home">) => {
 
   const loadDummyData = async () => {
     try {
-      const data = await AsyncStorage.getItem("dummyData");
+      const data = await AsyncStorage.getItem('dummyData');
       if (data) {
         setDummyData(JSON.parse(data!));
       }
     } catch (err) {
-      console.log("===============> error here", err);
+      console.log('===============> error here', err);
     }
   };
 
   return (
     <MainLayout>
       <TouchableOpacity
-        onPress={() => navigation.navigate("CompartmentInfo")}
+        onPress={() => navigation.navigate('CompartmentInfo')}
         style={styles.newItemBox}
       >
         <View>
@@ -128,9 +119,9 @@ export const Home = ({ navigation }: AppStackScreenProps<"Home">) => {
         </View>
         <View
           style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center"
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center'
           }}
         >
           <Text
@@ -156,11 +147,7 @@ export const Home = ({ navigation }: AppStackScreenProps<"Home">) => {
             <View
               style={{
                 ...styles.statusIcon,
-                backgroundColor: `${
-                  item.status === "normal"
-                    ? "rgba(0, 186, 78, 1)"
-                    : "rgba(255, 216, 45, 1)"
-                }`
+                backgroundColor: `${item.status === 'normal' ? 'rgba(0, 186, 78, 1)' : 'rgba(255, 216, 45, 1)'}`
               }}
             >
               <FeatherIcons
@@ -170,18 +157,12 @@ export const Home = ({ navigation }: AppStackScreenProps<"Home">) => {
               />
             </View>
             <View>
-              <Text style={styles.textSemiBold}>
-                {item.date.toString().split("T")[0]}
-              </Text>
+              <Text style={styles.textSemiBold}>{item.date.toString().split('T')[0]}</Text>
               <Text>{item.totalTankVolume}L</Text>
             </View>
             <View>
-              <Text style={styles.textSemiBold}>
-                {item.totalCompartmentVolume}L
-              </Text>
-              <Text style={styles.amountIndicatorText}>
-                +{item.totalCompartmentVolume + item.totalTankVolume}L
-              </Text>
+              <Text style={styles.textSemiBold}>{item.totalCompartmentVolume}L</Text>
+              <Text style={styles.amountIndicatorText}>+{item.totalCompartmentVolume + item.totalTankVolume}L</Text>
             </View>
           </View>
         )}
@@ -192,28 +173,28 @@ export const Home = ({ navigation }: AppStackScreenProps<"Home">) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EAECEC",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    backgroundColor: '#EAECEC',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
     paddingTop: 30
   },
   text: {
     fontFamily: typography.primary.normal
   },
   image: {
-    display: "flex",
+    display: 'flex',
     width: 50,
     height: 50,
-    backgroundColor: "#0553",
+    backgroundColor: '#0553',
     borderRadius: 50
   },
   bar: {
-    display: "flex",
-    backgroundColor: "#fff",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
+    display: 'flex',
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
     paddingHorizontal: 20,
     height: 90
   },
@@ -222,12 +203,12 @@ const styles = StyleSheet.create({
     fontSize: 25
   },
   newItemBox: {
-    width: "90%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    width: '90%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginVertical: 20,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 10,
     height: 200
   },
@@ -236,20 +217,20 @@ const styles = StyleSheet.create({
     fontSize: 25
   },
   dischargeRecordBox: {
-    width: "90%"
+    width: '90%'
   },
   dischargeBoxItem: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 10,
     paddingHorizontal: 20,
     paddingVertical: 20,
     marginBottom: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   statusIcon: {
-    backgroundColor: "rgba(255, 216, 45, 1);",
+    backgroundColor: 'rgba(255, 216, 45, 1);',
     borderRadius: 50,
     paddingHorizontal: 10,
     paddingVertical: 10
@@ -258,22 +239,22 @@ const styles = StyleSheet.create({
     fontFamily: typography.primary.semibold
   },
   amountIndicatorText: {
-    color: "rgb(0, 186, 78)"
+    color: 'rgb(0, 186, 78)'
   },
   sectionListBox: {
-    width: "90%"
+    width: '90%'
   },
   sortingTab: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingVertical: 15,
     paddingHorizontal: 10,
-    width: "90%"
+    width: '90%'
   },
   sortingTabItem: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 });

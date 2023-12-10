@@ -1,4 +1,4 @@
-import { Platform } from "react-native";
+import { Platform } from 'react-native';
 import {
   Inter_900Black as InterBlack,
   Inter_100Thin as InterThin,
@@ -9,7 +9,7 @@ import {
   Inter_600SemiBold as InterSemiBold,
   Inter_700Bold as InterBold,
   Inter_800ExtraBold as InterExtraBold
-} from "@expo-google-fonts/inter";
+} from '@expo-google-fonts/inter';
 
 export const customFontsToLoad = {
   InterBlack,
@@ -25,33 +25,33 @@ export const customFontsToLoad = {
 
 const fonts = {
   Inter: {
-    black: "InterBlack",
-    thin: "InterThin",
-    extraLight: "InterExtraLight",
-    light: "InterLight",
-    normal: "InterRegular",
-    medium: "InterMedium",
-    semibold: "InterSemiBold",
-    bold: "InterBold",
-    extraBold: "InterExtraBold"
+    black: 'InterBlack',
+    thin: 'InterThin',
+    extraLight: 'InterExtraLight',
+    light: 'InterLight',
+    normal: 'InterRegular',
+    medium: 'InterMedium',
+    semibold: 'InterSemiBold',
+    bold: 'InterBold',
+    extraBold: 'InterExtraBold'
   },
   helveticaNeue: {
-    thin: "HelveticaNeue-Thin",
-    light: "HelveticaNeue-Light",
-    normal: "Helvetica Neue",
-    medium: "HelveticaNeue-Medium"
+    thin: 'HelveticaNeue-Thin',
+    light: 'HelveticaNeue-Light',
+    normal: 'Helvetica Neue',
+    medium: 'HelveticaNeue-Medium'
   },
   courier: {
-    normal: "Courier"
+    normal: 'Courier'
   },
   sansSerif: {
-    thin: "sans-serif-thin",
-    light: "sans-serif-light",
-    normal: "sans-serif",
-    medium: "sans-serif-medium"
+    thin: 'sans-serif-thin',
+    light: 'sans-serif-light',
+    normal: 'sans-serif',
+    medium: 'sans-serif-medium'
   },
   monospace: {
-    normal: "monospace"
+    normal: 'monospace'
   }
 };
 

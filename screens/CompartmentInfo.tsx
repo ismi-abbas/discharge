@@ -1,26 +1,20 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import { AppStackScreenProps } from "../MainNavigator";
-import { MainLayout } from "../components/MainLayout";
-import FeatherIcons from "@expo/vector-icons/Feather";
-import { typography } from "../theme/typography";
-import DUMMY_DATA from "../dummyData.json";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { compartmentData } from "../utils/constant";
-import CompartmentInfoTable, {
-  CompartmentData
-} from "../components/CompartmentInfoTable";
-import Toast from "react-native-toast-message";
-import { DropdownList } from "../components/CompartmentVSTankTable";
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { AppStackScreenProps } from '../MainNavigator';
+import { MainLayout } from '../components/MainLayout';
+import FeatherIcons from '@expo/vector-icons/Feather';
+import { typography } from '../theme/typography';
+import DUMMY_DATA from '../dummyData.json';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { compartmentData } from '../utils/constant';
+import CompartmentInfoTable, { CompartmentData } from '../components/CompartmentInfoTable';
+import Toast from 'react-native-toast-message';
+import { DropdownList } from '../components/CompartmentVSTankTable';
 
-const CompartmentInfo = ({
-  navigation
-}: AppStackScreenProps<"CompartmentInfo">) => {
+const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>) => {
   const [editable, setEditable] = useState(false);
   const [isSaved, setSaved] = useState(false);
-  const [tableData, setTableData] = useState<CompartmentData[] | undefined>(
-    compartmentData
-  );
+  const [tableData, setTableData] = useState<CompartmentData[] | undefined>(compartmentData);
 
   useEffect(() => {
     getGridData();
@@ -28,9 +22,9 @@ const CompartmentInfo = ({
 
   const getGridData = async () => {
     try {
-      const data = await AsyncStorage.getItem("compartmentData");
+      const data = await AsyncStorage.getItem('compartmentData');
       if (data) {
-        setTableData(JSON.parse(data || ""));
+        setTableData(JSON.parse(data || ''));
       }
     } catch (error) {
       console.log(error);
@@ -39,13 +33,13 @@ const CompartmentInfo = ({
 
   const saveData = async () => {
     try {
-      await AsyncStorage.setItem("compartmentData", JSON.stringify(tableData));
+      await AsyncStorage.setItem('compartmentData', JSON.stringify(tableData));
       setSaved(true);
       Toast.show({
-        type: "success",
-        text1: "Data Saved",
-        text2: "Tank details has been saved 👍🏻",
-        position: "bottom",
+        type: 'success',
+        text1: 'Data Saved',
+        text2: 'Tank details has been saved 👍🏻',
+        position: 'bottom',
         visibilityTime: 2000
       });
       console.log(tableData);
@@ -53,18 +47,18 @@ const CompartmentInfo = ({
   };
 
   const handleCompartment = (action: string) => {
-    if (action === "add") {
+    if (action === 'add') {
       const id = (tableData?.length || 0) + 1;
 
       const newCompartment: CompartmentData = {
-        compartmentId: "C" + id.toString(),
-        fuelType: "",
+        compartmentId: 'C' + id.toString(),
+        fuelType: '',
         id: (tableData?.length || 0) + 1,
-        volume: ""
+        volume: ''
       };
       const updatedTableData = [...(tableData || []), newCompartment];
       setTableData(updatedTableData);
-    } else if (action === "remove") {
+    } else if (action === 'remove') {
       if (tableData && tableData.length > 0) {
         const updatedTableData = tableData.slice(0, -1);
         setTableData(updatedTableData);
@@ -73,37 +67,31 @@ const CompartmentInfo = ({
   };
 
   const verifyAll = () => {
-    const verified = tableData?.every(
-      (data) => data.fuelType !== "" && data.volume !== ""
-    );
+    const verified = tableData?.every((data) => data.fuelType !== '' && data.volume !== '');
 
     if (verified) {
       Toast.show({
-        type: "success",
-        text1: "Data Verified",
-        text2: "Tank details has been saved 👍🏻",
-        position: "bottom",
+        type: 'success',
+        text1: 'Data Verified',
+        text2: 'Tank details has been saved 👍🏻',
+        position: 'bottom',
         visibilityTime: 2000
       });
       setTimeout(() => {
-        navigation.navigate("TankInfo");
+        navigation.navigate('TankInfo');
       }, 1500);
     } else {
       Toast.show({
-        type: "error",
-        text1: "Data Error",
-        text2: "Please fill up all columns",
-        position: "bottom",
+        type: 'error',
+        text1: 'Data Error',
+        text2: 'Please fill up all columns',
+        position: 'bottom',
         visibilityTime: 2000
       });
     }
   };
 
-  const handleFuelTypeChange = (
-    rowIndex: number,
-    col: string,
-    value: string
-  ) => {
+  const handleFuelTypeChange = (rowIndex: number, col: string, value: string) => {
     const updatedData = tableData?.map((row, index) => {
       if (index === rowIndex) {
         return {
@@ -125,13 +113,8 @@ const CompartmentInfo = ({
     setTableData(updatedData);
   };
 
-  const handleCompartmentSelect = (
-    item: DropdownList,
-    compartmentId: string
-  ) => {
-    const compartment = tableData?.find(
-      (data) => data.compartmentId === compartmentId
-    );
+  const handleCompartmentSelect = (item: DropdownList, compartmentId: string) => {
+    const compartment = tableData?.find((data) => data.compartmentId === compartmentId);
     if (!compartment) {
       return;
     }
@@ -204,12 +187,12 @@ const CompartmentInfo = ({
           </View>
 
           <Pressable
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.navigate('Home')}
             style={{
-              backgroundColor: "rgba(215, 215, 215, 0.8)",
+              backgroundColor: 'rgba(215, 215, 215, 0.8)',
               padding: 2,
               borderRadius: 5,
-              position: "absolute",
+              position: 'absolute',
               top: 0,
               right: 0
             }}
@@ -225,15 +208,15 @@ const CompartmentInfo = ({
       <View
         style={{
           marginTop: 10,
-          width: "90%"
+          width: '90%'
         }}
       >
         <Text
           style={{
             fontFamily: typography.primary.bold,
-            width: "90%",
+            width: '90%',
             fontSize: 15,
-            textTransform: "capitalize"
+            textTransform: 'capitalize'
           }}
         >
           Please key in truck delivery details compartment(C)
@@ -252,39 +235,39 @@ const CompartmentInfo = ({
       {/* Button */}
       <View
         style={{
-          display: "flex",
+          display: 'flex',
           marginTop: 20,
-          alignItems: "flex-start",
-          width: "85%"
+          alignItems: 'flex-start',
+          width: '85%'
         }}
       >
-        <View style={{ display: "flex", flexDirection: "row", gap: 4 }}>
+        <View style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
           <Pressable
             disabled={editable}
-            onPress={() => handleCompartment("add")}
+            onPress={() => handleCompartment('add')}
             style={{
               ...styles.compartmentButton,
-              backgroundColor: !editable ? "rgba(4, 113, 232, 1)" : "gray"
+              backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
             }}
           >
-            <Text style={{ ...styles.buttonText, color: "white" }}>Add</Text>
+            <Text style={{ ...styles.buttonText, color: 'white' }}>Add</Text>
           </Pressable>
           <Pressable
             disabled={editable}
-            onPress={() => handleCompartment("remove")}
+            onPress={() => handleCompartment('remove')}
             style={{
               ...styles.compartmentButton,
-              backgroundColor: !editable ? "rgba(4, 113, 232, 1)" : "gray"
+              backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
             }}
           >
-            <Text style={{ ...styles.buttonText, color: "white" }}>Remove</Text>
+            <Text style={{ ...styles.buttonText, color: 'white' }}>Remove</Text>
           </Pressable>
         </View>
 
         <View
           style={{
-            display: "flex",
-            flexDirection: "row",
+            display: 'flex',
+            flexDirection: 'row',
             gap: 10,
             marginTop: 4
           }}
@@ -296,10 +279,10 @@ const CompartmentInfo = ({
             }}
             style={{
               ...styles.button,
-              backgroundColor: !editable ? "rgba(4, 113, 232, 1)" : "gray"
+              backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
             }}
           >
-            <Text style={{ ...styles.buttonText, color: "white" }}>Edit</Text>
+            <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
           </Pressable>
 
           {isSaved ? (
@@ -307,7 +290,7 @@ const CompartmentInfo = ({
               onPress={verifyAll}
               style={{
                 ...styles.button,
-                backgroundColor: "rgba(215, 215, 215, 0.8)"
+                backgroundColor: 'rgba(215, 215, 215, 0.8)'
               }}
             >
               <Text style={styles.buttonText}>Verify</Text>
@@ -317,7 +300,7 @@ const CompartmentInfo = ({
               onPress={saveData}
               style={{
                 ...styles.button,
-                backgroundColor: "rgba(215, 215, 215, 0.8)"
+                backgroundColor: 'rgba(215, 215, 215, 0.8)'
               }}
             >
               <Text style={styles.buttonText}>Save</Text>
@@ -334,46 +317,46 @@ export default CompartmentInfo;
 const styles = StyleSheet.create({
   dischargeBox: {
     padding: 20,
-    display: "flex",
+    display: 'flex',
     marginTop: 20,
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     height: 220,
-    width: "90%"
+    width: '90%'
   },
   titleBox: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   titleBoxText: {
     fontSize: 20,
     fontFamily: typography.primary.semibold
   },
   row: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-evenly"
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-evenly'
   },
   box: {
     fontFamily: typography.primary.semibold,
     flex: 1,
-    width: "auto",
+    width: 'auto',
     height: 40,
-    backgroundColor: "rgba(64, 175, 247, 0.69)",
+    backgroundColor: 'rgba(64, 175, 247, 0.69)',
     borderWidth: 0.5,
-    textAlign: "center"
+    textAlign: 'center'
   },
   button: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 5,
     paddingHorizontal: 20,
     borderRadius: 4
   },
   compartmentButton: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 5,
     paddingHorizontal: 5,
     borderRadius: 4

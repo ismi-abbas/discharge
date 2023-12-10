@@ -1,27 +1,18 @@
-import { View, Text, Pressable, TextInput, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
-import { MainLayout } from "../components/MainLayout";
-import { AppStackScreenProps } from "../MainNavigator";
-import { typography } from "../theme/typography";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast from "react-native-toast-message";
-import {
-  compartmentData,
-  compartmentToTank,
-  tankData
-} from "../utils/constant";
-import FeatherIcons from "@expo/vector-icons/Feather";
-import CompartmentVSTankTable, {
-  MergeData
-} from "../components/CompartmentVSTankTable";
-import { TankData } from "../components/TankInfoTable";
+import { View, Text, Pressable, TextInput, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { MainLayout } from '../components/MainLayout';
+import { AppStackScreenProps } from '../MainNavigator';
+import { typography } from '../theme/typography';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+import { compartmentData, compartmentToTank, tankData } from '../utils/constant';
+import FeatherIcons from '@expo/vector-icons/Feather';
+import CompartmentVSTankTable, { MergeData } from '../components/CompartmentVSTankTable';
+import { TankData } from '../components/TankInfoTable';
 
-const CompartmentTankVerify = ({
-  navigation
-}: AppStackScreenProps<"CompartmentTankVerify">) => {
+const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentTankVerify'>) => {
   const [tankTableData, setTankTableData] = useState<TankData[]>([]);
-  const [compartmentTableData, setCompartmentTableData] =
-    useState(compartmentData);
+  const [compartmentTableData, setCompartmentTableData] = useState(compartmentData);
   const [mergedData, setMergedData] = useState<MergeData[]>(compartmentToTank);
 
   const [editable, setEditable] = useState(false);
@@ -31,14 +22,10 @@ const CompartmentTankVerify = ({
     const fetchData = async () => {
       try {
         const keys = await AsyncStorage.getAllKeys();
-        const data = await AsyncStorage.multiGet([
-          "tankData",
-          "mergedData",
-          "compartmentData"
-        ]);
+        const data = await AsyncStorage.multiGet(['tankData', 'mergedData', 'compartmentData']);
 
         data.forEach(([key, value]) => {
-          if (key === "tankData") {
+          if (key === 'tankData') {
             let json: TankData[] = JSON.parse(value!);
             setTankTableData(json);
 
@@ -50,14 +37,14 @@ const CompartmentTankVerify = ({
                 id: tank.id,
                 tankFuelType: tank.fuelType,
                 tankVolume: tank.volume,
-                compartmentId: "",
-                mergedVolume: "",
-                compartmenFuelType: "",
-                compartmentVolume: ""
+                compartmentId: '',
+                mergedVolume: '',
+                compartmenFuelType: '',
+                compartmentVolume: ''
               });
             });
             setMergedData(tableD);
-          } else if (key === "compartmentData") {
+          } else if (key === 'compartmentData') {
             setCompartmentTableData(JSON.parse(value!));
           }
         });
@@ -69,10 +56,7 @@ const CompartmentTankVerify = ({
     fetchData();
   }, []);
 
-  const calculateTotal = (
-    compartmentVolume: string,
-    tankVolume: string
-  ): string => {
+  const calculateTotal = (compartmentVolume: string, tankVolume: string): string => {
     const compartment = parseInt(compartmentVolume) || 0;
     const tank = parseInt(tankVolume) || 0;
     return (compartment + tank).toString();
@@ -80,23 +64,17 @@ const CompartmentTankVerify = ({
 
   const saveData = async () => {
     try {
-      AsyncStorage.setItem("tankData", JSON.stringify(tankTableData));
-      AsyncStorage.setItem(
-        "compartmentData",
-        JSON.stringify(compartmentTableData)
-      );
-      AsyncStorage.setItem("mergedData", JSON.stringify(mergedData));
+      AsyncStorage.setItem('tankData', JSON.stringify(tankTableData));
+      AsyncStorage.setItem('compartmentData', JSON.stringify(compartmentTableData));
+      AsyncStorage.setItem('mergedData', JSON.stringify(mergedData));
       mergedData.map((item) => {
-        item.mergedVolume = calculateTotal(
-          item.tankVolume,
-          item.compartmentVolume
-        );
+        item.mergedVolume = calculateTotal(item.tankVolume, item.compartmentVolume);
       });
       Toast.show({
-        type: "success",
-        text1: "Data Saved",
-        text2: "Tank details has been saved 👍🏻",
-        position: "bottom",
+        type: 'success',
+        text1: 'Data Saved',
+        text2: 'Tank details has been saved 👍🏻',
+        position: 'bottom',
         visibilityTime: 2000
       });
       console.log(mergedData);
@@ -104,28 +82,26 @@ const CompartmentTankVerify = ({
   };
 
   const verifyAll = () => {
-    const verified = mergedData.every(
-      (x) => x.tankId !== "" && x.mergedVolume !== ""
-    );
+    const verified = mergedData.every((x) => x.tankId !== '' && x.mergedVolume !== '');
 
     if (verified) {
       setIsVerified(true);
       Toast.show({
-        type: "success",
-        text1: "Data Verified",
-        text2: "All data has been verified",
-        position: "bottom",
+        type: 'success',
+        text1: 'Data Verified',
+        text2: 'All data has been verified',
+        position: 'bottom',
         visibilityTime: 2000
       });
       setTimeout(() => {
-        navigation.navigate("DischargeReport");
+        navigation.navigate('DischargeReport');
       }, 2000);
     } else {
       Toast.show({
-        type: "error",
-        text1: "Invalid data",
-        text2: "Please fill in all the columns",
-        position: "bottom",
+        type: 'error',
+        text1: 'Invalid data',
+        text2: 'Please fill in all the columns',
+        position: 'bottom',
         visibilityTime: 2000
       });
       setIsVerified(false);
@@ -137,12 +113,12 @@ const CompartmentTankVerify = ({
       <View style={styles.dischargeBox}>
         <View style={styles.titleBox}>
           <Pressable
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.navigate('Home')}
             style={{
-              backgroundColor: "rgba(215, 215, 215, 0.8)",
+              backgroundColor: 'rgba(215, 215, 215, 0.8)',
               padding: 2,
               borderRadius: 5,
-              position: "absolute",
+              position: 'absolute',
               top: 0,
               right: 0
             }}
@@ -187,16 +163,16 @@ const CompartmentTankVerify = ({
         </View>
         <View
           style={{
-            display: "flex",
+            display: 'flex',
             marginTop: 20,
-            alignItems: "flex-start",
-            width: "95%"
+            alignItems: 'flex-start',
+            width: '95%'
           }}
         >
           <View
             style={{
-              display: "flex",
-              flexDirection: "row",
+              display: 'flex',
+              flexDirection: 'row',
               gap: 10,
               marginTop: 4
             }}
@@ -207,10 +183,10 @@ const CompartmentTankVerify = ({
               }}
               style={{
                 ...styles.button,
-                backgroundColor: !editable ? "rgba(4, 113, 232, 1)" : "gray"
+                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
               }}
             >
-              <Text style={{ ...styles.text, color: "white" }}>Edit</Text>
+              <Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
             </Pressable>
           </View>
         </View>
@@ -219,11 +195,11 @@ const CompartmentTankVerify = ({
       <View
         style={{
           marginTop: 10,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          width: "95%",
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          width: '95%',
           gap: 10,
           paddingLeft: 20
         }}
@@ -231,15 +207,15 @@ const CompartmentTankVerify = ({
         <Pressable
           aria-disabled={isVerified}
           onPress={saveData}
-          style={{ ...styles.button, backgroundColor: "rgba(4, 113, 232, 1)" }}
+          style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}
         >
-          <Text style={{ ...styles.text, color: "white" }}>Save</Text>
+          <Text style={{ ...styles.text, color: 'white' }}>Save</Text>
         </Pressable>
         <Pressable
           onPress={verifyAll}
           style={{
             ...styles.button,
-            backgroundColor: "rgba(215, 215, 215, 0.8)"
+            backgroundColor: 'rgba(215, 215, 215, 0.8)'
           }}
         >
           <Text style={styles.text}>Verify</Text>
@@ -252,39 +228,39 @@ const CompartmentTankVerify = ({
 const styles = StyleSheet.create({
   dischargeBox: {
     padding: 20,
-    display: "flex",
+    display: 'flex',
     marginTop: 20,
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     height: 550,
-    width: "95%"
+    width: '95%'
   },
   titleBox: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   titleBoxText: {
     fontSize: 20,
     fontFamily: typography.primary.semibold
   },
   row: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-evenly"
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-evenly'
   },
   box: {
     // fontFamily: typography.primary.semibold,
     flex: 1,
-    width: "auto",
+    width: 'auto',
     height: 40,
     // backgroundColor: 'rgba(3, 244, 28, 1)',
     borderWidth: 0.5,
-    textAlign: "center"
+    textAlign: 'center'
   },
   button: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 5,
     paddingHorizontal: 22,
     borderRadius: 4

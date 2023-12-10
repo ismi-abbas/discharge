@@ -1,16 +1,16 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
-import { AppStackScreenProps } from "../MainNavigator";
-import { MainLayout } from "../components/MainLayout";
-import { typography } from "../theme/typography";
-import FeatherIcons from "@expo/vector-icons/Feather";
-import { tankData } from "../utils/constant";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast from "react-native-toast-message";
-import TankInfoTable, { TankData } from "../components/TankInfoTable";
-import { DropdownList } from "../components/CompartmentVSTankTable";
+import { View, Text, Pressable, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { AppStackScreenProps } from '../MainNavigator';
+import { MainLayout } from '../components/MainLayout';
+import { typography } from '../theme/typography';
+import FeatherIcons from '@expo/vector-icons/Feather';
+import { tankData } from '../utils/constant';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+import TankInfoTable, { TankData } from '../components/TankInfoTable';
+import { DropdownList } from '../components/CompartmentVSTankTable';
 
-const TankInfo = ({ navigation }: AppStackScreenProps<"TankInfo">) => {
+const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
   const [tableData, setTableData] = useState<TankData[]>(tankData);
   const [editable, setEditable] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
@@ -21,58 +21,56 @@ const TankInfo = ({ navigation }: AppStackScreenProps<"TankInfo">) => {
 
   const getTableData = async () => {
     try {
-      const tankData = await AsyncStorage.getItem("tankData");
+      const tankData = await AsyncStorage.getItem('tankData');
       if (tankData) {
-        setTableData(JSON.parse(tankData || ""));
+        setTableData(JSON.parse(tankData || ''));
       }
     } catch (error) {}
   };
 
   const saveData = async () => {
     try {
-      AsyncStorage.setItem("tankData", JSON.stringify(tableData));
+      AsyncStorage.setItem('tankData', JSON.stringify(tableData));
       Toast.show({
-        type: "success",
-        text1: "Data Saved",
-        text2: "Tank details has been saved 👍🏻",
-        position: "bottom",
+        type: 'success',
+        text1: 'Data Saved',
+        text2: 'Tank details has been saved 👍🏻',
+        position: 'bottom',
         visibilityTime: 2000
       });
       console.log(tableData);
     } catch (error) {
       Toast.show({
-        type: "error",
-        text1: "Error saving data",
-        text2: "Please try again",
-        position: "bottom",
+        type: 'error',
+        text1: 'Error saving data',
+        text2: 'Please try again',
+        position: 'bottom',
         visibilityTime: 2000
       });
     }
   };
 
   const verifyAll = () => {
-    const verified = tankData.every(
-      (tank) => tank.volume !== "" && tank.fuelType !== ""
-    );
+    const verified = tankData.every((tank) => tank.volume !== '' && tank.fuelType !== '');
 
     if (verified) {
       setIsVerified(true);
       Toast.show({
-        type: "success",
-        text1: "Data Verified",
-        text2: "All data has been verified",
-        position: "bottom",
+        type: 'success',
+        text1: 'Data Verified',
+        text2: 'All data has been verified',
+        position: 'bottom',
         visibilityTime: 2000
       });
       setTimeout(() => {
-        navigation.navigate("CompartmentTankVerify");
+        navigation.navigate('CompartmentTankVerify');
       }, 2000);
     } else {
       Toast.show({
-        type: "error",
-        text1: "Invalid data",
-        text2: "Please fill in all the columns",
-        position: "bottom",
+        type: 'error',
+        text1: 'Invalid data',
+        text2: 'Please fill in all the columns',
+        position: 'bottom',
         visibilityTime: 2000
       });
       setIsVerified(false);
@@ -101,12 +99,12 @@ const TankInfo = ({ navigation }: AppStackScreenProps<"TankInfo">) => {
         <View style={styles.titleBox}>
           <View>
             <Pressable
-              onPress={() => navigation.navigate("Home")}
+              onPress={() => navigation.navigate('Home')}
               style={{
-                backgroundColor: "rgba(215, 215, 215, 0.8)",
+                backgroundColor: 'rgba(215, 215, 215, 0.8)',
                 padding: 2,
                 borderRadius: 5,
-                position: "absolute",
+                position: 'absolute',
                 top: 0,
                 right: 0,
                 zIndex: 20
@@ -148,16 +146,16 @@ const TankInfo = ({ navigation }: AppStackScreenProps<"TankInfo">) => {
         </View>
         <View
           style={{
-            display: "flex",
+            display: 'flex',
             marginTop: 20,
-            alignItems: "flex-start",
-            width: "95%"
+            alignItems: 'flex-start',
+            width: '95%'
           }}
         >
           <View
             style={{
-              display: "flex",
-              flexDirection: "row",
+              display: 'flex',
+              flexDirection: 'row',
               gap: 10,
               marginTop: 4
             }}
@@ -166,10 +164,10 @@ const TankInfo = ({ navigation }: AppStackScreenProps<"TankInfo">) => {
               onPress={() => setEditable(!editable)}
               style={{
                 ...styles.button,
-                backgroundColor: !editable ? "rgba(4, 113, 232, 1)" : "gray"
+                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
               }}
             >
-              <Text style={{ ...styles.text, color: "white" }}>Edit</Text>
+              <Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
             </Pressable>
           </View>
         </View>
@@ -178,11 +176,11 @@ const TankInfo = ({ navigation }: AppStackScreenProps<"TankInfo">) => {
       <View
         style={{
           marginTop: 10,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          width: "95%",
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          width: '95%',
           gap: 10,
           paddingLeft: 20
         }}
@@ -190,15 +188,15 @@ const TankInfo = ({ navigation }: AppStackScreenProps<"TankInfo">) => {
         <Pressable
           aria-disabled={isVerified}
           onPress={saveData}
-          style={{ ...styles.button, backgroundColor: "rgba(4, 113, 232, 1)" }}
+          style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}
         >
-          <Text style={{ ...styles.text, color: "white" }}>Save</Text>
+          <Text style={{ ...styles.text, color: 'white' }}>Save</Text>
         </Pressable>
         <Pressable
           onPress={verifyAll}
           style={{
             ...styles.button,
-            backgroundColor: "rgba(215, 215, 215, 0.8)"
+            backgroundColor: 'rgba(215, 215, 215, 0.8)'
           }}
         >
           <Text style={styles.text}>Verify</Text>
@@ -211,39 +209,39 @@ const TankInfo = ({ navigation }: AppStackScreenProps<"TankInfo">) => {
 const styles = StyleSheet.create({
   dischargeBox: {
     padding: 20,
-    display: "flex",
+    display: 'flex',
     marginTop: 20,
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     height: 500,
-    width: "95%"
+    width: '95%'
   },
   titleBox: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   titleBoxText: {
     fontSize: 20,
     fontFamily: typography.primary.semibold
   },
   row: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-evenly"
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-evenly'
   },
   box: {
     fontFamily: typography.primary.semibold,
     flex: 1,
-    width: "auto",
+    width: 'auto',
     height: 40,
     // backgroundColor: 'rgba(3, 244, 28, 1)',
     borderWidth: 0.5,
-    textAlign: "center"
+    textAlign: 'center'
   },
   button: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 5,
     paddingHorizontal: 22,
     borderRadius: 4

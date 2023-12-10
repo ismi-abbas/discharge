@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { FC, ReactNode } from "react";
-import { Image } from "expo-image";
-import FeatherIcons from "@expo/vector-icons/Feather";
-import { typography } from "../theme/typography";
+import { StyleSheet, Text, View } from 'react-native';
+import React, { FC, ReactNode } from 'react';
+import { Image } from 'expo-image';
+import FeatherIcons from '@expo/vector-icons/Feather';
+import { typography } from '../theme/typography';
 
 type Props = {
   children: ReactNode;
@@ -37,25 +37,25 @@ export const MainLayout: FC<Props> = ({ children }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EAECEC",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    backgroundColor: '#EAECEC',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
     paddingTop: 30
   },
   image: {
-    display: "flex",
+    display: 'flex',
     width: 40,
     height: 40,
-    backgroundColor: "#0553",
+    backgroundColor: '#0553',
     borderRadius: 50
   },
   bar: {
-    display: "flex",
-    backgroundColor: "#fff",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
+    display: 'flex',
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
     paddingHorizontal: 20,
     height: 70
   },

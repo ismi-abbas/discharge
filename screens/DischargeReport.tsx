@@ -1,18 +1,16 @@
-import { View, Text, Pressable, StyleSheet, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
-import { MainLayout } from "../components/MainLayout";
-import { AppStackScreenProps } from "../MainNavigator";
-import { typography } from "../theme/typography";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast from "react-native-toast-message";
-import { compartmentToTank, tankData } from "../utils/constant";
-import FeatherIcons from "@expo/vector-icons/Feather";
-import { ReportData } from "./Home";
-import { useRoute } from "@react-navigation/native";
+import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { MainLayout } from '../components/MainLayout';
+import { AppStackScreenProps } from '../MainNavigator';
+import { typography } from '../theme/typography';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+import { compartmentToTank } from '../utils/constant';
+import FeatherIcons from '@expo/vector-icons/Feather';
+import { ReportData } from './Home';
+import { useRoute } from '@react-navigation/native';
 
-const DischargeReport = ({
-  navigation
-}: AppStackScreenProps<"DischargeReport">) => {
+const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>) => {
   const [finalReportData, setFinalReportData] = useState(compartmentToTank);
   const [reportListData, setReportListData] = useState<ReportData[]>();
 
@@ -22,22 +20,22 @@ const DischargeReport = ({
 
   const getAllData = async () => {
     try {
-      const data = await AsyncStorage.getItem("mergedData");
-      const reportListData = await AsyncStorage.getItem("reportData");
-      setFinalReportData(JSON.parse(data || ""));
-      setReportListData(JSON.parse(reportListData || ""));
+      const data = await AsyncStorage.getItem('mergedData');
+      const reportListData = await AsyncStorage.getItem('reportData');
+      setFinalReportData(JSON.parse(data || ''));
+      setReportListData(JSON.parse(reportListData || ''));
       console.log(data);
     } catch (error) {
       Toast.show({
-        type: "error",
-        text1: "Loading data failed",
-        text2: "Please try again"
+        type: 'error',
+        text1: 'Loading data failed',
+        text2: 'Please try again'
       });
     }
   };
 
   const verifyAll = async () => {
-    const currentId = "Report " + finalReportData?.length.toString();
+    const currentId = 'Report ' + finalReportData?.length.toString();
     const newReport = {
       id: currentId,
       date: new Date(),
@@ -47,19 +45,16 @@ const DischargeReport = ({
     const updatedReportList = [...(reportListData || []), newReport];
     setReportListData(updatedReportList);
     try {
-      await AsyncStorage.setItem(
-        "reportData",
-        JSON.stringify(updatedReportList)
-      );
+      await AsyncStorage.setItem('reportData', JSON.stringify(updatedReportList));
       Toast.show({
-        type: "success",
-        text1: "Data verified",
-        text2: "All data has been saved and verified successfully",
-        position: "bottom",
+        type: 'success',
+        text1: 'Data verified',
+        text2: 'All data has been saved and verified successfully',
+        position: 'bottom',
         visibilityTime: 2000
       });
       setTimeout(() => {
-        navigation.navigate("Home");
+        navigation.navigate('Home');
       }, 2000);
       console.log(updatedReportList);
     } catch (error) {
@@ -73,13 +68,13 @@ const DischargeReport = ({
         <View style={styles.titleBox}>
           <Pressable
             onPress={() => {
-              navigation.navigate("Home");
+              navigation.navigate('Home');
             }}
             style={{
-              backgroundColor: "rgba(215, 215, 215, 0.8)",
+              backgroundColor: 'rgba(215, 215, 215, 0.8)',
               padding: 2,
               borderRadius: 5,
-              position: "absolute",
+              position: 'absolute',
               top: 0,
               right: 0,
               zIndex: 10
@@ -120,9 +115,7 @@ const DischargeReport = ({
                     ...styles.box
                   }}
                 >
-                  <Text style={styles.columnText}>
-                    {column.tankVolume.concat("L")}
-                  </Text>
+                  <Text style={styles.columnText}>{column.tankVolume.concat('L')}</Text>
                 </View>
                 <View
                   style={{
@@ -130,16 +123,14 @@ const DischargeReport = ({
                     ...styles.box
                   }}
                 >
-                  <Text style={styles.columnText}>
-                    {column.mergedVolume.concat("L")}
-                  </Text>
+                  <Text style={styles.columnText}>{column.mergedVolume.concat('L')}</Text>
                 </View>
               </View>
             ))}
           </ScrollView>
           <View
             style={{
-              position: "absolute",
+              position: 'absolute',
               width: 293,
               height: 240,
               zIndex: -10,
@@ -152,9 +143,9 @@ const DischargeReport = ({
               style={{
                 fontSize: 14,
                 fontFamily: typography.primary.bold,
-                textAlign: "center",
-                color: "black",
-                top: "37%"
+                textAlign: 'center',
+                color: 'black',
+                top: '37%'
               }}
             >
               Delivery Order
@@ -163,9 +154,9 @@ const DischargeReport = ({
               style={{
                 fontSize: 14,
                 fontFamily: typography.primary.bold,
-                textAlign: "center",
-                color: "black",
-                top: "62%"
+                textAlign: 'center',
+                color: 'black',
+                top: '62%'
               }}
             >
               Final Volume at Tank
@@ -177,11 +168,11 @@ const DischargeReport = ({
       <View
         style={{
           marginTop: 10,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "85%",
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '85%',
           gap: 10,
           paddingLeft: 20
         }}
@@ -190,7 +181,7 @@ const DischargeReport = ({
           <Text
             style={{
               ...styles.text,
-              backgroundColor: "rgba(208, 208, 208, 1)"
+              backgroundColor: 'rgba(208, 208, 208, 1)'
             }}
           >
             Verify and Close Report
@@ -204,37 +195,37 @@ const DischargeReport = ({
 const styles = StyleSheet.create({
   dischargeBox: {
     padding: 20,
-    display: "flex",
+    display: 'flex',
     marginTop: 20,
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     height: 500,
-    width: "85%"
+    width: '85%'
   },
   titleBox: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   box: {
-    justifyContent: "center",
+    justifyContent: 'center',
     width: 100,
     borderWidth: 0.5,
     height: 40,
-    backgroundColor: "#fff"
+    backgroundColor: '#fff'
   },
   titleBoxText: {
     fontSize: 20,
     fontFamily: typography.primary.semibold
   },
   row: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-evenly"
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-evenly'
   },
   button: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 5,
     paddingHorizontal: 22,
     borderRadius: 4
@@ -250,14 +241,14 @@ const styles = StyleSheet.create({
   columnText: {
     fontSize: 14,
     fontFamily: typography.primary.medium,
-    textAlign: "center",
-    color: "black"
+    textAlign: 'center',
+    color: 'black'
   },
   header: {
     fontSize: 14,
     fontFamily: typography.primary.bold,
-    textAlign: "center",
-    color: "black"
+    textAlign: 'center',
+    color: 'black'
   },
   itemBox: {
     borderTopWidth: 0.5,
@@ -266,8 +257,8 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0.5,
     height: 40,
     width: 80,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 

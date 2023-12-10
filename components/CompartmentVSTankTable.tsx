@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
-import { typography } from "../theme/typography";
-import { ScrollView } from "react-native-gesture-handler";
-import { CompartmentData } from "./CompartmentInfoTable";
-import { TankData } from "./TankInfoTable";
-import { Dropdown } from "react-native-element-dropdown";
+import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { typography } from '../theme/typography';
+import { ScrollView } from 'react-native-gesture-handler';
+import { CompartmentData } from './CompartmentInfoTable';
+import { TankData } from './TankInfoTable';
+import { Dropdown } from 'react-native-element-dropdown';
 
 type Props = {
   tankData: TankData[];
@@ -31,12 +31,7 @@ export type DropdownList = {
   value: string;
 };
 
-const CompartmentVSTankTable = ({
-  compartmentData,
-  editable,
-  mergedData,
-  setMergedData
-}: Props) => {
+const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, setMergedData }: Props) => {
   const [dropdownList, setDropDownList] = useState<DropdownList[]>([]);
 
   if (!mergedData) {
@@ -56,15 +51,13 @@ const CompartmentVSTankTable = ({
 
   const handleCompartmentSelect = (item: DropdownList, tankId: string) => {
     const id = item.value;
-    const compartment = compartmentData.find(
-      (data) => data.compartmentId === item.value
-    );
+    const compartment = compartmentData.find((data) => data.compartmentId === item.value);
     if (!compartment) {
       return;
     }
 
-    const compartmentFuelType = compartment.fuelType || "";
-    const volume = compartment.volume || "";
+    const compartmentFuelType = compartment.fuelType || '';
+    const volume = compartment.volume || '';
 
     const updatedData = mergedData?.map((data) =>
       data.tankId === tankId
@@ -80,10 +73,7 @@ const CompartmentVSTankTable = ({
     setMergedData(updatedData!);
   };
 
-  const calculateTotal = (
-    compartmentVolume: string,
-    tankVolume: string
-  ): string => {
+  const calculateTotal = (compartmentVolume: string, tankVolume: string): string => {
     const compartment = parseInt(compartmentVolume) || 0;
     const tank = parseInt(tankVolume) || 0;
     return (compartment + tank).toString();
@@ -98,7 +88,7 @@ const CompartmentVSTankTable = ({
             <View
               style={{
                 ...styles.box,
-                backgroundColor: "rgba(91, 217, 250, 0.8)"
+                backgroundColor: 'rgba(91, 217, 250, 0.8)'
               }}
             >
               <Text style={styles.header}>{column.tankId}</Text>
@@ -107,7 +97,7 @@ const CompartmentVSTankTable = ({
             <View
               style={{
                 ...styles.box,
-                backgroundColor: "rgba(91, 217, 250, 0.8)"
+                backgroundColor: 'rgba(91, 217, 250, 0.8)'
               }}
             >
               <Text style={styles.text}>{column.tankFuelType}</Text>
@@ -116,7 +106,7 @@ const CompartmentVSTankTable = ({
             <View
               style={{
                 ...styles.box,
-                backgroundColor: "rgba(91, 217, 250, 0.8)"
+                backgroundColor: 'rgba(91, 217, 250, 0.8)'
               }}
             >
               <Text style={styles.text}>{column.tankVolume}</Text>
@@ -126,7 +116,7 @@ const CompartmentVSTankTable = ({
               disable={!editable}
               style={{
                 ...styles.dropdown,
-                backgroundColor: editable ? "yellow" : "white"
+                backgroundColor: editable ? 'yellow' : 'white'
               }}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
@@ -143,10 +133,7 @@ const CompartmentVSTankTable = ({
             <View
               style={{
                 ...styles.box,
-                backgroundColor:
-                  column.compartmenFuelType === column.tankFuelType
-                    ? "white"
-                    : "red"
+                backgroundColor: column.compartmenFuelType === column.tankFuelType ? 'white' : 'red'
               }}
             >
               <Text style={styles.text}>{column.compartmenFuelType}</Text>
@@ -167,9 +154,7 @@ const CompartmentVSTankTable = ({
                 ...styles.box
               }}
             >
-              <Text style={styles.text}>
-                {calculateTotal(column.compartmentVolume, column.tankVolume)}
-              </Text>
+              <Text style={styles.text}>{calculateTotal(column.compartmentVolume, column.tankVolume)}</Text>
             </View>
           </View>
         ))}
@@ -177,20 +162,20 @@ const CompartmentVSTankTable = ({
       {/* Merged Volume Text */}
       <View
         style={{
-          position: "absolute",
+          position: 'absolute',
           width: 333,
           height: 310,
           zIndex: -10,
-          backgroundColor: "rgba(91, 250, 124, 0.8)"
+          backgroundColor: 'rgba(91, 250, 124, 0.8)'
         }}
       >
         <Text
           style={{
             fontSize: 14,
             fontFamily: typography.primary.bold,
-            textAlign: "center",
-            color: "black",
-            top: "80%"
+            textAlign: 'center',
+            color: 'black',
+            top: '80%'
           }}
         >
           New Merged Volume
@@ -204,36 +189,36 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 10,
     borderWidth: 0.5,
-    borderColor: "black",
-    display: "flex",
-    flexDirection: "column"
+    borderColor: 'black',
+    display: 'flex',
+    flexDirection: 'column'
   },
   box: {
-    justifyContent: "center",
+    justifyContent: 'center',
     width: 100,
     borderWidth: 0.5,
     height: 40,
-    backgroundColor: "#fff"
+    backgroundColor: '#fff'
   },
   text: {
     fontSize: 14,
     fontFamily: typography.primary.medium,
-    textAlign: "center",
-    color: "black"
+    textAlign: 'center',
+    color: 'black'
   },
   header: {
     fontSize: 14,
     fontFamily: typography.primary.bold,
-    textAlign: "center",
-    color: "black"
+    textAlign: 'center',
+    color: 'black'
   },
   dropdown: {
     height: 40,
     borderWidth: 0.5,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   placeholderStyle: {
     fontSize: 12,
@@ -244,7 +229,7 @@ const styles = StyleSheet.create({
     fontFamily: typography.primary.bold
   },
   iconStyle: {
-    display: "none"
+    display: 'none'
   }
 });
 
