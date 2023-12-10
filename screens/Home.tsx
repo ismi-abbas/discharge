@@ -1,42 +1,33 @@
-import { View, TouchableOpacity, Text, SectionList, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, TouchableOpacity, Text, SectionList, StyleSheet } from 'react-native';
 import FeatherIcons from '@expo/vector-icons/Feather';
-import DUMMYDATA from '../dummyData.json';
 import { typography } from '../theme/typography';
-import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { FuelData } from '../types';
 import { load } from '../utils/storage';
-import { InitialSetupInfo, StationInfo } from './OneTimeSetup';
-import { ReportData, ResultItem } from '../utils/types';
+import { AppStackScreenProps, InitialSetupInfo, ReportData, ResultItem, StationInfo } from '../utils/types';
 
 export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
-  const [dummyData, setDummyData] = useState<FuelData>(DUMMYDATA);
+  const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [reportData, setReportData] = useState<ReportData[]>();
   const [listData, setListData] = useState<ResultItem[]>();
 
-  const fetchReportData = async () => {
-    try {
-      const reportData = (await load('reportData')) as ReportData[];
-      const initialData = (await load('initialSetup')) as InitialSetupInfo[];
-      console.log('🚀 ~ file: Home.tsx:37 ~ fetchReportData ~ initialData:', initialData);
-      const stationInfoData = (await load('stationInfo')) as StationInfo;
-      console.log('🚀 ~ file: Home.tsx:39 ~ fetchReportData ~ stationInfoData:', stationInfoData);
-
-      if (reportData) {
-        setReportData(reportData);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
-      await loadDummyData();
-      await fetchReportData();
+      try {
+        const reportData = (await load('reportData')) as ReportData[];
+        const stationInfoData = (await load('stationInfo')) as StationInfo;
+
+        if (reportData) {
+          setReportData(reportData);
+        } else if (stationInfoData) {
+          setStationInfo(stationInfoData);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     };
+
+    fetchData();
 
     if (reportData) {
       const totalsByDate = reportData.reduce((result, array) => {
@@ -57,31 +48,15 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
           totalCompartmentVolume,
           status: 'normal'
         });
-
-        console.log(result);
-
         return result;
       }, [] as ResultItem[]);
 
       setListData(totalsByDate);
     }
-
-    fetchData();
   }, []);
 
-  const loadDummyData = async () => {
-    try {
-      const data = await AsyncStorage.getItem('dummyData');
-      if (data) {
-        setDummyData(JSON.parse(data!));
-      }
-    } catch (err) {
-      console.log('===============> error here', err);
-    }
-  };
-
   return (
-    <MainLayout>
+    <MainLayout stationName={stationInfo?.name!}>
       <TouchableOpacity
         onPress={() => navigation.navigate('CompartmentInfo')}
         style={styles.newItemBox}

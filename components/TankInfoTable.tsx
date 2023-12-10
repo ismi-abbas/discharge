@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform } from 'react-native';
 import React, { useState } from 'react';
 import { typography } from '../theme/typography';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
@@ -77,7 +77,7 @@ const TankInfoTable = ({ tableData, setTableData, editable, handleCompartmentSel
               }}
             >
               <TextInput
-                keyboardType="number-pad"
+                keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
                 editable={editable}
                 style={{ ...styles.input, color: 'white' }}
                 value={column.volume}

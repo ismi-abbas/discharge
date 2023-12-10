@@ -1,4 +1,4 @@
-import { MergeData } from '../components/CompartmentVSTankTable';
+import { MergeData } from './types';
 
 export const tankData = [
   {
@@ -56,32 +56,32 @@ export const compartmentData = [
   {
     id: 1,
     compartmentId: 'C1',
-    fuelType: 'U95',
-    volume: '15000'
+    fuelType: '',
+    volume: '0'
   },
   {
     id: 2,
     compartmentId: 'C2',
-    fuelType: 'V97',
-    volume: '14000'
+    fuelType: '',
+    volume: '0'
   },
   {
     id: 3,
     compartmentId: 'C3',
-    fuelType: 'E7',
-    volume: '17000'
+    fuelType: '',
+    volume: '0'
   },
   {
     id: 4,
     compartmentId: 'C4',
-    fuelType: 'EUROB7',
-    volume: '30000'
+    fuelType: '',
+    volume: '0'
   },
   {
     id: 5,
     compartmentId: 'C5',
-    fuelType: 'AGO',
-    volume: '25000'
+    fuelType: '',
+    volume: '0'
   }
 ];
 

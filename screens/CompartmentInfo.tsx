@@ -1,36 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
-import DUMMY_DATA from '../dummyData.json';
 import { compartmentData } from '../utils/constant';
-import CompartmentInfoTable, { CompartmentData } from '../components/CompartmentInfoTable';
+import CompartmentInfoTable from '../components/CompartmentInfoTable';
 import Toast from 'react-native-toast-message';
-import { DropdownList } from '../components/CompartmentVSTankTable';
 import { load, save } from '../utils/storage';
+import { AppStackScreenProps, CompartmentData, DropdownList, StationInfo } from '../utils/types';
 
 const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>) => {
+  const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [editable, setEditable] = useState(false);
   const [isSaved, setSaved] = useState(false);
   const [tableData, setTableData] = useState<CompartmentData[] | undefined>(compartmentData);
 
   useEffect(() => {
-    getGridData();
-  }, []);
+    const fetchData = async () => {
+      try {
+        const data = (await load('compartmentData')) as CompartmentData[];
+        const stationInfo = (await load('stationInfo')) as StationInfo;
 
-  const getGridData = async () => {
-    try {
-      const data = (await load('compartmentData')) as CompartmentData[];
-
-      if (data) {
         setTableData(data);
+        setStationInfo(stationInfo);
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    };
+
+    fetchData();
+  }, []);
 
   const saveData = async () => {
     try {
@@ -57,14 +56,28 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
         compartmentId: 'C' + id.toString(),
         fuelType: '',
         id: (tableData?.length || 0) + 1,
-        volume: ''
+        volume: '0'
       };
       const updatedTableData = [...(tableData || []), newCompartment];
       setTableData(updatedTableData);
+
+      Toast.show({
+        type: 'success',
+        text1: 'Add Compartment',
+        text2: 'New compartment added',
+        position: 'bottom'
+      });
     } else if (action === 'remove') {
       if (tableData && tableData.length > 0) {
         const updatedTableData = tableData.slice(0, -1);
         setTableData(updatedTableData);
+
+        Toast.show({
+          type: 'success',
+          text1: 'Remove Compartment',
+          text2: `Compartment has been removed`,
+          position: 'bottom'
+        });
       }
     }
   };
@@ -135,7 +148,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
   const date = new Date();
 
   return (
-    <MainLayout>
+    <MainLayout stationName={stationInfo?.name}>
       <View style={styles.dischargeBox}>
         <View style={styles.titleBox}>
           <View>
@@ -143,10 +156,10 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
             <Text
               style={{
                 fontFamily: typography.primary.semibold,
-                fontSize: 25
+                fontSize: 17
               }}
             >
-              {DUMMY_DATA.stations[0].name}
+              {stationInfo?.name}
             </Text>
             <Text
               style={{
@@ -154,7 +167,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                 fontSize: 14
               }}
             >
-              {DUMMY_DATA.stations[0].address}
+              {stationInfo?.address}
             </Text>
             <View
               style={{
@@ -167,7 +180,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   fontSize: 17
                 }}
               >
-                {DUMMY_DATA.stations[0].companyName}
+                {stationInfo?.companyName}
               </Text>
               <Text
                 style={{
@@ -175,7 +188,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   fontSize: 14
                 }}
               >
-                {DUMMY_DATA.stations[0].companyAddress}
+                {stationInfo?.companyAddress}
               </Text>
             </View>
             <Text
@@ -211,6 +224,10 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
       <View
         style={{
           marginTop: 10,
+          padding: 20,
+          display: 'flex',
+          borderRadius: 10,
+          backgroundColor: '#fff',
           width: '90%'
         }}
       >
@@ -233,82 +250,81 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
           handleVolumeChange={handleVolumeChange}
           handleCompartmentSelect={handleCompartmentSelect}
         />
-      </View>
-
-      {/* Button */}
-      <View
-        style={{
-          display: 'flex',
-          marginTop: 20,
-          alignItems: 'flex-start',
-          width: '85%'
-        }}
-      >
-        <View style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
-          <Pressable
-            disabled={editable}
-            onPress={() => handleCompartment('add')}
-            style={{
-              ...styles.compartmentButton,
-              backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
-            }}
-          >
-            <Text style={{ ...styles.buttonText, color: 'white' }}>Add</Text>
-          </Pressable>
-          <Pressable
-            disabled={editable}
-            onPress={() => handleCompartment('remove')}
-            style={{
-              ...styles.compartmentButton,
-              backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
-            }}
-          >
-            <Text style={{ ...styles.buttonText, color: 'white' }}>Remove</Text>
-          </Pressable>
-        </View>
 
         <View
           style={{
             display: 'flex',
-            flexDirection: 'row',
-            gap: 10,
-            marginTop: 4
+            marginTop: 20,
+            alignItems: 'flex-start',
+            width: '85%'
           }}
         >
-          <Pressable
-            onPress={() => {
-              setEditable(!editable);
-              setSaved(false);
-            }}
+          <View style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
+            <Pressable
+              disabled={editable}
+              onPress={() => handleCompartment('add')}
+              style={{
+                ...styles.compartmentButton,
+                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+              }}
+            >
+              <Text style={{ ...styles.buttonText, color: 'white' }}>Add</Text>
+            </Pressable>
+            <Pressable
+              disabled={editable}
+              onPress={() => handleCompartment('remove')}
+              style={{
+                ...styles.compartmentButton,
+                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+              }}
+            >
+              <Text style={{ ...styles.buttonText, color: 'white' }}>Remove</Text>
+            </Pressable>
+          </View>
+
+          <View
             style={{
-              ...styles.button,
-              backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+              display: 'flex',
+              flexDirection: 'row',
+              gap: 10,
+              marginTop: 4
             }}
           >
-            <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
-          </Pressable>
+            <Pressable
+              onPress={() => {
+                setEditable(!editable);
+                setSaved(false);
+              }}
+              style={{
+                ...styles.button,
+                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+              }}
+            >
+              <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
+            </Pressable>
 
-          {isSaved ? (
-            <Pressable
-              onPress={verifyAll}
-              style={{
-                ...styles.button,
-                backgroundColor: 'rgba(215, 215, 215, 0.8)'
-              }}
-            >
-              <Text style={styles.buttonText}>Verify</Text>
-            </Pressable>
-          ) : (
-            <Pressable
-              onPress={saveData}
-              style={{
-                ...styles.button,
-                backgroundColor: 'rgba(215, 215, 215, 0.8)'
-              }}
-            >
-              <Text style={styles.buttonText}>Save</Text>
-            </Pressable>
-          )}
+            {isSaved ? (
+              <Pressable
+                onPress={verifyAll}
+                style={{
+                  ...styles.button,
+                  backgroundColor: 'rgba(215, 215, 215, 0.8)'
+                }}
+              >
+                <Text style={styles.buttonText}>Verify</Text>
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={saveData}
+                style={{
+                  ...styles.button,
+                  backgroundColor: 'rgba(215, 215, 215, 0.8)'
+                }}
+              >
+                <Text style={styles.buttonText}>Save</Text>
+              </Pressable>
+            )}
+          </View>
         </View>
       </View>
     </MainLayout>
@@ -324,7 +340,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
-    height: 220,
     width: '90%'
   },
   titleBox: {
@@ -344,7 +359,7 @@ const styles = StyleSheet.create({
   box: {
     fontFamily: typography.primary.semibold,
     flex: 1,
-    width: 'auto',
+    width: 100,
     height: 40,
     backgroundColor: 'rgba(64, 175, 247, 0.69)',
     borderWidth: 0.5,
@@ -354,7 +369,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 5,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     borderRadius: 4
   },
   compartmentButton: {
@@ -365,7 +380,7 @@ const styles = StyleSheet.create({
     borderRadius: 4
   },
   buttonText: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: typography.primary.medium
   },
   text: {

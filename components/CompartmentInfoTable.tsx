@@ -1,5 +1,5 @@
-import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Platform } from 'react-native';
+import React, { useState } from 'react';
 import { typography } from '../theme/typography';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -8,8 +8,8 @@ import { CompartmentData, DropdownList } from '../utils/types';
 
 type Props = {
   tableData: CompartmentData[] | undefined;
-  setTableData: (data: CompartmentData[]) => void;
   editable: boolean;
+  setTableData: (data: CompartmentData[]) => void;
   handleFuelTypeChange: Function;
   handleVolumeChange: Function;
   handleCompartmentSelect: Function;
@@ -21,7 +21,7 @@ const CompartmentInfoTable = ({ tableData, editable, handleVolumeChange, handleC
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
-        {tableData?.map((column, index) => (
+        {tableData?.map((column) => (
           <View key={column.id}>
             <View style={styles.box}>
               <Text style={styles.header}>{column.compartmentId}</Text>
@@ -55,6 +55,7 @@ const CompartmentInfoTable = ({ tableData, editable, handleVolumeChange, handleC
                 style={{ ...styles.input, color: editable ? 'white' : 'black' }}
                 value={column.volume}
                 onChangeText={(volume) => handleVolumeChange(column.id, volume)}
+                keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
               />
             </View>
           </View>

@@ -6,9 +6,10 @@ import { typography } from '../theme/typography';
 
 type Props = {
   children: ReactNode;
+  stationName: string | undefined | 'Station';
 };
 
-export const MainLayout: FC<Props> = ({ children }) => {
+export const MainLayout: FC<Props> = ({ children, stationName }) => {
   return (
     <View style={styles.container}>
       <View style={styles.bar}>
@@ -19,7 +20,7 @@ export const MainLayout: FC<Props> = ({ children }) => {
           transition={1000}
         />
         <View>
-          <Text style={styles.barTitle}>Station A</Text>
+          <Text style={styles.barTitle}>{stationName}</Text>
         </View>
         <View>
           <FeatherIcons

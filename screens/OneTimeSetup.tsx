@@ -1,6 +1,5 @@
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
 import { petrolType, tankData } from '../utils/constant';
@@ -9,7 +8,7 @@ import Toast from 'react-native-toast-message';
 import { load, save } from '../utils/storage';
 import DUMMY_DATA from '../dummyData.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
+import { AppStackScreenProps, DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
 
 const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
   const [tableData, setTableData] = useState<TankData[]>(tankData);
@@ -170,7 +169,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
   };
 
   return (
-    <MainLayout>
+    <MainLayout stationName={stationInfo.name}>
       <View style={styles.$container}>
         <View style={styles.dischargeBox}>
           <View style={styles.titleBox}>
@@ -272,7 +271,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                       />
                       <View style={styles.tableBox}>
                         <TextInput
-                          keyboardType="number-pad"
+                          keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
                           editable={editable}
                           style={styles.input}
                           value={column.volume}
@@ -282,7 +281,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
 
                       <View style={styles.tableBox}>
                         <TextInput
-                          keyboardType="number-pad"
+                          keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
                           editable={editable}
                           style={styles.input}
                           value={column.maxVolume}

@@ -1,38 +1,41 @@
 import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../components/MainLayout';
-import { AppStackScreenProps } from '../MainNavigator';
 import { typography } from '../theme/typography';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { compartmentToTank } from '../utils/constant';
 import FeatherIcons from '@expo/vector-icons/Feather';
-import { ReportData } from './Home';
 import { useRoute } from '@react-navigation/native';
+import { AppStackScreenProps, MergeData, ReportData, StationInfo } from '../utils/types';
+import { load } from '../utils/storage';
 
 const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>) => {
   const [finalReportData, setFinalReportData] = useState(compartmentToTank);
   const [reportListData, setReportListData] = useState<ReportData[]>();
+  const [stationInfo, setStationInfo] = useState<StationInfo>();
 
   useEffect(() => {
+    const getAllData = async () => {
+      try {
+        const stationInfoData = (await load('stationInfo')) as StationInfo;
+        const data = (await load('mergedData')) as MergeData[];
+        const reportListData = (await load('reportData')) as ReportData[];
+
+        setFinalReportData(data);
+        setReportListData(reportListData);
+        setStationInfo(stationInfoData);
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Data load',
+          text2: 'No previous data found'
+        });
+      }
+    };
+
     getAllData();
   }, []);
-
-  const getAllData = async () => {
-    try {
-      const data = await AsyncStorage.getItem('mergedData');
-      const reportListData = await AsyncStorage.getItem('reportData');
-      setFinalReportData(JSON.parse(data || ''));
-      setReportListData(JSON.parse(reportListData || ''));
-      console.log(data);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: 'Loading data failed',
-        text2: 'Please try again'
-      });
-    }
-  };
 
   const verifyAll = async () => {
     const currentId = 'Report ' + finalReportData?.length.toString();
@@ -63,7 +66,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
   };
 
   return (
-    <MainLayout>
+    <MainLayout stationName={stationInfo?.name}>
       <View style={styles.dischargeBox}>
         <View style={styles.titleBox}>
           <Pressable
