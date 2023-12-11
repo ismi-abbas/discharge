@@ -2,12 +2,12 @@ import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { compartmentToTank } from '../utils/constant';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import { AppStackScreenProps, MergeData, ReportData, StationInfo } from '../utils/types';
-import { load } from '../utils/storage';
+import { load, save } from '../utils/storage';
+import uuid from 'react-native-uuid';
 
 const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>) => {
   const [finalReportData, setFinalReportData] = useState(compartmentToTank);
@@ -18,10 +18,12 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
     const getAllData = async () => {
       try {
         const stationInfoData = (await load('stationInfo')) as StationInfo;
-        const data = (await load('mergedData')) as MergeData[];
+        const completedData = (await load('mergedData')) as MergeData[];
         const reportListData = (await load('reportData')) as ReportData[];
 
-        setFinalReportData(data);
+        console.log(completedData);
+
+        setFinalReportData(completedData);
         setReportListData(reportListData);
         setStationInfo(stationInfoData);
       } catch (error) {
@@ -37,17 +39,24 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
   }, []);
 
   const verifyAll = async () => {
-    const currentId = 'Report ' + finalReportData?.length.toString();
-    const newReport = {
-      id: currentId,
+    // const reportExist = reportListData?.find((data) => data.reportId === currentId);
+
+    // if (reportExist) {
+    //   return;
+    // }
+
+    const newReport: ReportData = {
+      reportId: uuid.v4().toString(),
       date: new Date(),
       report: finalReportData
     };
-    // Add the new report to the current report list
+
     const updatedReportList = [...(reportListData || []), newReport];
+
     setReportListData(updatedReportList);
+
     try {
-      await AsyncStorage.setItem('reportData', JSON.stringify(updatedReportList));
+      await save('reportData', updatedReportList);
 
       Toast.show({
         type: 'success',
@@ -118,7 +127,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
                     ...styles.box
                   }}
                 >
-                  <Text style={styles.columnText}>{column.tankVolume.concat('L')}</Text>
+                  <Text style={styles.columnText}>{column.compartmentVolume.concat('L')}</Text>
                 </View>
                 <View
                   style={{

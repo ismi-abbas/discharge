@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { MainLayout } from '../components/MainLayout';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
@@ -233,13 +233,13 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
           display: 'flex',
           borderRadius: 10,
           backgroundColor: '#fff',
-          width: '90%'
+          width: '95%'
         }}
       >
         <Text
           style={{
             fontFamily: typography.primary.bold,
-            width: '90%',
+            width: '95%',
             fontSize: 15,
             textTransform: 'capitalize'
           }}
@@ -247,21 +247,23 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
           Please key in truck delivery details compartment(C)
         </Text>
 
-        <CompartmentInfoTable
-          setTableData={setCompartmentData}
-          editable={editable}
-          tableData={compartmentData}
-          handleFuelTypeChange={handleFuelTypeChange}
-          handleVolumeChange={handleVolumeChange}
-          handleCompartmentSelect={handleCompartmentSelect}
-        />
+        <KeyboardAvoidingView>
+          <CompartmentInfoTable
+            setTableData={setCompartmentData}
+            editable={editable}
+            tableData={compartmentData}
+            handleFuelTypeChange={handleFuelTypeChange}
+            handleVolumeChange={handleVolumeChange}
+            handleCompartmentSelect={handleCompartmentSelect}
+          />
+        </KeyboardAvoidingView>
 
         <View
           style={{
             display: 'flex',
             marginTop: 20,
             alignItems: 'flex-start',
-            width: '85%'
+            width: '95%'
           }}
         >
           <View style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
@@ -292,7 +294,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
               display: 'flex',
               flexDirection: 'row',
               gap: 10,
-              marginTop: 4
+              marginTop: 10
             }}
           >
             <Pressable
@@ -302,35 +304,47 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
               }}
               style={{
                 ...styles.button,
-                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                backgroundColor: 'rgba(4, 113, 232, 1)'
               }}
             >
               <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
             </Pressable>
-
-            {isSaved ? (
-              <Pressable
-                onPress={verifyAll}
-                style={{
-                  ...styles.button,
-                  backgroundColor: 'rgba(215, 215, 215, 0.8)'
-                }}
-              >
-                <Text style={styles.buttonText}>Verify</Text>
-              </Pressable>
-            ) : (
-              <Pressable
-                onPress={saveData}
-                style={{
-                  ...styles.button,
-                  backgroundColor: 'rgba(215, 215, 215, 0.8)'
-                }}
-              >
-                <Text style={styles.buttonText}>Save</Text>
-              </Pressable>
-            )}
           </View>
         </View>
+      </View>
+
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+          width: '95%',
+          marginTop: 10,
+          marginLeft: 20,
+          gap: 10
+        }}
+      >
+        <Pressable
+          disabled={editable}
+          onPress={saveData}
+          style={{
+            ...styles.button,
+            backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+          }}
+        >
+          <Text style={styles.buttonText}>Save</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={verifyAll}
+          disabled={editable}
+          style={{
+            ...styles.button,
+            backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+          }}
+        >
+          <Text style={styles.buttonText}>Verify</Text>
+        </Pressable>
       </View>
     </MainLayout>
   );
@@ -345,7 +359,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
-    width: '90%'
+    width: '95%'
   },
   titleBox: {
     display: 'flex',
@@ -373,25 +387,24 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 16,
     borderRadius: 4
   },
   compartmentButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 5,
+    paddingVertical: 4,
+    paddingHorizontal: 16,
     borderRadius: 4
   },
   buttonText: {
-    fontSize: 12,
-    fontFamily: typography.primary.medium
+    fontSize: 14,
+    fontFamily: typography.primary.medium,
+    color: '#fff'
   },
   text: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontFamily: typography.primary.medium,
-    letterSpacing: 0.25
+    fontSize: 14,
+    fontFamily: typography.primary.medium
   }
 });

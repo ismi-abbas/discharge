@@ -23,14 +23,35 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         const initialTankInfo = (await load('initialSetup')) as InitialSetupInfo;
 
         if (previousTankData) {
+          console.log(previousTankData);
+          previousTankData.forEach((item) => {
+            item.volume = '0';
+          });
+
           setTableData(previousTankData);
-        } else if (initialTankInfo) {
+        }
+
+        if (initialTankInfo) {
           setTableData(initialTankInfo.data);
         }
 
         if (stationInfo) {
           setStationInfo(stationInfo);
         }
+
+        const mappedArray = previousTankData.map((item2) => {
+          const correspondingItem = initialTankInfo.data.find(
+            (item1) => item1.id === item2.id && item1.tankId === item2.tankId
+          );
+
+          if (correspondingItem) {
+            return { ...item2, maxVolume: correspondingItem.maxVolume };
+          }
+
+          return item2;
+        });
+
+        setTableData(mappedArray);
       } catch (error) {
         console.log(error);
       }
@@ -42,6 +63,8 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
   const saveData = async () => {
     try {
       await save('tankData', tankData);
+
+      console.log(tankData);
 
       Toast.show({
         type: 'success',
@@ -62,7 +85,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
   };
 
   const verifyAll = () => {
-    const verified = tankData.every((tank) => tank.volume !== '' && tank.fuelType !== '');
+    const verified = tankData.every((tank) => tank.volume !== '' && tank.volume !== '0' && tank.fuelType !== '');
 
     if (verified) {
       setIsVerified(true);
@@ -127,10 +150,10 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 
   return (
     <MainLayout stationName={stationInfo?.name}>
-      <Button
+      {/* <Button
         onPress={async () => await remove('tankData')}
         title="Delete Tank Data"
-      />
+      /> */}
       <View style={styles.dischargeBox}>
         <View style={styles.titleBox}>
           <View>
@@ -203,7 +226,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
                 backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
               }}
             >
-              <Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
+              <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
             </Pressable>
           </View>
         </View>
@@ -226,7 +249,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
           onPress={saveData}
           style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}
         >
-          <Text style={{ ...styles.text, color: 'white' }}>Save</Text>
+          <Text style={{ ...styles.buttonText, color: 'white' }}>Save</Text>
         </Pressable>
         <Pressable
           onPress={verifyAll}
@@ -278,9 +301,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 4
   },
+  buttonText: {
+    fontSize: 14,
+    fontFamily: typography.primary.medium
+  },
   text: {
     fontSize: 14,
-    lineHeight: 21,
     fontFamily: typography.primary.medium
   }
 });

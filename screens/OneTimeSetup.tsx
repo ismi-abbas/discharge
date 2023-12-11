@@ -1,4 +1,4 @@
-import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
@@ -7,7 +7,6 @@ import { Dropdown } from 'react-native-element-dropdown';
 import Toast from 'react-native-toast-message';
 import { load, save } from '../utils/storage';
 import DUMMY_DATA from '../dummyData.json';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppStackScreenProps, DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
 
 const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
@@ -169,106 +168,111 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
 
   return (
     <MainLayout stationName={stationInfo.name}>
-      <View style={styles.$container}>
-        <View style={styles.dischargeBox}>
-          <View style={styles.titleBox}>
-            <View>
-              <Text style={styles.titleBoxText}>Tank Preset</Text>
-              <View style={{ marginTop: 2 }}>
-                <TextInput
-                  keyboardType="default"
-                  editable={editable}
-                  style={{
-                    fontFamily: typography.primary.semibold,
-                    fontSize: 17,
-                    color: editable ? 'gray' : 'black'
-                  }}
-                  value={stationInfo?.name}
-                  onChangeText={(name) => setStationInfo({ ...stationInfo, name: name })}
-                />
+      <ScrollView
+        style={styles.$container}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+      >
+        <KeyboardAvoidingView>
+          <View style={styles.dischargeBox}>
+            <View style={styles.titleBox}>
+              <View>
+                <Text style={styles.titleBoxText}>Tank Preset</Text>
+                <View style={{ borderWidth: editable ? 1 : 0, padding: editable ? 2 : 0, borderRadius: 5 }}>
+                  <View style={{ marginTop: 2 }}>
+                    <TextInput
+                      keyboardType="default"
+                      editable={editable}
+                      style={{
+                        fontFamily: typography.primary.semibold,
+                        fontSize: 17,
+                        color: editable ? 'gray' : 'black'
+                      }}
+                      value={stationInfo?.name}
+                      onChangeText={(name) => setStationInfo({ ...stationInfo, name: name })}
+                    />
 
-                <TextInput
-                  keyboardType="default"
-                  editable={editable}
-                  style={{
-                    fontFamily: typography.primary.light,
-                    fontSize: 14,
-                    color: editable ? 'gray' : 'black'
-                  }}
-                  value={stationInfo?.address}
-                  onChangeText={(address) => setStationInfo({ ...stationInfo, address: address })}
-                />
+                    <TextInput
+                      keyboardType="default"
+                      editable={editable}
+                      style={{
+                        fontFamily: typography.primary.light,
+                        fontSize: 14,
+                        color: editable ? 'gray' : 'black'
+                      }}
+                      value={stationInfo?.address}
+                      onChangeText={(address) => setStationInfo({ ...stationInfo, address: address })}
+                    />
 
-                <View>
-                  <TextInput
-                    keyboardType="default"
-                    editable={editable}
-                    style={{
-                      fontFamily: typography.primary.semibold,
-                      fontSize: 16,
-                      color: editable ? 'gray' : 'black'
-                    }}
-                    value={stationInfo.companyName}
-                    onChangeText={(companyName) => setStationInfo({ ...stationInfo, companyName: companyName })}
-                  />
-
-                  <TextInput
-                    keyboardType="default"
-                    editable={editable}
-                    style={{
-                      fontFamily: typography.primary.light,
-                      fontSize: 14,
-                      color: editable ? 'gray' : 'black'
-                    }}
-                    value={stationInfo.companyAddress}
-                    onChangeText={(companyAddress) =>
-                      setStationInfo({ ...stationInfo, companyAddress: companyAddress })
-                    }
-                  />
-                </View>
-              </View>
-
-              <Text style={{ marginTop: 10, fontFamily: typography.primary.normal, fontSize: 12 }}>
-                Date: {new Date().toDateString()}
-              </Text>
-
-              <Text
-                style={{
-                  marginTop: 20,
-                  fontFamily: typography.primary.light,
-                  fontSize: 17
-                }}
-              >
-                Please Key In Your Current Station Tank Details
-              </Text>
-
-              <View style={styles.container}>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                >
-                  {tableData?.map((column) => (
-                    <View key={column.id}>
-                      <View style={styles.tableBox}>
-                        <Text style={styles.header}>{column.tankId}</Text>
-                      </View>
-                      <Dropdown
-                        disable={!editable}
+                    <View>
+                      <TextInput
+                        keyboardType="default"
+                        editable={editable}
                         style={{
-                          ...styles.dropdown,
-                          backgroundColor: editable ? 'yellow' : 'white'
+                          fontFamily: typography.primary.semibold,
+                          fontSize: 16,
+                          color: editable ? 'gray' : 'black'
                         }}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        iconStyle={styles.iconStyle}
-                        data={petrolType}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Select"
-                        value={column.fuelType}
-                        onChange={(item) => handleFuelTypeChange(item, column.tankId)}
+                        value={stationInfo.companyName}
+                        onChangeText={(companyName) => setStationInfo({ ...stationInfo, companyName: companyName })}
                       />
-                      <View style={styles.tableBox}>
+
+                      <TextInput
+                        keyboardType="default"
+                        editable={editable}
+                        style={{
+                          fontFamily: typography.primary.light,
+                          fontSize: 14,
+                          color: editable ? 'gray' : 'black'
+                        }}
+                        value={stationInfo.companyAddress}
+                        onChangeText={(companyAddress) =>
+                          setStationInfo({ ...stationInfo, companyAddress: companyAddress })
+                        }
+                      />
+                    </View>
+                  </View>
+
+                  <Text style={{ marginTop: 10, fontFamily: typography.primary.normal, fontSize: 12 }}>
+                    Date: {new Date().toDateString()}
+                  </Text>
+                </View>
+
+                <Text
+                  style={{
+                    marginTop: 20,
+                    fontFamily: typography.primary.light,
+                    fontSize: 17
+                  }}
+                >
+                  Please Key In Your Current Station Tank Details
+                </Text>
+
+                <View style={styles.container}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                  >
+                    {tableData?.map((column) => (
+                      <View key={column.id}>
+                        <View style={styles.tableBox}>
+                          <Text style={styles.header}>{column.tankId}</Text>
+                        </View>
+                        <Dropdown
+                          disable={!editable}
+                          style={styles.dropdown}
+                          placeholderStyle={styles.placeholderStyle}
+                          selectedTextStyle={styles.selectedTextStyle}
+                          iconStyle={styles.iconStyle}
+                          data={petrolType}
+                          labelField="label"
+                          valueField="value"
+                          placeholder="Select"
+                          value={column.fuelType}
+                          onChange={(item) => handleFuelTypeChange(item, column.tankId)}
+                        />
+
+                        {/* <View style={styles.tableBox}>
                         <TextInput
                           keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
                           editable={editable}
@@ -276,118 +280,119 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                           value={column.volume}
                           onChangeText={(volume) => handleVolumeChange(column.id, 'volume', volume)}
                         />
-                      </View>
+                      </View> */}
 
-                      <View style={styles.tableBox}>
-                        <TextInput
-                          keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
-                          editable={editable}
-                          style={styles.input}
-                          value={column.maxVolume}
-                          onChangeText={(maxVolume) => handleVolumeChange(column.id, 'maxVolume', maxVolume)}
-                        />
+                        <View style={styles.tableBox}>
+                          <TextInput
+                            keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
+                            editable={editable}
+                            style={styles.input}
+                            value={column.maxVolume}
+                            onChangeText={(maxVolume) => handleVolumeChange(column.id, 'maxVolume', maxVolume)}
+                          />
+                        </View>
                       </View>
-                    </View>
-                  ))}
-                </ScrollView>
+                    ))}
+                  </ScrollView>
+                </View>
+                <Text
+                  style={{
+                    marginTop: 5,
+                    marginBottom: 2,
+                    fontFamily: typography.primary.light,
+                    fontSize: 12
+                  }}
+                >
+                  *Scroll to the right for more info
+                </Text>
               </View>
-              <Text
-                style={{
-                  marginTop: 5,
-                  marginBottom: 2,
-                  fontFamily: typography.primary.light,
-                  fontSize: 12
-                }}
-              >
-                *Scroll to the right for more info
-              </Text>
             </View>
-          </View>
-          <View
-            style={{
-              display: 'flex',
-              marginTop: 20,
-              alignItems: 'flex-start',
-              width: '95%'
-            }}
-          >
             <View
               style={{
                 display: 'flex',
-                flexDirection: 'row',
-                gap: 10,
-                marginTop: 4
+                marginTop: 20,
+                alignItems: 'flex-start',
+                width: '95%'
               }}
             >
-              <Pressable
-                onPress={() => setEditable(!editable)}
+              <View
                 style={{
-                  ...styles.compartmentButton,
-                  backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: 10,
+                  marginTop: 4
                 }}
               >
-                <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
-              </Pressable>
+                <Pressable
+                  onPress={() => setEditable(!editable)}
+                  style={{
+                    ...styles.compartmentButton,
+                    backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                  }}
+                >
+                  <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
+                </Pressable>
 
-              <View style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
-                <Pressable
-                  disabled={editable}
-                  onPress={() => handleCompartment('add')}
-                  style={{
-                    ...styles.compartmentButton,
-                    backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
-                  }}
-                >
-                  <Text style={{ ...styles.buttonText, color: 'white' }}>Add</Text>
-                </Pressable>
-                <Pressable
-                  disabled={editable}
-                  onPress={() => handleCompartment('remove')}
-                  style={{
-                    ...styles.compartmentButton,
-                    backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
-                  }}
-                >
-                  <Text style={{ ...styles.buttonText, color: 'white' }}>Remove</Text>
-                </Pressable>
+                <View style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
+                  <Pressable
+                    disabled={editable}
+                    onPress={() => handleCompartment('add')}
+                    style={{
+                      ...styles.compartmentButton,
+                      backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                    }}
+                  >
+                    <Text style={{ ...styles.buttonText, color: 'white' }}>Add</Text>
+                  </Pressable>
+                  <Pressable
+                    disabled={editable}
+                    onPress={() => handleCompartment('remove')}
+                    style={{
+                      ...styles.compartmentButton,
+                      backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                    }}
+                  >
+                    <Text style={{ ...styles.buttonText, color: 'white' }}>Remove</Text>
+                  </Pressable>
+                </View>
               </View>
             </View>
           </View>
-        </View>
 
-        <View
-          style={{
-            marginTop: 10,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            width: '95%',
-            gap: 10,
-            paddingLeft: 20
-          }}
-        >
-          <Pressable
-            onPress={() => saveDetails({ data: tableData })}
-            aria-disabled={isVerified}
+          <View
             style={{
-              ...styles.button,
-              backgroundColor: 'rgba(4, 113, 232, 1)'
+              marginTop: 10,
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              width: '95%',
+              gap: 10,
+              paddingLeft: 20
             }}
           >
-            <Text style={{ ...styles.text, color: 'white' }}>Save</Text>
-          </Pressable>
-          <Pressable
-            onPress={verifyData}
-            style={{
-              ...styles.button,
-              backgroundColor: 'rgba(215, 215, 215, 0.8)'
-            }}
-          >
-            <Text style={styles.text}>Verify</Text>
-          </Pressable>
-        </View>
-      </View>
+            <Pressable
+              onPress={() => saveDetails({ data: tableData })}
+              aria-disabled={isVerified}
+              style={{
+                ...styles.button,
+                backgroundColor: 'rgba(4, 113, 232, 1)'
+              }}
+            >
+              <Text style={{ ...styles.buttonText, color: 'white' }}>Save</Text>
+            </Pressable>
+            <Pressable
+              onPress={verifyData}
+              style={{
+                ...styles.button,
+                backgroundColor: 'rgba(215, 215, 215, 0.8)'
+              }}
+            >
+              <Text style={styles.buttonText}>Verify</Text>
+            </Pressable>
+          </View>
+        </KeyboardAvoidingView>
+      </ScrollView>
     </MainLayout>
   );
 };
@@ -429,15 +434,13 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 22,
+    paddingVertical: 4,
+    paddingHorizontal: 16,
     borderRadius: 4
   },
   text: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontFamily: typography.primary.medium,
-    letterSpacing: 0.25
+    fontSize: 14,
+    fontFamily: typography.primary.medium
   },
   container: {
     marginTop: 20,
@@ -474,7 +477,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   placeholderStyle: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: typography.primary.bold
   },
   selectedTextStyle: {
@@ -487,12 +490,12 @@ const styles = StyleSheet.create({
   compartmentButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 5,
-    borderRadius: 5
+    paddingVertical: 4,
+    paddingHorizontal: 16,
+    borderRadius: 4
   },
   buttonText: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: typography.primary.medium
   }
 });

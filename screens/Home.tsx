@@ -1,62 +1,72 @@
-import { View, TouchableOpacity, Text, SectionList, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, SectionList, StyleSheet, Pressable } from 'react-native';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
 import { MainLayout } from '../components/MainLayout';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { load } from '../utils/storage';
 import { AppStackScreenProps, ReportData, ResultItem, StationInfo } from '../utils/types';
+import { useFocusEffect } from '@react-navigation/native';
+import { format } from 'date-fns';
 
 export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
   const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [reportData, setReportData] = useState<ReportData[]>();
   const [listData, setListData] = useState<ResultItem[]>();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const reportData = (await load('reportData')) as ReportData[];
-        const stationInfoData = (await load('stationInfo')) as StationInfo;
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Fethcing');
+      fetchData();
+    }, [])
+  );
 
-        if (reportData) {
-          setReportData(reportData);
-        } else if (stationInfoData) {
-          setStationInfo(stationInfoData);
-        }
-      } catch (err) {
-        console.log(err);
+  const fetchData = async () => {
+    try {
+      const reportData = (await load('reportData')) as ReportData[];
+      const stationInfoData = (await load('stationInfo')) as StationInfo;
+
+      if (reportData) {
+        setReportData(reportData);
+        const totalsByDate = reportData.reduce((result, array) => {
+          const date = array.date;
+
+          const { totalTankVolume, totalCompartmentVolume } = array.report.reduce(
+            (accumulator, tank) => {
+              accumulator.totalTankVolume += parseInt(tank.tankVolume) || 0;
+              accumulator.totalCompartmentVolume += parseInt(tank.compartmentVolume) || 0;
+              return accumulator;
+            },
+            { totalTankVolume: 0, totalCompartmentVolume: 0 }
+          );
+
+          result.push({
+            reportId: array.reportId,
+            date,
+            totalTankVolume,
+            totalCompartmentVolume,
+            status: 'normal'
+          });
+          return result;
+        }, [] as ResultItem[]);
+
+        setListData(totalsByDate);
+        setListData(totalsByDate);
+        setListData(totalsByDate);
       }
-    };
 
-    fetchData();
-
-    if (reportData) {
-      const totalsByDate = reportData.reduce((result, array) => {
-        const date = array.date;
-
-        const { totalTankVolume, totalCompartmentVolume } = array.report.reduce(
-          (accumulator, tank) => {
-            accumulator.totalTankVolume += parseInt(tank.tankVolume) || 0;
-            accumulator.totalCompartmentVolume += parseInt(tank.compartmentVolume) || 0;
-            return accumulator;
-          },
-          { totalTankVolume: 0, totalCompartmentVolume: 0 }
-        );
-
-        result.push({
-          date,
-          totalTankVolume,
-          totalCompartmentVolume,
-          status: 'normal'
-        });
-        return result;
-      }, [] as ResultItem[]);
-
-      setListData(totalsByDate);
+      if (stationInfoData) {
+        setStationInfo(stationInfoData);
+      }
+    } catch (err) {
+      console.log(err);
     }
-  }, []);
+  };
 
   return (
-    <MainLayout stationName={stationInfo?.name!}>
+    <MainLayout
+      stationName={stationInfo?.name!}
+      openSettings={() => navigation.navigate('OneTimeSetup')}
+    >
       <TouchableOpacity
         onPress={() => navigation.navigate('CompartmentInfo')}
         style={styles.newItemBox}
@@ -112,7 +122,13 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
         showsVerticalScrollIndicator={false}
         sections={[{ data: listData ? listData : [] }]}
         renderItem={({ item }) => (
-          <View style={styles.dischargeBoxItem}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('ViewReport', { reportId: item.reportId });
+              console.log(item);
+            }}
+            style={styles.dischargeBoxItem}
+          >
             <View
               style={{
                 ...styles.statusIcon,
@@ -126,14 +142,18 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
               />
             </View>
             <View>
-              <Text style={styles.textSemiBold}>{item.date.toString().split('T')[0]}</Text>
-              <Text>{item.totalTankVolume}L</Text>
+              <Text style={{ ...styles.textSemiBold, fontSize: 15 }}>{format(new Date(item.date), 'dd-MMM-yy')}</Text>
+              <Text>Current compartment Volume {item.totalTankVolume} Litre</Text>
             </View>
             <View>
-              <Text style={styles.textSemiBold}>{item.totalCompartmentVolume}L</Text>
-              <Text style={styles.amountIndicatorText}>+{item.totalCompartmentVolume + item.totalTankVolume}L</Text>
+              <Text style={{ ...styles.textSemiBold, fontSize: 15 }}>
+                Current Tank Volume{item.totalCompartmentVolume}L
+              </Text>
+              <Text style={styles.amountIndicatorText}>
+                + total compartment volume{item.totalCompartmentVolume + item.totalTankVolume}L
+              </Text>
             </View>
-          </View>
+          </Pressable>
         )}
       />
     </MainLayout>

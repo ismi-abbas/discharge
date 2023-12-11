@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 
 type Props = {
   children: ReactNode;
@@ -14,12 +15,12 @@ type Props = {
 export const MainLayout: FC<Props> = ({ children, stationName, openSettings }) => {
   const insets = useSafeAreaInsets();
   return (
-    <View style={{ ...styles.container, paddingTop: insets.top }}>
+    <View style={{ ...styles.container, paddingTop: insets.top, paddingBottom: insets.bottom }}>
+      <StatusBar style="dark" />
       <View style={styles.bar}>
         <Image
           style={styles.image}
-          source="https://media.gettyimages.com/id/1314489757/photo/smiling-hispanic-man-against-white-background.jpg?s=2048x2048&w=gi&k=20&c=xK-PIu9PhfkSz7nUpMF6omCHgufUZcyFaRgJURtR3gA="
-          contentFit="cover"
+          source={require('../assets/tabIcon.png')}
           transition={1000}
         />
         <View>

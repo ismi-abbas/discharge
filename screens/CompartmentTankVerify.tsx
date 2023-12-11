@@ -1,4 +1,4 @@
-import { View, Text, Pressable, TextInput, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
@@ -8,7 +8,7 @@ import { compartment, compartmentToTank } from '../utils/constant';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import CompartmentVSTankTable from '../components/CompartmentVSTankTable';
 import { AppStackScreenProps, DropdownList, MergeData, StationInfo, TankData } from '../utils/types';
-import { load } from '../utils/storage';
+import { load, save } from '../utils/storage';
 
 const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentTankVerify'>) => {
   const [tankTableData, setTankTableData] = useState<TankData[]>([]);
@@ -106,12 +106,19 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 
   const saveData = async () => {
     try {
-      AsyncStorage.setItem('tankData', JSON.stringify(tankTableData));
-      AsyncStorage.setItem('compartmentData', JSON.stringify(compartmentTableData));
-      AsyncStorage.setItem('mergedData', JSON.stringify(mergedData));
-      mergedData.map((item) => {
-        item.mergedVolume = calculateTotal(item.tankVolume, item.compartmentVolume);
+      const updated = mergedData.map((data) => {
+        if (data.mergedVolume === '') {
+          data.mergedVolume = calculateTotal(data.tankVolume, data.compartmentVolume).toString();
+        }
+        return data;
       });
+
+      setMergedData(updated);
+
+      await save('tankData', tankTableData);
+      await save('compartmentData', compartmentTableData);
+      await save('mergedData', mergedData);
+
       Toast.show({
         type: 'success',
         text1: 'Data Saved',
@@ -135,7 +142,9 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   };
 
   const verifyAll = () => {
-    const verified = mergedData.every((x) => x.tankId !== '' && x.mergedVolume !== '');
+    const verified = mergedData.every(
+      (x) => x.tankId !== '' && x.mergedVolume !== '' && parseInt(x.mergedVolume) < parseInt(x.tankMaxVolume)
+    );
 
     if (verified) {
       setIsVerified(true);
@@ -146,8 +155,9 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         position: 'bottom',
         visibilityTime: 2000
       });
+
       setTimeout(() => {
-        navigation.navigate('DischargeReport');
+        navigation.navigate('DischargeReport', { reportData: [] });
       }, 2000);
     } else {
       Toast.show({

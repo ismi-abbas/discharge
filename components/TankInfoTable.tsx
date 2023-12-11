@@ -26,19 +26,10 @@ const TankInfoTable = ({ tableData, editable, handleCompartmentSelect, handleVol
             <View style={styles.box}>
               <Text style={styles.header}>{column.tankId}</Text>
             </View>
-            <Dropdown
-              disable={!editable}
-              style={{ ...styles.dropdown, backgroundColor: editable ? 'rgba(175, 175, 175, 0.4)' : 'white' }}
-              placeholderStyle={styles.placeholderStyle}
-              selectedTextStyle={styles.selectedTextStyle}
-              iconStyle={styles.iconStyle}
-              data={petrolType}
-              labelField="label"
-              valueField="value"
-              placeholder="Select"
-              value={column.fuelType}
-              onChange={(item) => handleCompartmentSelect(item, column.tankId)}
-            />
+
+            <View style={styles.box}>
+              <Text style={styles.header}>{column.fuelType}</Text>
+            </View>
             <View style={{ ...styles.box, backgroundColor: editable ? 'rgba(175, 175, 175, 0.4)' : 'white' }}>
               <TextInput
                 keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}

@@ -1,11 +1,13 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type ReportData = {
+  reportId: string;
   date: Date;
   report: MergeData[];
 };
 
 export interface ResultItem {
+  reportId: string;
   date: Date;
   totalTankVolume: number;
   totalCompartmentVolume: number;
@@ -63,7 +65,8 @@ export type AppStackParamList = {
   CompartmentInfo: undefined;
   TankInfo: undefined;
   CompartmentTankVerify: undefined;
-  DischargeReport: undefined;
+  DischargeReport: {};
+  ViewReport: {};
 };
 
 export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStackScreenProps<AppStackParamList, T>;
