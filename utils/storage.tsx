@@ -46,3 +46,11 @@ export async function clear(): Promise<void> {
     await AsyncStorage.clear();
   } catch {}
 }
+
+export async function getAllKeys(): Promise<readonly string[]> {
+  try {
+    return await AsyncStorage.getAllKeys();
+  } catch {
+    return [];
+  }
+}

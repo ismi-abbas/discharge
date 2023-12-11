@@ -8,41 +8,13 @@ import { petrolType } from '../utils/constant';
 import { DropdownList, TankData } from '../utils/types';
 
 type Props = {
-  tableData: TankData[] | undefined;
-  setTableData: (data: TankData[]) => void;
+  tableData: TankData[];
   editable: boolean;
   handleCompartmentSelect: Function;
+  handleVolumeChange: Function;
 };
 
-const TankInfoTable = ({ tableData, setTableData, editable, handleCompartmentSelect }: Props) => {
-  const [tankTableData, setTanktData] = useState(tableData!);
-  const [dropdownList, setDropDownList] = useState<DropdownList[]>(petrolType);
-
-  const handleTypeChange = (id: number, value: string) => {
-    const updateTankData = tankTableData.map((tank) => (tank.id === id ? { ...tank, fuelType: value } : tank));
-
-    setTanktData(updateTankData);
-    setTableData(updateTankData);
-  };
-
-  const handleVolumeChange = (id: number, value: string) => {
-    const updatedTankData = tankTableData.map((tank) => (tank.id === id ? { ...tank, volume: value } : tank));
-
-    const tankWithUpdatedVolume = updatedTankData.find((tank) => tank.id === id)!;
-    if (parseInt(tankWithUpdatedVolume.volume) > parseInt(tankWithUpdatedVolume.maxVolume)) {
-      Toast.show({
-        type: 'error',
-        text1: 'Max volume exceeded',
-        text2: `Volume exceeds max volume for tank ${tankWithUpdatedVolume.tankId}. Max ${tankWithUpdatedVolume.maxVolume}`,
-        position: 'bottom',
-        visibilityTime: 3000
-      });
-    }
-
-    setTanktData(updatedTankData);
-    setTableData(updatedTankData);
-  };
-
+const TankInfoTable = ({ tableData, editable, handleCompartmentSelect, handleVolumeChange }: Props) => {
   return (
     <View style={styles.container}>
       <ScrollView
@@ -56,30 +28,22 @@ const TankInfoTable = ({ tableData, setTableData, editable, handleCompartmentSel
             </View>
             <Dropdown
               disable={!editable}
-              style={{
-                ...styles.dropdown,
-                backgroundColor: editable ? 'yellow' : 'white'
-              }}
+              style={{ ...styles.dropdown, backgroundColor: editable ? 'rgba(175, 175, 175, 0.4)' : 'white' }}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
               iconStyle={styles.iconStyle}
-              data={dropdownList}
+              data={petrolType}
               labelField="label"
               valueField="value"
               placeholder="Select"
               value={column.fuelType}
               onChange={(item) => handleCompartmentSelect(item, column.tankId)}
             />
-            <View
-              style={{
-                ...styles.box,
-                backgroundColor: parseInt(column.volume) > parseInt(column.maxVolume) ? 'red' : 'green'
-              }}
-            >
+            <View style={{ ...styles.box, backgroundColor: editable ? 'rgba(175, 175, 175, 0.4)' : 'white' }}>
               <TextInput
                 keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
                 editable={editable}
-                style={{ ...styles.input, color: 'white' }}
+                style={styles.input}
                 value={column.volume}
                 onChangeText={(volume) => handleVolumeChange(column.id, volume)}
               />
@@ -114,7 +78,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 14,
-    fontFamily: typography.primary.semibold,
+    fontFamily: typography.primary.bold,
     textAlign: 'center',
     color: 'black'
   },
@@ -127,12 +91,12 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   placeholderStyle: {
-    fontSize: 12,
-    fontFamily: typography.primary.bold
+    fontSize: 14,
+    fontFamily: typography.primary.semibold
   },
   selectedTextStyle: {
     fontSize: 14,
-    fontFamily: typography.primary.bold
+    fontFamily: typography.primary.semibold
   },
   iconStyle: {
     display: 'none'

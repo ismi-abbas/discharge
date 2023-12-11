@@ -1,19 +1,20 @@
 import { View, Text, Pressable, TextInput, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../components/MainLayout';
-import { AppStackScreenProps } from '../MainNavigator';
 import { typography } from '../theme/typography';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
-import { compartmentData, compartmentToTank, tankData } from '../utils/constant';
+import { compartment, compartmentToTank } from '../utils/constant';
 import FeatherIcons from '@expo/vector-icons/Feather';
-import CompartmentVSTankTable, { MergeData } from '../components/CompartmentVSTankTable';
-import { TankData } from '../components/TankInfoTable';
+import CompartmentVSTankTable from '../components/CompartmentVSTankTable';
+import { AppStackScreenProps, DropdownList, MergeData, StationInfo, TankData } from '../utils/types';
+import { load } from '../utils/storage';
 
 const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentTankVerify'>) => {
   const [tankTableData, setTankTableData] = useState<TankData[]>([]);
-  const [compartmentTableData, setCompartmentTableData] = useState(compartmentData);
+  const [compartmentTableData, setCompartmentTableData] = useState(compartment);
   const [mergedData, setMergedData] = useState<MergeData[]>(compartmentToTank);
+  const [stationInfo, setStationInfo] = useState<StationInfo>();
 
   const [editable, setEditable] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
@@ -21,9 +22,10 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const keys = await AsyncStorage.getAllKeys();
         const data = await AsyncStorage.multiGet(['tankData', 'mergedData', 'compartmentData']);
+        const stationInfo = (await load('stationInfo')) as StationInfo;
 
+        setStationInfo(stationInfo);
         data.forEach(([key, value]) => {
           if (key === 'tankData') {
             let json: TankData[] = JSON.parse(value!);
@@ -40,9 +42,11 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
                 compartmentId: '',
                 mergedVolume: '',
                 compartmenFuelType: '',
-                compartmentVolume: ''
+                compartmentVolume: '',
+                tankMaxVolume: tank.maxVolume
               });
             });
+
             setMergedData(tableD);
           } else if (key === 'compartmentData') {
             setCompartmentTableData(JSON.parse(value!));
@@ -56,10 +60,48 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
     fetchData();
   }, []);
 
+  const handleCompartmentSelect = (item: DropdownList, tankId: string) => {
+    const compartmentId = item.value;
+
+    const compartment = compartmentTableData.find((data) => data.compartmentId === compartmentId);
+    if (!compartment) {
+      return;
+    }
+
+    const compartmentFuelType = compartment.fuelType || '';
+    const volume = compartment.volume || '';
+
+    const updatedData = mergedData?.map((data) =>
+      data.tankId === tankId
+        ? {
+            ...data,
+            compartmentId: compartmentId,
+            compartmentVolume: volume,
+            compartmenFuelType: compartmentFuelType,
+            mergedVolume: calculateTotal(volume, data.tankVolume)
+          }
+        : data
+    );
+
+    const currentUpdated = updatedData.find((data) => data.tankId === tankId);
+
+    if (parseInt(currentUpdated?.mergedVolume!) > parseInt(currentUpdated?.tankMaxVolume!)) {
+      Toast.show({
+        type: 'error',
+        text1: `Tank ${currentUpdated?.tankId} Max Volume Exceeded`,
+        text2: `Max Volume: ${currentUpdated?.tankMaxVolume}L. Please reduce the volume`,
+        position: 'bottom'
+      });
+    }
+
+    setMergedData(updatedData!);
+  };
+
   const calculateTotal = (compartmentVolume: string, tankVolume: string): string => {
     const compartment = parseInt(compartmentVolume) || 0;
     const tank = parseInt(tankVolume) || 0;
-    return (compartment + tank).toString();
+    const result = (compartment + tank).toString();
+    return result;
   };
 
   const saveData = async () => {
@@ -77,8 +119,19 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         position: 'bottom',
         visibilityTime: 2000
       });
-      console.log(mergedData);
     } catch (error) {}
+  };
+
+  const resetData = async () => {
+    const resetCompartment = mergedData.map((item) => {
+      item.compartmentId = '';
+      item.compartmentVolume = '';
+      item.compartmenFuelType = '';
+      item.mergedVolume = '';
+      return item;
+    });
+
+    setMergedData(resetCompartment);
   };
 
   const verifyAll = () => {
@@ -109,7 +162,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   };
 
   return (
-    <MainLayout>
+    <MainLayout stationName={stationInfo?.name}>
       <View style={styles.dischargeBox}>
         <View style={styles.titleBox}>
           <Pressable
@@ -155,7 +208,8 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               setTankData={setTankTableData}
               compartmentData={compartmentTableData}
               setCompartmentData={setCompartmentTableData}
-              setMergedData={setMergedData}
+              calculateTotal={calculateTotal}
+              handleCompartmentSelect={handleCompartmentSelect}
               mergedData={mergedData}
               editable={editable}
             />
@@ -187,6 +241,16 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               }}
             >
               <Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
+            </Pressable>
+
+            <Pressable
+              onPress={resetData}
+              style={{
+                ...styles.button,
+                backgroundColor: 'rgba(4, 113, 232, 1)'
+              }}
+            >
+              <Text style={{ ...styles.text, color: 'white' }}>Reset</Text>
             </Pressable>
           </View>
         </View>
@@ -232,7 +296,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
-    height: 550,
     width: '95%'
   },
   titleBox: {
@@ -250,26 +313,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly'
   },
   box: {
-    // fontFamily: typography.primary.semibold,
     flex: 1,
     width: 'auto',
     height: 40,
-    // backgroundColor: 'rgba(3, 244, 28, 1)',
     borderWidth: 0.5,
     textAlign: 'center'
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 22,
+    paddingVertical: 4,
+    paddingHorizontal: 16,
     borderRadius: 4
   },
   text: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontFamily: typography.primary.medium,
-    letterSpacing: 0.25
+    fontSize: 14,
+    fontFamily: typography.primary.medium
   }
 });
 

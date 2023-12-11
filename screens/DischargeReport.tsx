@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { compartmentToTank } from '../utils/constant';
 import FeatherIcons from '@expo/vector-icons/Feather';
-import { useRoute } from '@react-navigation/native';
 import { AppStackScreenProps, MergeData, ReportData, StationInfo } from '../utils/types';
 import { load } from '../utils/storage';
 
@@ -49,6 +48,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
     setReportListData(updatedReportList);
     try {
       await AsyncStorage.setItem('reportData', JSON.stringify(updatedReportList));
+
       Toast.show({
         type: 'success',
         text1: 'Data verified',
@@ -56,10 +56,10 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
         position: 'bottom',
         visibilityTime: 2000
       });
+
       setTimeout(() => {
         navigation.navigate('Home');
       }, 2000);
-      console.log(updatedReportList);
     } catch (error) {
       console.log(error);
     }
@@ -134,12 +134,11 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
           <View
             style={{
               position: 'absolute',
-              width: 293,
+              width: '100%',
               height: 240,
               zIndex: -10,
               borderRightWidth: 0.5,
               borderLeftWidth: 0.5
-              // backgroundColor: 'rgba(0, 188, 215, 1)',
             }}
           >
             <Text
@@ -202,8 +201,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
-    height: 500,
-    width: '85%'
+    width: '95%'
   },
   titleBox: {
     display: 'flex',

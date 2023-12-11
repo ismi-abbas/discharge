@@ -1,17 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import React, { FC, ReactNode } from 'react';
 import { Image } from 'expo-image';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Props = {
   children: ReactNode;
   stationName: string | undefined | 'Station';
+  openSettings?: () => void;
 };
 
-export const MainLayout: FC<Props> = ({ children, stationName }) => {
+export const MainLayout: FC<Props> = ({ children, stationName, openSettings }) => {
+  const insets = useSafeAreaInsets();
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container, paddingTop: insets.top }}>
       <View style={styles.bar}>
         <Image
           style={styles.image}
@@ -26,6 +29,7 @@ export const MainLayout: FC<Props> = ({ children, stationName }) => {
           <FeatherIcons
             name="sliders"
             size={20}
+            onPress={openSettings}
           />
         </View>
       </View>
@@ -40,8 +44,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EAECEC',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingTop: 30
+    justifyContent: 'flex-start'
   },
   image: {
     display: 'flex',
@@ -61,7 +64,10 @@ const styles = StyleSheet.create({
     height: 70
   },
   barTitle: {
+    textAlign: 'center',
     fontFamily: typography.primary.medium,
-    fontSize: 22
+    fontSize: 20,
+    width: '100%',
+    overflow: 'hidden'
   }
 });

@@ -29,10 +29,7 @@ const CompartmentInfoTable = ({ tableData, editable, handleVolumeChange, handleC
 
             <Dropdown
               disable={!editable}
-              style={{
-                ...styles.dropdown,
-                backgroundColor: editable ? 'yellow' : 'white'
-              }}
+              style={styles.dropdown}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
               iconStyle={styles.iconStyle}
@@ -44,15 +41,10 @@ const CompartmentInfoTable = ({ tableData, editable, handleVolumeChange, handleC
               onChange={(item) => handleCompartmentSelect(item, column.compartmentId)}
             />
 
-            <View
-              style={{
-                ...styles.box,
-                backgroundColor: editable ? 'green' : 'white'
-              }}
-            >
+            <View style={styles.box}>
               <TextInput
                 editable={editable}
-                style={{ ...styles.input, color: editable ? 'white' : 'black' }}
+                style={{ ...styles.input, color: 'black' }}
                 value={column.volume}
                 onChangeText={(volume) => handleVolumeChange(column.id, volume)}
                 keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}

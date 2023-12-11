@@ -12,56 +12,25 @@ type Props = {
   setCompartmentData: (data: CompartmentData[]) => void;
   editable: boolean;
   mergedData: MergeData[] | undefined;
-  setMergedData: (data: MergeData[]) => void;
+  handleCompartmentSelect: Function;
+  calculateTotal: Function;
 };
 
-const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, setMergedData }: Props) => {
+const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleCompartmentSelect }: Props) => {
   const [dropdownList, setDropDownList] = useState<DropdownList[]>([]);
 
   if (!mergedData) {
-    return null; // or handle the case appropriately
+    return null;
   }
 
   useEffect(() => {
-    const newDropdownList = compartmentData.map((data) => ({
+    let newDropdownList: DropdownList[] = compartmentData.map((data) => ({
       label: data.compartmentId,
       value: data.compartmentId
     }));
 
     setDropDownList(newDropdownList);
-
-    console.log(mergedData);
   }, []);
-
-  const handleCompartmentSelect = (item: DropdownList, tankId: string) => {
-    const id = item.value;
-    const compartment = compartmentData.find((data) => data.compartmentId === item.value);
-    if (!compartment) {
-      return;
-    }
-
-    const compartmentFuelType = compartment.fuelType || '';
-    const volume = compartment.volume || '';
-
-    const updatedData = mergedData?.map((data) =>
-      data.tankId === tankId
-        ? {
-            ...data,
-            compartmentId: id,
-            compartmentVolume: volume,
-            compartmenFuelType: compartmentFuelType,
-            mergedVolume: calculateTotal(volume, data.tankVolume)
-          }
-        : data
-    );
-    setMergedData(updatedData!);
-  };
-
-  const calculateTotal = (compartmentVolume: string, tankVolume: string): string => {
-    const compartment = parseInt(compartmentVolume) || 0;
-    const tank = parseInt(tankVolume) || 0;
-    return (compartment + tank).toString();
-  };
 
   return (
     <View style={styles.container}>
@@ -93,17 +62,19 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, setMerg
                 backgroundColor: 'rgba(91, 217, 250, 0.8)'
               }}
             >
-              <Text style={styles.text}>{column.tankVolume}</Text>
+              <Text style={styles.text}>{column.tankVolume.concat('L')}</Text>
             </View>
             {/* Compartment Select */}
             <Dropdown
               disable={!editable}
-              style={{
-                ...styles.dropdown,
-                backgroundColor: editable ? 'yellow' : 'white'
-              }}
+              style={styles.dropdown}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
+              itemTextStyle={{
+                fontFamily: typography.primary.semibold,
+                fontSize: 14,
+                textAlign: 'center'
+              }}
               iconStyle={styles.iconStyle}
               data={dropdownList}
               labelField="label"
@@ -117,7 +88,12 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, setMerg
             <View
               style={{
                 ...styles.box,
-                backgroundColor: column.compartmenFuelType === column.tankFuelType ? 'white' : 'red'
+                backgroundColor:
+                  column.compartmenFuelType !== ''
+                    ? column.compartmenFuelType === column.tankFuelType
+                      ? 'white'
+                      : 'red'
+                    : 'white'
               }}
             >
               <Text style={styles.text}>{column.compartmenFuelType}</Text>
@@ -129,16 +105,36 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, setMerg
                 ...styles.box
               }}
             >
-              <Text style={styles.text}>{column.compartmentVolume}</Text>
+              <Text style={styles.text}>
+                {column.compartmentVolume ? column.compartmentVolume.concat('L') : column.compartmentVolume}
+              </Text>
             </View>
 
             <View
               style={{
                 marginTop: 40,
-                ...styles.box
+                ...styles.box,
+                backgroundColor:
+                  column.mergedVolume !== ''
+                    ? parseInt(column.mergedVolume) > parseInt(column.tankMaxVolume)
+                      ? 'red'
+                      : 'white'
+                    : 'white'
               }}
             >
-              <Text style={styles.text}>{calculateTotal(column.compartmentVolume, column.tankVolume)}</Text>
+              <Text
+                style={{
+                  ...styles.text,
+                  color:
+                    column.mergedVolume !== ''
+                      ? parseInt(column.mergedVolume) > parseInt(column.tankMaxVolume)
+                        ? 'white'
+                        : 'black'
+                      : 'white'
+                }}
+              >
+                {column.mergedVolume}
+              </Text>
             </View>
           </View>
         ))}
@@ -149,8 +145,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, setMerg
           position: 'absolute',
           width: 333,
           height: 310,
-          zIndex: -10,
-          backgroundColor: 'rgba(91, 250, 124, 0.8)'
+          zIndex: -10
         }}
       >
         <Text
@@ -202,10 +197,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    textAlign: 'center'
   },
   placeholderStyle: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: typography.primary.bold
   },
   selectedTextStyle: {

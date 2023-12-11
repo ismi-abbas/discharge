@@ -1,36 +1,48 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Button } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { AppStackScreenProps } from '../MainNavigator';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
 import FeatherIcons from '@expo/vector-icons/Feather';
-import { tankData } from '../utils/constant';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { tankDefaultData } from '../utils/constant';
 import Toast from 'react-native-toast-message';
-import TankInfoTable, { TankData } from '../components/TankInfoTable';
-import { DropdownList } from '../components/CompartmentVSTankTable';
+import TankInfoTable from '../components/TankInfoTable';
+import { AppStackScreenProps, DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
+import { load, remove, save } from '../utils/storage';
 
 const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
-  const [tableData, setTableData] = useState<TankData[]>(tankData);
+  const [tankData, setTableData] = useState<TankData[]>(tankDefaultData);
   const [editable, setEditable] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+  const [stationInfo, setStationInfo] = useState<StationInfo>();
 
   useEffect(() => {
-    getTableData();
-  }, []);
+    const fetchData = async () => {
+      try {
+        const previousTankData = (await load('tankData')) as TankData[];
+        const stationInfo = (await load('stationInfo')) as StationInfo;
+        const initialTankInfo = (await load('initialSetup')) as InitialSetupInfo;
 
-  const getTableData = async () => {
-    try {
-      const tankData = await AsyncStorage.getItem('tankData');
-      if (tankData) {
-        setTableData(JSON.parse(tankData || ''));
+        if (previousTankData) {
+          setTableData(previousTankData);
+        } else if (initialTankInfo) {
+          setTableData(initialTankInfo.data);
+        }
+
+        if (stationInfo) {
+          setStationInfo(stationInfo);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {}
-  };
+    };
+
+    fetchData();
+  }, []);
 
   const saveData = async () => {
     try {
-      AsyncStorage.setItem('tankData', JSON.stringify(tableData));
+      await save('tankData', tankData);
+
       Toast.show({
         type: 'success',
         text1: 'Data Saved',
@@ -38,7 +50,6 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         position: 'bottom',
         visibilityTime: 2000
       });
-      console.log(tableData);
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -55,6 +66,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 
     if (verified) {
       setIsVerified(true);
+
       Toast.show({
         type: 'success',
         text1: 'Data Verified',
@@ -62,10 +74,13 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         position: 'bottom',
         visibilityTime: 2000
       });
+
       setTimeout(() => {
         navigation.navigate('CompartmentTankVerify');
       }, 2000);
     } else {
+      setIsVerified(false);
+
       Toast.show({
         type: 'error',
         text1: 'Invalid data',
@@ -73,16 +88,15 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         position: 'bottom',
         visibilityTime: 2000
       });
-      setIsVerified(false);
     }
   };
 
   const handleCompartmentSelect = (item: DropdownList, tankId: string) => {
-    const compartment = tableData?.find((data) => data.tankId === tankId);
+    const compartment = tankData?.find((data) => data.tankId === tankId);
     if (!compartment) {
       return;
     }
-    const updatedData = tableData?.map((data) =>
+    const updatedData = tankData?.map((data) =>
       data.tankId == tankId
         ? {
             ...data,
@@ -93,8 +107,30 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
     setTableData(updatedData!);
   };
 
+  const handleVolumeChange = (id: number, value: string) => {
+    const updatedTankData = tankData.map((tank) => (tank.id === id ? { ...tank, volume: value } : tank));
+
+    const tankWithUpdatedVolume = updatedTankData.find((tank) => tank.id === id)!;
+
+    if (parseInt(tankWithUpdatedVolume.volume) > parseInt(tankWithUpdatedVolume.maxVolume)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Max volume exceeded',
+        text2: `Volume exceeds max volume for tank ${tankWithUpdatedVolume.tankId}. Max ${tankWithUpdatedVolume.maxVolume}`,
+        position: 'bottom',
+        visibilityTime: 3000
+      });
+    }
+
+    setTableData(updatedTankData);
+  };
+
   return (
-    <MainLayout>
+    <MainLayout stationName={stationInfo?.name}>
+      <Button
+        onPress={async () => await remove('tankData')}
+        title="Delete Tank Data"
+      />
       <View style={styles.dischargeBox}>
         <View style={styles.titleBox}>
           <View>
@@ -127,10 +163,10 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
             </Text>
 
             <TankInfoTable
-              tableData={tableData}
+              tableData={tankData}
               editable={editable}
-              setTableData={setTableData}
               handleCompartmentSelect={handleCompartmentSelect}
+              handleVolumeChange={handleVolumeChange}
             />
             <Text
               style={{
@@ -213,7 +249,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
-    height: 500,
     width: '95%'
   },
   titleBox: {
@@ -235,22 +270,18 @@ const styles = StyleSheet.create({
     flex: 1,
     width: 'auto',
     height: 40,
-    // backgroundColor: 'rgba(3, 244, 28, 1)',
     borderWidth: 0.5,
     textAlign: 'center'
   },
   button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 22,
+    paddingVertical: 4,
+    paddingHorizontal: 16,
     borderRadius: 4
   },
   text: {
-    fontSize: 16,
+    fontSize: 14,
     lineHeight: 21,
-    fontFamily: typography.primary.medium,
-    letterSpacing: 0.25
+    fontFamily: typography.primary.medium
   }
 });
 

@@ -3,29 +3,32 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { MainLayout } from '../components/MainLayout';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
-import { compartmentData } from '../utils/constant';
 import CompartmentInfoTable from '../components/CompartmentInfoTable';
 import Toast from 'react-native-toast-message';
 import { load, save } from '../utils/storage';
 import { AppStackScreenProps, CompartmentData, DropdownList, StationInfo } from '../utils/types';
+import { compartment } from '../utils/constant';
 
 const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>) => {
   const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [editable, setEditable] = useState(false);
   const [isSaved, setSaved] = useState(false);
-  const [tableData, setTableData] = useState<CompartmentData[] | undefined>(compartmentData);
+  const [compartmentData, setCompartmentData] = useState<CompartmentData[]>();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = (await load('compartmentData')) as CompartmentData[];
+        const compartmentData = (await load('compartmentData')) as CompartmentData[];
         const stationInfo = (await load('stationInfo')) as StationInfo;
 
-        setTableData(data);
+        if (compartmentData) {
+          setCompartmentData(compartmentData);
+        } else {
+          setCompartmentData(compartment);
+        }
+
         setStationInfo(stationInfo);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     };
 
     fetchData();
@@ -33,7 +36,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 
   const saveData = async () => {
     try {
-      await save('compartmentData', tableData);
+      await save('compartmentData', compartmentData);
 
       setSaved(true);
 
@@ -44,22 +47,21 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
         position: 'bottom',
         visibilityTime: 2000
       });
-      console.log(tableData);
     } catch (error) {}
   };
 
   const handleCompartment = (action: string) => {
     if (action === 'add') {
-      const id = (tableData?.length || 0) + 1;
+      const id = (compartmentData?.length || 0) + 1;
 
       const newCompartment: CompartmentData = {
         compartmentId: 'C' + id.toString(),
         fuelType: '',
-        id: (tableData?.length || 0) + 1,
+        id: (compartmentData?.length || 0) + 1,
         volume: '0'
       };
-      const updatedTableData = [...(tableData || []), newCompartment];
-      setTableData(updatedTableData);
+      const updatedTableData = [...(compartmentData || []), newCompartment];
+      setCompartmentData(updatedTableData);
 
       Toast.show({
         type: 'success',
@@ -68,9 +70,9 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
         position: 'bottom'
       });
     } else if (action === 'remove') {
-      if (tableData && tableData.length > 0) {
-        const updatedTableData = tableData.slice(0, -1);
-        setTableData(updatedTableData);
+      if (compartmentData && compartmentData.length > 0) {
+        const updatedTableData = compartmentData.slice(0, -1);
+        setCompartmentData(updatedTableData);
 
         Toast.show({
           type: 'success',
@@ -83,7 +85,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
   };
 
   const verifyAll = () => {
-    const verified = tableData?.every((data) => data.fuelType !== '' && data.volume !== '');
+    const verified = compartmentData?.every((data) => data.fuelType !== '' && data.volume !== '');
 
     if (verified) {
       Toast.show({
@@ -108,7 +110,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
   };
 
   const handleFuelTypeChange = (rowIndex: number, col: string, value: string) => {
-    const updatedData = tableData?.map((row, index) => {
+    const updatedData = compartmentData?.map((row, index) => {
       if (index === rowIndex) {
         return {
           ...row,
@@ -118,23 +120,23 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
       return row;
     });
 
-    setTableData(updatedData);
+    setCompartmentData(updatedData);
   };
 
   const handleVolumeChange = (id: number, value: string) => {
-    const updatedData = tableData?.map((compartment) =>
+    const updatedData = compartmentData?.map((compartment) =>
       compartment.id === id ? { ...compartment, volume: value } : compartment
     );
 
-    setTableData(updatedData);
+    setCompartmentData(updatedData);
   };
 
   const handleCompartmentSelect = (item: DropdownList, compartmentId: string) => {
-    const compartment = tableData?.find((data) => data.compartmentId === compartmentId);
+    const compartment = compartmentData?.find((data) => data.compartmentId === compartmentId);
     if (!compartment) {
       return;
     }
-    const updatedData = tableData?.map((data) =>
+    const updatedData = compartmentData?.map((data) =>
       data.compartmentId == compartmentId
         ? {
             ...data,
@@ -142,13 +144,16 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
           }
         : data
     );
-    setTableData(updatedData!);
+    setCompartmentData(updatedData!);
   };
 
   const date = new Date();
 
   return (
-    <MainLayout stationName={stationInfo?.name}>
+    <MainLayout
+      stationName={stationInfo?.name}
+      openSettings={() => navigation.navigate('OneTimeSetup')}
+    >
       <View style={styles.dischargeBox}>
         <View style={styles.titleBox}>
           <View>
@@ -243,9 +248,9 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
         </Text>
 
         <CompartmentInfoTable
-          setTableData={setTableData}
+          setTableData={setCompartmentData}
           editable={editable}
-          tableData={tableData}
+          tableData={compartmentData}
           handleFuelTypeChange={handleFuelTypeChange}
           handleVolumeChange={handleVolumeChange}
           handleCompartmentSelect={handleCompartmentSelect}

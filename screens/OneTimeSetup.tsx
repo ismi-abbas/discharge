@@ -2,7 +2,7 @@ import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } fr
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
-import { petrolType, tankData } from '../utils/constant';
+import { petrolType, tankDefaultData } from '../utils/constant';
 import { Dropdown } from 'react-native-element-dropdown';
 import Toast from 'react-native-toast-message';
 import { load, save } from '../utils/storage';
@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppStackScreenProps, DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
 
 const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
-  const [tableData, setTableData] = useState<TankData[]>(tankData);
+  const [tableData, setTableData] = useState<TankData[]>(tankDefaultData);
   const [editable, setEditable] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [initialSetup, setInitialSetup] = useState<InitialSetupInfo>({
@@ -29,7 +29,6 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(await AsyncStorage.getAllKeys());
         const initialSetup = (await load('initialSetup')) as InitialSetupInfo;
         const stationInfoData = (await load('stationInfo')) as StationInfo;
 

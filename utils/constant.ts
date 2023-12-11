@@ -1,6 +1,6 @@
 import { MergeData } from './types';
 
-export const tankData = [
+export const tankDefaultData = [
   {
     id: 1,
     tankId: 'T1',
@@ -52,7 +52,7 @@ export const tankData = [
   }
 ];
 
-export const compartmentData = [
+export const compartment = [
   {
     id: 1,
     compartmentId: 'C1',

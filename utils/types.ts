@@ -24,6 +24,7 @@ export type MergeData = {
   tankId: string;
   tankFuelType: string;
   tankVolume: string;
+  tankMaxVolume: string;
   compartmentId: string;
   compartmenFuelType: string;
   compartmentVolume: string;

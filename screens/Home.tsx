@@ -4,7 +4,7 @@ import { typography } from '../theme/typography';
 import { MainLayout } from '../components/MainLayout';
 import { useEffect, useState } from 'react';
 import { load } from '../utils/storage';
-import { AppStackScreenProps, InitialSetupInfo, ReportData, ResultItem, StationInfo } from '../utils/types';
+import { AppStackScreenProps, ReportData, ResultItem, StationInfo } from '../utils/types';
 
 export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
   const [stationInfo, setStationInfo] = useState<StationInfo>();
