@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { MainLayout } from '../components/MainLayout';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
@@ -154,198 +154,212 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
       stationName={stationInfo?.name}
       openSettings={() => navigation.navigate('OneTimeSetup')}
     >
-      <View style={styles.dischargeBox}>
-        <View style={styles.titleBox}>
-          <View>
-            <Text style={styles.titleBoxText}>New Discharge</Text>
-            <Text
-              style={{
-                fontFamily: typography.primary.semibold,
-                fontSize: 17
-              }}
-            >
-              {stationInfo?.name}
-            </Text>
-            <Text
-              style={{
-                fontFamily: typography.primary.light,
-                fontSize: 14
-              }}
-            >
-              {stationInfo?.address}
-            </Text>
-            <View
-              style={{
-                marginTop: 10
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: typography.primary.semibold,
-                  fontSize: 17
-                }}
-              >
-                {stationInfo?.companyName}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: typography.primary.light,
-                  fontSize: 14
-                }}
-              >
-                {stationInfo?.companyAddress}
-              </Text>
-            </View>
-            <Text
-              style={{
-                marginTop: 10,
-                fontFamily: typography.primary.normal,
-                fontSize: 12
-              }}
-            >
-              Date: {date.toDateString()}
-            </Text>
-          </View>
-
-          <Pressable
-            onPress={() => navigation.navigate('Home')}
-            style={{
-              backgroundColor: 'rgba(215, 215, 215, 0.8)',
-              padding: 2,
-              borderRadius: 5,
-              position: 'absolute',
-              top: 0,
-              right: 0
-            }}
-          >
-            <FeatherIcons
-              name="x"
-              size={20}
-            />
-          </Pressable>
-        </View>
-      </View>
-
-      <View
-        style={{
-          marginTop: 10,
-          padding: 20,
-          display: 'flex',
-          borderRadius: 10,
-          backgroundColor: '#fff',
-          width: '95%'
-        }}
-      >
-        <Text
-          style={{
-            fontFamily: typography.primary.bold,
-            width: '95%',
-            fontSize: 15,
-            textTransform: 'capitalize'
-          }}
-        >
-          Please key in truck delivery details compartment(C)
-        </Text>
-
-        <KeyboardAvoidingView>
-          <CompartmentInfoTable
-            setTableData={setCompartmentData}
-            editable={editable}
-            tableData={compartmentData}
-            handleFuelTypeChange={handleFuelTypeChange}
-            handleVolumeChange={handleVolumeChange}
-            handleCompartmentSelect={handleCompartmentSelect}
-          />
-        </KeyboardAvoidingView>
-
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View
           style={{
-            display: 'flex',
-            marginTop: 20,
-            alignItems: 'flex-start',
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
             width: '95%'
           }}
         >
-          <View style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
-            <Pressable
-              disabled={editable}
-              onPress={() => handleCompartment('add')}
-              style={{
-                ...styles.compartmentButton,
-                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
-              }}
-            >
-              <Text style={{ ...styles.buttonText, color: 'white' }}>Add</Text>
-            </Pressable>
-            <Pressable
-              disabled={editable}
-              onPress={() => handleCompartment('remove')}
-              style={{
-                ...styles.compartmentButton,
-                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
-              }}
-            >
-              <Text style={{ ...styles.buttonText, color: 'white' }}>Remove</Text>
-            </Pressable>
+          <View style={styles.dischargeBox}>
+            <View style={styles.titleBox}>
+              <View>
+                <Text style={styles.titleBoxText}>New Discharge</Text>
+                <Text
+                  style={{
+                    fontFamily: typography.primary.semibold,
+                    fontSize: 17
+                  }}
+                >
+                  {stationInfo?.name}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: typography.primary.light,
+                    fontSize: 14
+                  }}
+                >
+                  {stationInfo?.address}
+                </Text>
+                <View
+                  style={{
+                    marginTop: 10
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: typography.primary.semibold,
+                      fontSize: 17
+                    }}
+                  >
+                    {stationInfo?.companyName}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: typography.primary.light,
+                      fontSize: 14
+                    }}
+                  >
+                    {stationInfo?.companyAddress}
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    marginTop: 10,
+                    fontFamily: typography.primary.normal,
+                    fontSize: 12
+                  }}
+                >
+                  Date: {date.toDateString()}
+                </Text>
+              </View>
+
+              <Pressable
+                onPress={() => navigation.navigate('Home')}
+                style={{
+                  backgroundColor: 'rgba(215, 215, 215, 0.8)',
+                  padding: 2,
+                  borderRadius: 5,
+                  position: 'absolute',
+                  top: 0,
+                  right: 0
+                }}
+              >
+                <FeatherIcons
+                  name="x"
+                  size={20}
+                />
+              </Pressable>
+            </View>
+          </View>
+
+          <View
+            style={{
+              marginTop: 10,
+              padding: 20,
+              display: 'flex',
+              borderRadius: 10,
+              backgroundColor: '#fff',
+              width: '95%'
+            }}
+          >
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+              <Text
+                style={{
+                  fontFamily: typography.primary.bold,
+                  width: '95%',
+                  fontSize: 15,
+                  textTransform: 'capitalize'
+                }}
+              >
+                Please key in truck delivery details compartment(C)
+              </Text>
+
+              <KeyboardAvoidingView>
+                <CompartmentInfoTable
+                  setTableData={setCompartmentData}
+                  editable={editable}
+                  tableData={compartmentData}
+                  handleFuelTypeChange={handleFuelTypeChange}
+                  handleVolumeChange={handleVolumeChange}
+                  handleCompartmentSelect={handleCompartmentSelect}
+                />
+              </KeyboardAvoidingView>
+
+              <View
+                style={{
+                  display: 'flex',
+                  marginTop: 20,
+                  alignItems: 'flex-start',
+                  width: '95%'
+                }}
+              >
+                <View style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
+                  <Pressable
+                    disabled={editable}
+                    onPress={() => handleCompartment('add')}
+                    style={{
+                      ...styles.compartmentButton,
+                      backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                    }}
+                  >
+                    <Text style={{ ...styles.buttonText, color: 'white' }}>Add</Text>
+                  </Pressable>
+                  <Pressable
+                    disabled={editable}
+                    onPress={() => handleCompartment('remove')}
+                    style={{
+                      ...styles.compartmentButton,
+                      backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                    }}
+                  >
+                    <Text style={{ ...styles.buttonText, color: 'white' }}>Remove</Text>
+                  </Pressable>
+                </View>
+
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 10,
+                    marginTop: 10
+                  }}
+                >
+                  <Pressable
+                    onPress={() => {
+                      setEditable(!editable);
+                      setSaved(false);
+                    }}
+                    style={{
+                      ...styles.button,
+                      backgroundColor: 'rgba(4, 113, 232, 1)'
+                    }}
+                  >
+                    <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </KeyboardAvoidingView>
           </View>
 
           <View
             style={{
               display: 'flex',
               flexDirection: 'row',
-              gap: 10,
-              marginTop: 10
+              justifyContent: 'flex-start',
+              width: '95%',
+              marginTop: 10,
+              marginLeft: 20,
+              gap: 10
             }}
           >
             <Pressable
-              onPress={() => {
-                setEditable(!editable);
-                setSaved(false);
-              }}
+              disabled={editable}
+              onPress={saveData}
               style={{
                 ...styles.button,
-                backgroundColor: 'rgba(4, 113, 232, 1)'
+                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
               }}
             >
-              <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
+              <Text style={styles.buttonText}>Save</Text>
+            </Pressable>
+
+            <Pressable
+              onPress={verifyAll}
+              disabled={editable}
+              style={{
+                ...styles.button,
+                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+              }}
+            >
+              <Text style={styles.buttonText}>Verify</Text>
             </Pressable>
           </View>
         </View>
-      </View>
-
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-          width: '95%',
-          marginTop: 10,
-          marginLeft: 20,
-          gap: 10
-        }}
-      >
-        <Pressable
-          disabled={editable}
-          onPress={saveData}
-          style={{
-            ...styles.button,
-            backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
-          }}
-        >
-          <Text style={styles.buttonText}>Save</Text>
-        </Pressable>
-
-        <Pressable
-          onPress={verifyAll}
-          disabled={editable}
-          style={{
-            ...styles.button,
-            backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
-          }}
-        >
-          <Text style={styles.buttonText}>Verify</Text>
-        </Pressable>
-      </View>
+      </ScrollView>
     </MainLayout>
   );
 };
@@ -353,6 +367,10 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 export default CompartmentInfo;
 
 const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    width: '95%'
+  },
   dischargeBox: {
     padding: 20,
     display: 'flex',

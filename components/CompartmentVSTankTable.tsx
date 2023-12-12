@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { typography } from '../theme/typography';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Dropdown } from 'react-native-element-dropdown';
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 import { CompartmentData, DropdownList, MergeData, TankData } from '../utils/types';
 
 type Props = {
@@ -28,6 +28,13 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
       label: data.compartmentId,
       value: data.compartmentId
     }));
+
+    let emptyValue = {
+      label: 'Empty',
+      value: ''
+    };
+
+    newDropdownList.push(emptyValue);
 
     setDropDownList(newDropdownList);
   }, []);
@@ -66,6 +73,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
             </View>
             {/* Compartment Select */}
             <Dropdown
+              keyboardAvoiding
               disable={!editable}
               style={styles.dropdown}
               placeholderStyle={styles.placeholderStyle}
@@ -75,6 +83,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
                 fontSize: 14,
                 textAlign: 'center'
               }}
+              maxHeight={400}
               iconStyle={styles.iconStyle}
               data={dropdownList}
               labelField="label"

@@ -63,6 +63,22 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   const handleCompartmentSelect = (item: DropdownList, tankId: string) => {
     const compartmentId = item.value;
 
+    if (compartmentId === '') {
+      setMergedData(
+        mergedData?.map((data) =>
+          data.tankId === tankId
+            ? {
+                ...data,
+                compartmentId: '',
+                compartmentVolume: '',
+                compartmenFuelType: '',
+                mergedVolume: ''
+              }
+            : data
+        )
+      );
+    }
+
     const compartment = compartmentTableData.find((data) => data.compartmentId === compartmentId);
     if (!compartment) {
       return;
@@ -142,9 +158,40 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   };
 
   const verifyAll = () => {
-    const verified = mergedData.every(
+    let verified = mergedData.every(
       (x) => x.tankId !== '' && x.mergedVolume !== '' && parseInt(x.mergedVolume) < parseInt(x.tankMaxVolume)
     );
+
+    if (verified) {
+      for (let i = 0; i < mergedData.length; i++) {
+        const currentElement = mergedData[i];
+        const currentCompartmentName = currentElement.compartmentId;
+        const currentTankName = currentElement.tankId;
+
+        for (let j = 0; j < i; j++) {
+          const compareElement = mergedData[j];
+          const compareCompartmentName = compareElement.compartmentId;
+          const compareTankName = compareElement.tankId;
+
+          if (currentCompartmentName === compareCompartmentName) {
+            console.log(`Found tanks with the same compartmentId: ${currentTankName}`);
+            Toast.show({
+              type: 'error',
+              text1: 'Same compartmentId found',
+              text2: `Found tanks with the same compartment: ${currentTankName} and ${compareTankName}`,
+              position: 'bottom',
+              visibilityTime: 2000
+            });
+
+            verified = false;
+
+            return;
+          } else {
+            verified = true;
+          }
+        }
+      }
+    }
 
     if (verified) {
       setIsVerified(true);

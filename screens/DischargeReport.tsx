@@ -127,7 +127,9 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
                     ...styles.box
                   }}
                 >
-                  <Text style={styles.columnText}>{column.compartmentVolume.concat('L')}</Text>
+                  <Text style={styles.columnText}>
+                    {parseInt(column.compartmentVolume) > 0 ? column.compartmentVolume.concat('L') : '0'.concat('L')}
+                  </Text>
                 </View>
                 <View
                   style={{

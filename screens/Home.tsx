@@ -15,7 +15,6 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('Fethcing');
       fetchData();
     }, [])
   );
@@ -25,29 +24,42 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
       const reportData = (await load('reportData')) as ReportData[];
       const stationInfoData = (await load('stationInfo')) as StationInfo;
 
+      console.log(reportData);
+
       if (reportData) {
+        let totalCompartmentBefore: number = 0;
+        let totalTankVolumeBefore: number = 0;
+
         setReportData(reportData);
         const totalsByDate = reportData.reduce((result, array) => {
           const date = array.date;
 
-          const { totalTankVolume, totalCompartmentVolume } = array.report.reduce(
+          const { totalTankVolume, totalAddedCompartmentVolumne } = array.report.reduce(
             (accumulator, tank) => {
               accumulator.totalTankVolume += parseInt(tank.tankVolume) || 0;
-              accumulator.totalCompartmentVolume += parseInt(tank.compartmentVolume) || 0;
+              accumulator.totalAddedCompartmentVolumne += parseInt(tank.compartmentVolume) || 0;
               return accumulator;
             },
-            { totalTankVolume: 0, totalCompartmentVolume: 0 }
+            { totalTankVolume: 0, totalAddedCompartmentVolumne: 0 }
           );
+
+          totalCompartmentBefore = +totalAddedCompartmentVolumne;
+          totalTankVolumeBefore = +totalTankVolume;
 
           result.push({
             reportId: array.reportId,
             date,
             totalTankVolume,
-            totalCompartmentVolume,
-            status: 'normal'
+            totalAddedCompartmentVolumne,
+            status: 'normal',
+            totalCurrentTankVolume: totalTankVolumeBefore
           });
+
+          console.log(result);
           return result;
         }, [] as ResultItem[]);
+
+        console.log(totalCompartmentBefore, totalTankVolumeBefore);
 
         setListData(totalsByDate);
         setListData(totalsByDate);
@@ -143,15 +155,14 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
             </View>
             <View>
               <Text style={{ ...styles.textSemiBold, fontSize: 15 }}>{format(new Date(item.date), 'dd-MMM-yy')}</Text>
-              <Text>Current compartment Volume {item.totalTankVolume} Litre</Text>
+              {/* Total Current Compartment volumne */}
+              <Text>{item.totalTankVolume} Litre</Text>
             </View>
             <View>
-              <Text style={{ ...styles.textSemiBold, fontSize: 15 }}>
-                Current Tank Volume{item.totalCompartmentVolume}L
-              </Text>
-              <Text style={styles.amountIndicatorText}>
-                + total compartment volume{item.totalCompartmentVolume + item.totalTankVolume}L
-              </Text>
+              {/* Current Tank Volume */}
+              <Text style={{ ...styles.textSemiBold, fontSize: 15 }}>{item.totalCurrentTankVolume}L</Text>
+              {/* additional total compartment volume */}
+              <Text style={styles.amountIndicatorText}>{item.totalAddedCompartmentVolumne}L</Text>
             </View>
           </Pressable>
         )}

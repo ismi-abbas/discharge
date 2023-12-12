@@ -1,27 +1,38 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-export type ReportData = {
+export interface ReportData {
   reportId: string;
   date: Date;
   report: MergeData[];
-};
+}
+
+export interface ViewReportData {
+  reportId: string;
+  date: Date;
+  stationName: string;
+  stationLocation: string;
+  companyName: string;
+  companyLocation: string;
+  report: MergeData[];
+}
 
 export interface ResultItem {
   reportId: string;
   date: Date;
   totalTankVolume: number;
-  totalCompartmentVolume: number;
+  totalAddedCompartmentVolumne: number;
   status: string;
+  totalCurrentTankVolume: number;
 }
 
-export type CompartmentData = {
+export interface CompartmentData {
   id: number;
   compartmentId: string;
   fuelType: string;
   volume: string;
-};
+}
 
-export type MergeData = {
+export interface MergeData {
   id: number | string;
   tankId: string;
   tankFuelType: string;
@@ -31,20 +42,20 @@ export type MergeData = {
   compartmenFuelType: string;
   compartmentVolume: string;
   mergedVolume: string;
-};
+}
 
-export type DropdownList = {
+export interface DropdownList {
   label: string;
   value: string;
-};
+}
 
-export type TankData = {
+export interface TankData {
   id: number;
   tankId: string;
   fuelType: string;
   volume: string;
   maxVolume: string;
-};
+}
 
 export interface InitialSetupInfo {
   done: boolean;
@@ -66,7 +77,9 @@ export type AppStackParamList = {
   TankInfo: undefined;
   CompartmentTankVerify: undefined;
   DischargeReport: {};
-  ViewReport: {};
+  ViewReport: {
+    reportId: string;
+  };
 };
 
 export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStackScreenProps<AppStackParamList, T>;
