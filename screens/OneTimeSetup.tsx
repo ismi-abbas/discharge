@@ -15,14 +15,14 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
   const [isVerified, setIsVerified] = useState(false);
   const [initialSetup, setInitialSetup] = useState<InitialSetupInfo>({
     done: false,
-    data: []
+    data: [],
   });
   const [stationInfo, setStationInfo] = useState<StationInfo>({
     stationId: '',
     name: '',
     address: '',
     companyAddress: '',
-    companyName: ''
+    companyName: '',
   });
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
       data.tankId === tankId
         ? {
             ...data,
-            fuelType: item.value
+            fuelType: item.value,
           }
         : data
     );
@@ -84,7 +84,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
       fuelType: '',
       id: id,
       volume: '0',
-      maxVolume: '0'
+      maxVolume: '0',
     };
     const updatedTableData = [...(tableData || []), newTank];
     setTableData(updatedTableData);
@@ -104,7 +104,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
   const saveDetails = async ({ data }: { data: TankData[] }) => {
     setInitialSetup({
       done: true,
-      data: data
+      data: data,
     });
 
     showToast('success', 'Data save', 'Data saved successfully', 2000);
@@ -139,7 +139,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
       text1: text1,
       text2: text2,
       position: 'bottom',
-      visibilityTime: visibilityTime || 3000
+      visibilityTime: visibilityTime || 3000,
     });
   };
 
@@ -163,7 +163,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                         style={{
                           fontFamily: typography.primary.semibold,
                           fontSize: 17,
-                          color: editable ? 'gray' : 'black'
+                          color: editable ? 'gray' : 'black',
                         }}
                         value={stationInfo?.name}
                         onChangeText={(name) => setStationInfo({ ...stationInfo, name: name })}
@@ -175,7 +175,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                         style={{
                           fontFamily: typography.primary.light,
                           fontSize: 14,
-                          color: editable ? 'gray' : 'black'
+                          color: editable ? 'gray' : 'black',
                         }}
                         value={stationInfo?.address}
                         onChangeText={(address) => setStationInfo({ ...stationInfo, address: address })}
@@ -188,7 +188,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                           style={{
                             fontFamily: typography.primary.semibold,
                             fontSize: 16,
-                            color: editable ? 'gray' : 'black'
+                            color: editable ? 'gray' : 'black',
                           }}
                           value={stationInfo.companyName}
                           onChangeText={(companyName) => setStationInfo({ ...stationInfo, companyName: companyName })}
@@ -200,7 +200,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                           style={{
                             fontFamily: typography.primary.light,
                             fontSize: 14,
-                            color: editable ? 'gray' : 'black'
+                            color: editable ? 'gray' : 'black',
                           }}
                           value={stationInfo.companyAddress}
                           onChangeText={(companyAddress) =>
@@ -219,7 +219,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                     style={{
                       marginTop: 20,
                       fontFamily: typography.primary.light,
-                      fontSize: 17
+                      fontSize: 17,
                     }}
                   >
                     Please Key In Your Current Station Tank Details
@@ -265,7 +265,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                                 display: 'flex',
                                 flexDirection: 'row',
                                 justifyContent: 'center',
-                                alignItems: 'center'
+                                alignItems: 'center',
                               }}
                             >
                               <TextInput
@@ -287,7 +287,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                       marginTop: 5,
                       marginBottom: 2,
                       fontFamily: typography.primary.light,
-                      fontSize: 12
+                      fontSize: 12,
                     }}
                   >
                     {' '}
@@ -299,7 +299,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                 style={{
                   display: 'flex',
                   marginTop: 20,
-                  alignItems: 'flex-start'
+                  alignItems: 'flex-start',
                 }}
               >
                 <View
@@ -307,14 +307,14 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                     display: 'flex',
                     flexDirection: 'row',
                     gap: 10,
-                    marginTop: 4
+                    marginTop: 4,
                   }}
                 >
                   <Pressable
                     onPress={() => setEditable(!editable)}
                     style={{
                       ...styles.compartmentButton,
-                      backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                      backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
                     }}
                   >
                     <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
@@ -326,7 +326,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                       onPress={() => handleCompartment('add')}
                       style={{
                         ...styles.compartmentButton,
-                        backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                        backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
                       }}
                     >
                       <Text style={{ ...styles.buttonText, color: 'white' }}>Add</Text>
@@ -336,7 +336,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                       onPress={() => handleCompartment('remove')}
                       style={{
                         ...styles.compartmentButton,
-                        backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                        backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
                       }}
                     >
                       <Text style={{ ...styles.buttonText, color: 'white' }}>Remove</Text>
@@ -354,7 +354,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                 alignItems: 'center',
                 justifyContent: 'flex-start',
                 gap: 10,
-                paddingLeft: 20
+                paddingLeft: 20,
               }}
             >
               <Pressable
@@ -362,7 +362,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                 aria-disabled={isVerified}
                 style={{
                   ...styles.button,
-                  backgroundColor: 'rgba(4, 113, 232, 1)'
+                  backgroundColor: 'rgba(4, 113, 232, 1)',
                 }}
               >
                 <Text style={{ ...styles.buttonText, color: 'white' }}>Save</Text>
@@ -371,7 +371,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                 onPress={verifyData}
                 style={{
                   ...styles.button,
-                  backgroundColor: 'rgba(215, 215, 215, 0.8)'
+                  backgroundColor: 'rgba(215, 215, 215, 0.8)',
                 }}
               >
                 <Text style={styles.buttonText}>Verify</Text>
@@ -390,70 +390,70 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   dischargeBox: {
     padding: 20,
     marginTop: 20,
     borderRadius: 10,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   titleBox: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   titleBoxText: {
     fontSize: 20,
-    fontFamily: typography.primary.semibold
+    fontFamily: typography.primary.semibold,
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   box: {
     fontFamily: typography.primary.semibold,
     flex: 1,
     height: 40,
     borderWidth: 0.5,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 4,
     paddingHorizontal: 16,
-    borderRadius: 4
+    borderRadius: 4,
   },
   text: {
     fontSize: 14,
-    fontFamily: typography.primary.medium
+    fontFamily: typography.primary.medium,
   },
   container: {
     marginTop: 10,
     borderWidth: 0.5,
     borderColor: 'black',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   tableBox: {
     justifyContent: 'center',
     width: 70,
     borderWidth: 0.5,
     height: 40,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   input: {
     fontSize: 14,
     fontFamily: typography.primary.medium,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   header: {
     fontSize: 14,
     fontFamily: typography.primary.semibold,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   dropdown: {
     height: 40,
@@ -461,30 +461,30 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   placeholderStyle: {
     fontSize: 14,
-    fontFamily: typography.primary.bold
+    fontFamily: typography.primary.bold,
   },
   selectedTextStyle: {
     fontSize: 14,
-    fontFamily: typography.primary.bold
+    fontFamily: typography.primary.bold,
   },
   iconStyle: {
-    display: 'none'
+    display: 'none',
   },
   compartmentButton: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 4,
     paddingHorizontal: 16,
-    borderRadius: 4
+    borderRadius: 4,
   },
   buttonText: {
     fontSize: 14,
-    fontFamily: typography.primary.medium
-  }
+    fontFamily: typography.primary.medium,
+  },
 });
 
 export default OneTimeSetup;

@@ -39,12 +39,6 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
   }, []);
 
   const verifyAll = async () => {
-    // const reportExist = reportListData?.find((data) => data.reportId === currentId);
-
-    // if (reportExist) {
-    //   return;
-    // }
-
     const newReport: ReportData = {
       reportId: uuid.v4().toString(),
       date: new Date(),

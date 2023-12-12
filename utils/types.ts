@@ -14,6 +14,7 @@ export interface ViewReportData {
   companyName: string;
   companyLocation: string;
   report: MergeData[];
+  totalDeliverdVolume: number;
 }
 
 export interface ResultItem {
@@ -79,6 +80,9 @@ export type AppStackParamList = {
   DischargeReport: {};
   ViewReport: {
     reportId: string;
+    reportData: {
+      totalDelivered: number;
+    };
   };
 };
 

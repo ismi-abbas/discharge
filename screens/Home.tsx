@@ -133,7 +133,12 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
           renderItem={({ item }) => (
             <Pressable
               onPress={() => {
-                navigation.navigate('ViewReport', { reportId: item.reportId });
+                navigation.navigate('ViewReport', {
+                  reportId: item.reportId,
+                  reportData: {
+                    totalDelivered: item.totalAddedCompartmentVolumne,
+                  },
+                });
                 console.log(item);
               }}
               style={styles.dischargeBoxItem}
