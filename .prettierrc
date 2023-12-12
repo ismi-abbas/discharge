@@ -10,5 +10,5 @@
   "useTabs": false,
   "tabWidth": 2,
   "singleAttributePerLine": true,
-  "trailingComma": "none"
+  "trailingComma": "es5"
 }

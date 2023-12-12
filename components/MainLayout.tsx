@@ -35,7 +35,7 @@ export const MainLayout: FC<Props> = ({ children, stationName, openSettings }) =
         </View>
       </View>
 
-      {children}
+      <View>{children}</View>
     </View>
   );
 };

@@ -8,7 +8,7 @@ import {
   Inter_500Medium as InterMedium,
   Inter_600SemiBold as InterSemiBold,
   Inter_700Bold as InterBold,
-  Inter_800ExtraBold as InterExtraBold
+  Inter_800ExtraBold as InterExtraBold,
 } from '@expo-google-fonts/inter';
 
 export const customFontsToLoad = {
@@ -20,7 +20,7 @@ export const customFontsToLoad = {
   InterMedium,
   InterSemiBold,
   InterBold,
-  InterExtraBold
+  InterExtraBold,
 };
 
 const fonts = {
@@ -33,26 +33,26 @@ const fonts = {
     medium: 'InterMedium',
     semibold: 'InterSemiBold',
     bold: 'InterBold',
-    extraBold: 'InterExtraBold'
+    extraBold: 'InterExtraBold',
   },
   helveticaNeue: {
     thin: 'HelveticaNeue-Thin',
     light: 'HelveticaNeue-Light',
     normal: 'Helvetica Neue',
-    medium: 'HelveticaNeue-Medium'
+    medium: 'HelveticaNeue-Medium',
   },
   courier: {
-    normal: 'Courier'
+    normal: 'Courier',
   },
   sansSerif: {
     thin: 'sans-serif-thin',
     light: 'sans-serif-light',
     normal: 'sans-serif',
-    medium: 'sans-serif-medium'
+    medium: 'sans-serif-medium',
   },
   monospace: {
-    normal: 'monospace'
-  }
+    normal: 'monospace',
+  },
 };
 
 export const typography = {
@@ -60,7 +60,7 @@ export const typography = {
   primary: fonts.Inter,
   secondary: Platform.select({
     ios: fonts.helveticaNeue,
-    android: fonts.sansSerif
+    android: fonts.sansSerif,
   }),
-  code: Platform.select({ ios: fonts.courier, android: fonts.monospace })
+  code: Platform.select({ ios: fonts.courier, android: fonts.monospace }),
 };

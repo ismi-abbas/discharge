@@ -43,7 +43,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
                 mergedVolume: '',
                 compartmenFuelType: '',
                 compartmentVolume: '',
-                tankMaxVolume: tank.maxVolume
+                tankMaxVolume: tank.maxVolume,
               });
             });
 
@@ -72,7 +72,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
                 compartmentId: '',
                 compartmentVolume: '',
                 compartmenFuelType: '',
-                mergedVolume: ''
+                mergedVolume: '',
               }
             : data
         )
@@ -94,7 +94,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
             compartmentId: compartmentId,
             compartmentVolume: volume,
             compartmenFuelType: compartmentFuelType,
-            mergedVolume: calculateTotal(volume, data.tankVolume)
+            mergedVolume: calculateTotal(volume, data.tankVolume),
           }
         : data
     );
@@ -106,7 +106,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         type: 'error',
         text1: `Tank ${currentUpdated?.tankId} Max Volume Exceeded`,
         text2: `Max Volume: ${currentUpdated?.tankMaxVolume}L. Please reduce the volume`,
-        position: 'bottom'
+        position: 'bottom',
       });
     }
 
@@ -140,7 +140,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         text1: 'Data Saved',
         text2: 'Tank details has been saved 👍🏻',
         position: 'bottom',
-        visibilityTime: 2000
+        visibilityTime: 2000,
       });
     } catch (error) {}
   };
@@ -170,24 +170,32 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 
         for (let j = 0; j < i; j++) {
           const compareElement = mergedData[j];
+
           const compareCompartmentName = compareElement.compartmentId;
+
           const compareTankName = compareElement.tankId;
 
-          if (currentCompartmentName === compareCompartmentName) {
-            console.log(`Found tanks with the same compartmentId: ${currentTankName}`);
-            Toast.show({
-              type: 'error',
-              text1: 'Same compartmentId found',
-              text2: `Found tanks with the same compartment: ${currentTankName} and ${compareTankName}`,
-              position: 'bottom',
-              visibilityTime: 2000
-            });
+          console.log({
+            currentCompartmentName,
+            compareCompartmentName,
+          });
 
-            verified = false;
+          if (currentCompartmentName !== '' && compareCompartmentName !== '') {
+            if (currentCompartmentName === compareCompartmentName) {
+              Toast.show({
+                type: 'error',
+                text1: 'Same compartmentId found',
+                text2: `Found tanks with the same compartment: ${currentTankName} and ${compareTankName}`,
+                position: 'bottom',
+                visibilityTime: 2000,
+              });
 
-            return;
-          } else {
-            verified = true;
+              verified = false;
+
+              return;
+            } else {
+              verified = true;
+            }
           }
         }
       }
@@ -200,7 +208,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         text1: 'Data Verified',
         text2: 'All data has been verified',
         position: 'bottom',
-        visibilityTime: 2000
+        visibilityTime: 2000,
       });
 
       setTimeout(() => {
@@ -212,7 +220,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         text1: 'Invalid data',
         text2: 'Please fill in all the columns',
         position: 'bottom',
-        visibilityTime: 2000
+        visibilityTime: 2000,
       });
       setIsVerified(false);
     }
@@ -230,7 +238,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               borderRadius: 5,
               position: 'absolute',
               top: 0,
-              right: 0
+              right: 0,
             }}
           >
             <FeatherIcons
@@ -244,7 +252,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               style={{
                 marginTop: 20,
                 fontFamily: typography.primary.semibold,
-                fontSize: 17
+                fontSize: 17,
               }}
             >
               Truck Compartment (C) to Station Tank (T) Petrol Match
@@ -254,7 +262,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               style={{
                 marginTop: 20,
                 fontFamily: typography.primary.light,
-                fontSize: 14
+                fontSize: 14,
               }}
             >
               Please match Compartment (C)to Tank (V)
@@ -277,7 +285,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
             display: 'flex',
             marginTop: 20,
             alignItems: 'flex-start',
-            width: '95%'
+            width: '95%',
           }}
         >
           <View
@@ -285,7 +293,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               display: 'flex',
               flexDirection: 'row',
               gap: 10,
-              marginTop: 4
+              marginTop: 4,
             }}
           >
             <Pressable
@@ -294,7 +302,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               }}
               style={{
                 ...styles.button,
-                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
               }}
             >
               <Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
@@ -304,7 +312,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               onPress={resetData}
               style={{
                 ...styles.button,
-                backgroundColor: 'rgba(4, 113, 232, 1)'
+                backgroundColor: 'rgba(4, 113, 232, 1)',
               }}
             >
               <Text style={{ ...styles.text, color: 'white' }}>Reset</Text>
@@ -322,7 +330,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
           justifyContent: 'flex-start',
           width: '95%',
           gap: 10,
-          paddingLeft: 20
+          paddingLeft: 20,
         }}
       >
         <Pressable
@@ -336,7 +344,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
           onPress={verifyAll}
           style={{
             ...styles.button,
-            backgroundColor: 'rgba(215, 215, 215, 0.8)'
+            backgroundColor: 'rgba(215, 215, 215, 0.8)',
           }}
         >
           <Text style={styles.text}>Verify</Text>
@@ -353,40 +361,40 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
-    width: '95%'
+    width: '95%',
   },
   titleBox: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   titleBoxText: {
     fontSize: 20,
-    fontFamily: typography.primary.semibold
+    fontFamily: typography.primary.semibold,
   },
   row: {
     flexDirection: 'row',
     width: '100%',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   box: {
     flex: 1,
     width: 'auto',
     height: 40,
     borderWidth: 0.5,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 4,
     paddingHorizontal: 16,
-    borderRadius: 4
+    borderRadius: 4,
   },
   text: {
     fontSize: 14,
-    fontFamily: typography.primary.medium
-  }
+    fontFamily: typography.primary.medium,
+  },
 });
 
 export default CompartmentTankVerify;

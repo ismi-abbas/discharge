@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/oilTruck.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ismiabbas.dischargeapp"
+      "package": "com.ismiabbas.dischargeapp",
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"

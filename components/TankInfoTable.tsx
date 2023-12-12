@@ -30,14 +30,24 @@ const TankInfoTable = ({ tableData, editable, handleCompartmentSelect, handleVol
             <View style={styles.box}>
               <Text style={styles.header}>{column.fuelType}</Text>
             </View>
-            <View style={{ ...styles.box, backgroundColor: editable ? 'rgba(175, 175, 175, 0.4)' : 'white' }}>
-              <TextInput
-                keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
-                editable={editable}
-                style={styles.input}
-                value={column.volume}
-                onChangeText={(volume) => handleVolumeChange(column.id, volume)}
-              />
+            <View style={{ ...styles.box, backgroundColor: editable ? '#ededed' : 'white' }}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <TextInput
+                  keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
+                  editable={editable}
+                  style={styles.input}
+                  value={column.volume}
+                  onChangeText={(volume) => handleVolumeChange(column.id, volume)}
+                />
+                <Text>L</Text>
+              </View>
             </View>
           </View>
         ))}
@@ -52,26 +62,26 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: 'black',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   box: {
     justifyContent: 'center',
     width: 70,
     borderWidth: 0.5,
     height: 40,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   input: {
     fontSize: 14,
     fontFamily: typography.primary.medium,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   header: {
     fontSize: 14,
     fontFamily: typography.primary.bold,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   dropdown: {
     height: 40,
@@ -79,19 +89,19 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   placeholderStyle: {
     fontSize: 14,
-    fontFamily: typography.primary.semibold
+    fontFamily: typography.primary.semibold,
   },
   selectedTextStyle: {
     fontSize: 14,
-    fontFamily: typography.primary.semibold
+    fontFamily: typography.primary.semibold,
   },
   iconStyle: {
-    display: 'none'
-  }
+    display: 'none',
+  },
 });
 
 export default TankInfoTable;

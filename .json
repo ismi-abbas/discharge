@@ -1,0 +1,138 @@
+[
+  [
+    {
+      "compartmenFuelType": "U95",
+      "compartmentId": "C1",
+      "compartmentVolume": "2000",
+      "id": 1,
+      "mergedVolume": "6000",
+      "tankFuelType": "U95",
+      "tankId": "T1",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    },
+    {
+      "compartmenFuelType": "U95",
+      "compartmentId": "C2",
+      "compartmentVolume": "2000",
+      "id": 2,
+      "mergedVolume": "6000",
+      "tankFuelType": "U95",
+      "tankId": "T2",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    },
+    {
+      "compartmenFuelType": "U95",
+      "compartmentId": "C3",
+      "compartmentVolume": "2000",
+      "id": 3,
+      "mergedVolume": "6000",
+      "tankFuelType": "U95",
+      "tankId": "T3",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    },
+    {
+      "compartmenFuelType": "",
+      "compartmentId": "",
+      "compartmentVolume": "",
+      "id": 4,
+      "mergedVolume": "4000",
+      "tankFuelType": "U95",
+      "tankId": "T4",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    },
+    {
+      "compartmenFuelType": "V97",
+      "compartmentId": "C4",
+      "compartmentVolume": "2000",
+      "id": 5,
+      "mergedVolume": "6000",
+      "tankFuelType": "V97",
+      "tankId": "T5",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    },
+    {
+      "compartmenFuelType": "E7",
+      "compartmentId": "C5",
+      "compartmentVolume": "2000",
+      "id": 6,
+      "mergedVolume": "6000",
+      "tankFuelType": "E7",
+      "tankId": "T6",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    }
+  ],
+  [
+    {
+      "compartmenFuelType": "U95",
+      "compartmentId": "C1",
+      "compartmentVolume": "1000",
+      "id": 1,
+      "mergedVolume": "5000",
+      "tankFuelType": "U95",
+      "tankId": "T1",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    },
+    {
+      "compartmenFuelType": "U95",
+      "compartmentId": "C2",
+      "compartmentVolume": "1000",
+      "id": 2,
+      "mergedVolume": "5000",
+      "tankFuelType": "U95",
+      "tankId": "T2",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    },
+    {
+      "compartmenFuelType": "U95",
+      "compartmentId": "C3",
+      "compartmentVolume": "1000",
+      "id": 3,
+      "mergedVolume": "5000",
+      "tankFuelType": "U95",
+      "tankId": "T3",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    },
+    {
+      "compartmenFuelType": "",
+      "compartmentId": "",
+      "compartmentVolume": "",
+      "id": 4,
+      "mergedVolume": "4000",
+      "tankFuelType": "U95",
+      "tankId": "T4",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    },
+    {
+      "compartmenFuelType": "V97",
+      "compartmentId": "C4",
+      "compartmentVolume": "1000",
+      "id": 5,
+      "mergedVolume": "5000",
+      "tankFuelType": "V97",
+      "tankId": "T5",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    },
+    {
+      "compartmenFuelType": "E7",
+      "compartmentId": "C5",
+      "compartmentVolume": "1000",
+      "id": 6,
+      "mergedVolume": "5000",
+      "tankFuelType": "E7",
+      "tankId": "T6",
+      "tankMaxVolume": "20000",
+      "tankVolume": "4000"
+    }
+  ]
+]

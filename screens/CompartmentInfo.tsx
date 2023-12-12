@@ -45,7 +45,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
         text1: 'Data Saved',
         text2: 'Tank details has been saved 👍🏻',
         position: 'bottom',
-        visibilityTime: 2000
+        visibilityTime: 2000,
       });
     } catch (error) {}
   };
@@ -58,7 +58,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
         compartmentId: 'C' + id.toString(),
         fuelType: '',
         id: (compartmentData?.length || 0) + 1,
-        volume: '0'
+        volume: '0',
       };
       const updatedTableData = [...(compartmentData || []), newCompartment];
       setCompartmentData(updatedTableData);
@@ -67,7 +67,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
         type: 'success',
         text1: 'Add Compartment',
         text2: 'New compartment added',
-        position: 'bottom'
+        position: 'bottom',
       });
     } else if (action === 'remove') {
       if (compartmentData && compartmentData.length > 0) {
@@ -78,7 +78,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
           type: 'success',
           text1: 'Remove Compartment',
           text2: `Compartment has been removed`,
-          position: 'bottom'
+          position: 'bottom',
         });
       }
     }
@@ -93,7 +93,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
         text1: 'Data Verified',
         text2: 'Tank details has been saved 👍🏻',
         position: 'bottom',
-        visibilityTime: 2000
+        visibilityTime: 2000,
       });
       setTimeout(() => {
         navigation.navigate('TankInfo');
@@ -104,7 +104,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
         text1: 'Data Error',
         text2: 'Please fill up all columns',
         position: 'bottom',
-        visibilityTime: 2000
+        visibilityTime: 2000,
       });
     }
   };
@@ -114,7 +114,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
       if (index === rowIndex) {
         return {
           ...row,
-          [col]: value
+          [col]: value,
         };
       }
       return row;
@@ -140,7 +140,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
       data.compartmentId == compartmentId
         ? {
             ...data,
-            fuelType: item.value
+            fuelType: item.value,
           }
         : data
     );
@@ -155,15 +155,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
       openSettings={() => navigation.navigate('OneTimeSetup')}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '95%'
-          }}
-        >
+        <View style={styles.wrapper}>
           <View style={styles.dischargeBox}>
             <View style={styles.titleBox}>
               <View>
@@ -171,7 +163,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                 <Text
                   style={{
                     fontFamily: typography.primary.semibold,
-                    fontSize: 17
+                    fontSize: 17,
                   }}
                 >
                   {stationInfo?.name}
@@ -179,20 +171,20 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                 <Text
                   style={{
                     fontFamily: typography.primary.light,
-                    fontSize: 14
+                    fontSize: 14,
                   }}
                 >
                   {stationInfo?.address}
                 </Text>
                 <View
                   style={{
-                    marginTop: 10
+                    marginTop: 10,
                   }}
                 >
                   <Text
                     style={{
                       fontFamily: typography.primary.semibold,
-                      fontSize: 17
+                      fontSize: 17,
                     }}
                   >
                     {stationInfo?.companyName}
@@ -200,7 +192,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   <Text
                     style={{
                       fontFamily: typography.primary.light,
-                      fontSize: 14
+                      fontSize: 14,
                     }}
                   >
                     {stationInfo?.companyAddress}
@@ -210,7 +202,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   style={{
                     marginTop: 10,
                     fontFamily: typography.primary.normal,
-                    fontSize: 12
+                    fontSize: 12,
                   }}
                 >
                   Date: {date.toDateString()}
@@ -225,7 +217,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   borderRadius: 5,
                   position: 'absolute',
                   top: 0,
-                  right: 0
+                  right: 0,
                 }}
               >
                 <FeatherIcons
@@ -243,7 +235,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
               display: 'flex',
               borderRadius: 10,
               backgroundColor: '#fff',
-              width: '95%'
+              width: '95%',
             }}
           >
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -252,7 +244,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   fontFamily: typography.primary.bold,
                   width: '95%',
                   fontSize: 15,
-                  textTransform: 'capitalize'
+                  textTransform: 'capitalize',
                 }}
               >
                 Please key in truck delivery details compartment(C)
@@ -274,7 +266,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   display: 'flex',
                   marginTop: 20,
                   alignItems: 'flex-start',
-                  width: '95%'
+                  width: '95%',
                 }}
               >
                 <View style={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
@@ -283,7 +275,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                     onPress={() => handleCompartment('add')}
                     style={{
                       ...styles.compartmentButton,
-                      backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                      backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
                     }}
                   >
                     <Text style={{ ...styles.buttonText, color: 'white' }}>Add</Text>
@@ -293,7 +285,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                     onPress={() => handleCompartment('remove')}
                     style={{
                       ...styles.compartmentButton,
-                      backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                      backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
                     }}
                   >
                     <Text style={{ ...styles.buttonText, color: 'white' }}>Remove</Text>
@@ -305,7 +297,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                     display: 'flex',
                     flexDirection: 'row',
                     gap: 10,
-                    marginTop: 10
+                    marginTop: 10,
                   }}
                 >
                   <Pressable
@@ -315,7 +307,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                     }}
                     style={{
                       ...styles.button,
-                      backgroundColor: 'rgba(4, 113, 232, 1)'
+                      backgroundColor: 'rgba(4, 113, 232, 1)',
                     }}
                   >
                     <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
@@ -333,7 +325,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
               width: '95%',
               marginTop: 10,
               marginLeft: 20,
-              gap: 10
+              gap: 10,
             }}
           >
             <Pressable
@@ -341,7 +333,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
               onPress={saveData}
               style={{
                 ...styles.button,
-                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
               }}
             >
               <Text style={styles.buttonText}>Save</Text>
@@ -352,7 +344,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
               disabled={editable}
               style={{
                 ...styles.button,
-                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
               }}
             >
               <Text style={styles.buttonText}>Verify</Text>
@@ -367,9 +359,17 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 export default CompartmentInfo;
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    width: '100%',
+  },
   container: {
     display: 'flex',
-    width: '95%'
+    width: '95%',
   },
   dischargeBox: {
     padding: 20,
@@ -377,21 +377,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
-    width: '95%'
+    width: '95%',
   },
   titleBox: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   titleBoxText: {
     fontSize: 20,
-    fontFamily: typography.primary.semibold
+    fontFamily: typography.primary.semibold,
   },
   row: {
     flexDirection: 'row',
     width: '100%',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   box: {
     fontFamily: typography.primary.semibold,
@@ -400,29 +400,29 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: 'rgba(64, 175, 247, 0.69)',
     borderWidth: 0.5,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 4,
     paddingHorizontal: 16,
-    borderRadius: 4
+    borderRadius: 4,
   },
   compartmentButton: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 4,
     paddingHorizontal: 16,
-    borderRadius: 4
+    borderRadius: 4,
   },
   buttonText: {
     fontSize: 14,
     fontFamily: typography.primary.medium,
-    color: '#fff'
+    color: '#fff',
   },
   text: {
     fontSize: 14,
-    fontFamily: typography.primary.medium
-  }
+    fontFamily: typography.primary.medium,
+  },
 });

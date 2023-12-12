@@ -10,7 +10,7 @@ import { AppStackScreenProps, DropdownList, InitialSetupInfo, StationInfo, TankD
 import { load, remove, save } from '../utils/storage';
 
 const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
-  const [tankData, setTableData] = useState<TankData[]>(tankDefaultData);
+  const [tankData, setTableData] = useState<TankData[]>();
   const [editable, setEditable] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [stationInfo, setStationInfo] = useState<StationInfo>();
@@ -71,7 +71,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         text1: 'Data Saved',
         text2: 'Tank details has been saved 👍🏻',
         position: 'bottom',
-        visibilityTime: 2000
+        visibilityTime: 2000,
       });
     } catch (error) {
       Toast.show({
@@ -79,13 +79,13 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         text1: 'Error saving data',
         text2: 'Please try again',
         position: 'bottom',
-        visibilityTime: 2000
+        visibilityTime: 2000,
       });
     }
   };
 
   const verifyAll = () => {
-    const verified = tankData.every((tank) => tank.volume !== '' && tank.volume !== '0' && tank.fuelType !== '');
+    const verified = tankData?.every((tank) => tank.volume !== '' && tank.volume !== '0' && tank.fuelType !== '');
 
     if (verified) {
       setIsVerified(true);
@@ -95,7 +95,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         text1: 'Data Verified',
         text2: 'All data has been verified',
         position: 'bottom',
-        visibilityTime: 2000
+        visibilityTime: 2000,
       });
 
       setTimeout(() => {
@@ -109,7 +109,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         text1: 'Invalid data',
         text2: 'Please fill in all the columns',
         position: 'bottom',
-        visibilityTime: 2000
+        visibilityTime: 2000,
       });
     }
   };
@@ -123,7 +123,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
       data.tankId == tankId
         ? {
             ...data,
-            fuelType: item.value
+            fuelType: item.value,
           }
         : data
     );
@@ -131,9 +131,9 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
   };
 
   const handleVolumeChange = (id: number, value: string) => {
-    const updatedTankData = tankData.map((tank) => (tank.id === id ? { ...tank, volume: value } : tank));
+    const updatedTankData = tankData?.map((tank) => (tank.id === id ? { ...tank, volume: value } : tank));
 
-    const tankWithUpdatedVolume = updatedTankData.find((tank) => tank.id === id)!;
+    const tankWithUpdatedVolume = updatedTankData?.find((tank) => tank.id === id)!;
 
     if (parseInt(tankWithUpdatedVolume.volume) > parseInt(tankWithUpdatedVolume.maxVolume)) {
       Toast.show({
@@ -141,7 +141,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         text1: 'Max volume exceeded',
         text2: `Volume exceeds max volume for tank ${tankWithUpdatedVolume.tankId}. Max ${tankWithUpdatedVolume.maxVolume}`,
         position: 'bottom',
-        visibilityTime: 3000
+        visibilityTime: 3000,
       });
     }
 
@@ -150,13 +150,9 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 
   return (
     <MainLayout stationName={stationInfo?.name}>
-      {/* <Button
-        onPress={async () => await remove('tankData')}
-        title="Delete Tank Data"
-      /> */}
-      <View style={styles.dischargeBox}>
-        <View style={styles.titleBox}>
-          <View>
+      <View style={styles.wrapper}>
+        <View style={styles.content}>
+          <View style={{ width: '95%' }}>
             <Pressable
               onPress={() => navigation.navigate('Home')}
               style={{
@@ -166,7 +162,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
                 position: 'absolute',
                 top: 0,
                 right: 0,
-                zIndex: 20
+                zIndex: 20,
               }}
             >
               <FeatherIcons
@@ -179,14 +175,14 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
               style={{
                 marginTop: 20,
                 fontFamily: typography.primary.light,
-                fontSize: 17
+                fontSize: 17,
               }}
             >
               Please Key In Your Station Tank Latest Details, Tank(T)
             </Text>
 
             <TankInfoTable
-              tableData={tankData}
+              tableData={tankData!}
               editable={editable}
               handleCompartmentSelect={handleCompartmentSelect}
               handleVolumeChange={handleVolumeChange}
@@ -196,38 +192,32 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
                 marginTop: 5,
                 marginBottom: 2,
                 fontFamily: typography.primary.light,
-                fontSize: 12
+                fontSize: 12,
               }}
             >
               *Scroll to the right for more info
             </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            display: 'flex',
-            marginTop: 20,
-            alignItems: 'flex-start',
-            width: '95%'
-          }}
-        >
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              gap: 10,
-              marginTop: 4
-            }}
-          >
-            <Pressable
-              onPress={() => setEditable(!editable)}
+
+            <View
               style={{
-                ...styles.button,
-                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray'
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%',
+                marginTop: 10,
               }}
             >
-              <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
-            </Pressable>
+              <Pressable
+                onPress={() => setEditable(!editable)}
+                style={{
+                  ...styles.button,
+                  backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
+                }}
+              >
+                <Text style={{ ...styles.buttonText, color: 'white' }}>Edit</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
       </View>
@@ -241,7 +231,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
           justifyContent: 'flex-start',
           width: '95%',
           gap: 10,
-          paddingLeft: 20
+          paddingLeft: 20,
         }}
       >
         <Pressable
@@ -255,7 +245,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
           onPress={verifyAll}
           style={{
             ...styles.button,
-            backgroundColor: 'rgba(215, 215, 215, 0.8)'
+            backgroundColor: 'rgba(215, 215, 215, 0.8)',
           }}
         >
           <Text style={styles.text}>Verify</Text>
@@ -266,49 +256,49 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 };
 
 const styles = StyleSheet.create({
-  dischargeBox: {
+  wrapper: {
     padding: 20,
+    width: '100%',
     display: 'flex',
+    alignItems: 'center',
     marginTop: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
-    width: '95%'
   },
-  titleBox: {
+  content: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   titleBoxText: {
     fontSize: 20,
-    fontFamily: typography.primary.semibold
+    fontFamily: typography.primary.semibold,
   },
   row: {
     flexDirection: 'row',
     width: '100%',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   box: {
     fontFamily: typography.primary.semibold,
-    flex: 1,
-    width: 'auto',
+    width: 100,
     height: 40,
     borderWidth: 0.5,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   button: {
     paddingVertical: 4,
     paddingHorizontal: 16,
-    borderRadius: 4
+    borderRadius: 4,
   },
   buttonText: {
     fontSize: 14,
-    fontFamily: typography.primary.medium
+    fontFamily: typography.primary.medium,
   },
   text: {
     fontSize: 14,
-    fontFamily: typography.primary.medium
-  }
+    fontFamily: typography.primary.medium,
+  },
 });
 
 export default TankInfo;

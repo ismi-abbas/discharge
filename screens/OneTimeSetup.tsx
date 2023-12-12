@@ -149,13 +149,13 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
       >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={styles.wrapper}>
           <KeyboardAvoidingView>
             <View style={styles.dischargeBox}>
               <View style={styles.titleBox}>
                 <View>
                   <Text style={styles.titleBoxText}>Tank Preset</Text>
-                  <View style={{ borderWidth: editable ? 1 : 0, padding: editable ? 2 : 0, borderRadius: 5 }}>
+                  <View style={{ borderWidth: editable ? 0.5 : 0, padding: editable ? 2 : 0, borderRadius: 10 }}>
                     <View style={{ marginTop: 2 }}>
                       <TextInput
                         keyboardType="default"
@@ -260,13 +260,23 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                       </View> */}
 
                           <View style={styles.tableBox}>
-                            <TextInput
-                              keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
-                              editable={editable}
-                              style={styles.input}
-                              value={column.maxVolume}
-                              onChangeText={(maxVolume) => handleVolumeChange(column.id, 'maxVolume', maxVolume)}
-                            />
+                            <View
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                              }}
+                            >
+                              <TextInput
+                                keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
+                                editable={editable}
+                                style={styles.input}
+                                value={column.maxVolume}
+                                onChangeText={(maxVolume) => handleVolumeChange(column.id, 'maxVolume', maxVolume)}
+                              />
+                              <Text>L</Text>
+                            </View>
                           </View>
                         </View>
                       ))}
@@ -280,7 +290,8 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                       fontSize: 12
                     }}
                   >
-                    *Scroll to the right for more info
+                    {' '}
+                    *Scroll to the right for more info. 3rd row is the max volume for tank.
                   </Text>
                 </View>
               </View>
@@ -288,8 +299,7 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                 style={{
                   display: 'flex',
                   marginTop: 20,
-                  alignItems: 'flex-start',
-                  width: '95%'
+                  alignItems: 'flex-start'
                 }}
               >
                 <View
@@ -343,7 +353,6 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                width: '95%',
                 gap: 10,
                 paddingLeft: 20
               }}
@@ -376,13 +385,18 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 10
+  },
   dischargeBox: {
     padding: 20,
-    display: 'flex',
     marginTop: 20,
     borderRadius: 10,
-    backgroundColor: '#fff',
-    width: '95%'
+    backgroundColor: '#fff'
   },
   titleBox: {
     display: 'flex',
@@ -395,13 +409,11 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    width: '100%',
     justifyContent: 'space-evenly'
   },
   box: {
     fontFamily: typography.primary.semibold,
     flex: 1,
-    width: 'auto',
     height: 40,
     borderWidth: 0.5,
     textAlign: 'center'

@@ -30,7 +30,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
         Toast.show({
           type: 'error',
           text1: 'Data load',
-          text2: 'No previous data found'
+          text2: 'No previous data found',
         });
       }
     };
@@ -48,7 +48,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
     const newReport: ReportData = {
       reportId: uuid.v4().toString(),
       date: new Date(),
-      report: finalReportData
+      report: finalReportData,
     };
 
     const updatedReportList = [...(reportListData || []), newReport];
@@ -63,7 +63,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
         text1: 'Data verified',
         text2: 'All data has been saved and verified successfully',
         position: 'bottom',
-        visibilityTime: 2000
+        visibilityTime: 2000,
       });
 
       setTimeout(() => {
@@ -89,7 +89,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
               position: 'absolute',
               top: 0,
               right: 0,
-              zIndex: 10
+              zIndex: 10,
             }}
           >
             <FeatherIcons
@@ -102,8 +102,8 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
             <Text
               style={{
                 marginTop: 20,
-                fontFamily: typography.primary.bold,
-                fontSize: 20
+                fontFamily: typography.primary.semibold,
+                fontSize: 20,
               }}
             >
               Discharge Report
@@ -111,45 +111,50 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
           </View>
         </View>
 
-        <View style={{ marginTop: 5, borderWidth: 0.5 }}>
-          <ScrollView horizontal>
-            {finalReportData?.map((column) => (
-              <View key={column.id}>
-                <View style={styles.box}>
-                  <Text style={styles.header}>{column.tankId}</Text>
+        <View style={{ marginTop: 20 }}>
+          <View style={{ borderWidth: 0.5 }}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
+              {finalReportData?.map((column) => (
+                <View key={column.id}>
+                  <View style={styles.box}>
+                    <Text style={styles.header}>{column.tankId}</Text>
+                  </View>
+                  <View style={styles.box}>
+                    <Text style={styles.columnText}>{column.tankFuelType}</Text>
+                  </View>
+                  <View
+                    style={{
+                      marginTop: 40,
+                      ...styles.box,
+                    }}
+                  >
+                    <Text style={styles.columnText}>
+                      {parseInt(column.compartmentVolume) > 0 ? column.compartmentVolume.concat('L') : '0'.concat('L')}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      marginTop: 40,
+                      ...styles.box,
+                    }}
+                  >
+                    <Text style={styles.columnText}>{column.mergedVolume.concat('L')}</Text>
+                  </View>
                 </View>
-                <View style={styles.box}>
-                  <Text style={styles.columnText}>{column.tankFuelType}</Text>
-                </View>
-                <View
-                  style={{
-                    marginTop: 40,
-                    ...styles.box
-                  }}
-                >
-                  <Text style={styles.columnText}>
-                    {parseInt(column.compartmentVolume) > 0 ? column.compartmentVolume.concat('L') : '0'.concat('L')}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    marginTop: 40,
-                    ...styles.box
-                  }}
-                >
-                  <Text style={styles.columnText}>{column.mergedVolume.concat('L')}</Text>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
+              ))}
+            </ScrollView>
+          </View>
+
+          {/* Delivery order and final volume text */}
           <View
             style={{
               position: 'absolute',
               width: '100%',
               height: 240,
               zIndex: -10,
-              borderRightWidth: 0.5,
-              borderLeftWidth: 0.5
             }}
           >
             <Text
@@ -158,7 +163,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
                 fontFamily: typography.primary.bold,
                 textAlign: 'center',
                 color: 'black',
-                top: '37%'
+                top: '37%',
               }}
             >
               Delivery Order
@@ -169,7 +174,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
                 fontFamily: typography.primary.bold,
                 textAlign: 'center',
                 color: 'black',
-                top: '62%'
+                top: '62%',
               }}
             >
               Final Volume at Tank
@@ -187,14 +192,14 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
           justifyContent: 'center',
           width: '85%',
           gap: 10,
-          paddingLeft: 20
+          paddingLeft: 20,
         }}
       >
         <Pressable onPress={verifyAll}>
           <Text
             style={{
               ...styles.text,
-              backgroundColor: 'rgba(208, 208, 208, 1)'
+              backgroundColor: 'rgba(208, 208, 208, 1)',
             }}
           >
             Verify and Close Report
@@ -212,35 +217,35 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
-    width: '95%'
+    width: '95%',
   },
   titleBox: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   box: {
     justifyContent: 'center',
     width: 100,
     borderWidth: 0.5,
     height: 40,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   titleBoxText: {
     fontSize: 20,
-    fontFamily: typography.primary.semibold
+    fontFamily: typography.primary.semibold,
   },
   row: {
     flexDirection: 'row',
     width: '100%',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 5,
     paddingHorizontal: 22,
-    borderRadius: 4
+    borderRadius: 4,
   },
   text: {
     fontSize: 20,
@@ -248,19 +253,19 @@ const styles = StyleSheet.create({
     fontFamily: typography.primary.normal,
     letterSpacing: 0.25,
     padding: 5,
-    borderRadius: 5
+    borderRadius: 5,
   },
   columnText: {
     fontSize: 14,
     fontFamily: typography.primary.medium,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   header: {
     fontSize: 14,
     fontFamily: typography.primary.bold,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   itemBox: {
     borderTopWidth: 0.5,
@@ -270,8 +275,8 @@ const styles = StyleSheet.create({
     height: 40,
     width: 80,
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });
 
 export default DischargeReport;
