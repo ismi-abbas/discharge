@@ -45,14 +45,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EAECEC',
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   image: {
     display: 'flex',
     width: 40,
     height: 40,
     backgroundColor: '#0553',
-    borderRadius: 50
+    borderRadius: 50,
   },
   bar: {
     display: 'flex',
@@ -62,13 +62,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     paddingHorizontal: 20,
-    height: 70
+    height: 70,
   },
   barTitle: {
     textAlign: 'center',
     fontFamily: typography.primary.medium,
     fontSize: 20,
     width: '100%',
-    overflow: 'hidden'
-  }
+    overflow: 'hidden',
+  },
 });

@@ -1,10 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { typography } from '../theme/typography';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
+import { Dropdown } from 'react-native-element-dropdown';
 import { CompartmentData, DropdownList, MergeData, TankData } from '../utils/types';
-import { useIsFocused } from '@react-navigation/native';
 
 type Props = {
   tankData: TankData[];
@@ -88,14 +87,14 @@ const CompartmentVSTankTable = ({
               style={{
                 ...styles.box,
                 backgroundColor:
-                  column.compartmenFuelType !== ''
-                    ? column.compartmenFuelType === column.tankFuelType
+                  column.compartmentFuelType !== ''
+                    ? column.compartmentFuelType === column.tankFuelType
                       ? 'white'
                       : 'red'
                     : 'white',
               }}
             >
-              <Text style={styles.text}>{column.compartmenFuelType}</Text>
+              <Text style={styles.text}>{column.compartmentFuelType}</Text>
             </View>
 
             {/* Compartment Volume */}

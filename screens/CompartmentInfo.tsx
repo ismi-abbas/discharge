@@ -24,8 +24,6 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 
         const stationInfo = (await load('stationInfo')) as StationInfo;
 
-        console.log('🚀 ~ file: CompartmentInfo.tsx:24 ~ fetchData ~ compartmentData:', compartmentData);
-
         if (compartmentData) {
           setCompartmentData(compartmentData);
         } else {
@@ -159,7 +157,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
   return (
     <MainLayout
       stationName={stationInfo?.name}
-      openSettings={() => navigation.navigate('OneTimeSetup')}
+      openSettings={() => navigation.navigate('OneTimeSetup', { fromScreen: true })}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.wrapper}>

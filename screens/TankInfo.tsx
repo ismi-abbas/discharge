@@ -24,39 +24,19 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         const stationInfo = (await load('stationInfo')) as StationInfo;
         const initialTankInfo = (await load('initialSetup')) as InitialSetupInfo;
 
-        if (previousTankData) {
-          if (previousTankData.length < initialTankInfo.data.length) {
-            previousTankData.forEach((item) => {
-              item.volume = '0';
-            });
+        console.log({ previousTankData }, previousTankData.length, initialTankInfo.data.length);
 
+        if (previousTankData) {
+          if (previousTankData.length === initialTankInfo.data.length) {
             setTableData(previousTankData);
           } else {
             setTableData(initialTankInfo.data);
           }
         }
 
-        if (initialTankInfo) {
-          setTableData(initialTankInfo.data);
-        }
-
         if (stationInfo) {
           setStationInfo(stationInfo);
         }
-
-        // const mappedArray = previousTankData.map((item2) => {
-        //   const correspondingItem = initialTankInfo.data.find(
-        //     (item1) => item1.id === item2.id && item1.tankId === item2.tankId
-        //   );
-
-        //   if (correspondingItem) {
-        //     return { ...item2, maxVolume: correspondingItem.maxVolume };
-        //   }
-
-        //   return item2;
-        // });
-
-        // setTableData(mappedArray);
       } catch (error) {
         console.log(error);
       }

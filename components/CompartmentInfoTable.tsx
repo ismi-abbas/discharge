@@ -29,7 +29,7 @@ const CompartmentInfoTable = ({ tableData, editable, handleVolumeChange, handleC
 
             <Dropdown
               disable={!editable}
-              style={styles.dropdown}
+              style={{ ...styles.dropdown, backgroundColor: editable ? '#ededed' : 'white' }}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
               iconStyle={styles.iconStyle}
@@ -41,7 +41,7 @@ const CompartmentInfoTable = ({ tableData, editable, handleVolumeChange, handleC
               onChange={(item) => handleCompartmentSelect(item, column.compartmentId)}
             />
 
-            <View style={styles.box}>
+            <View style={{ ...styles.box, backgroundColor: editable ? '#ededed' : 'white' }}>
               <TextInput
                 editable={editable}
                 style={{ ...styles.input, color: 'black' }}
@@ -63,26 +63,26 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: 'black',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   box: {
     justifyContent: 'center',
     width: 70,
     borderWidth: 0.5,
     height: 40,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   input: {
     fontSize: 14,
     fontFamily: typography.primary.medium,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   header: {
     fontSize: 14,
     fontFamily: typography.primary.semibold,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   dropdown: {
     height: 40,
@@ -90,19 +90,19 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   placeholderStyle: {
     fontSize: 12,
-    fontFamily: typography.primary.bold
+    fontFamily: typography.primary.bold,
   },
   selectedTextStyle: {
     fontSize: 14,
-    fontFamily: typography.primary.bold
+    fontFamily: typography.primary.bold,
   },
   iconStyle: {
-    display: 'none'
-  }
+    display: 'none',
+  },
 });
 
 export default CompartmentInfoTable;

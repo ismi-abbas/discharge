@@ -40,7 +40,7 @@ export interface MergeData {
   tankVolume: string;
   tankMaxVolume: string;
   compartmentId: string;
-  compartmenFuelType: string;
+  compartmentFuelType: string;
   compartmentVolume: string;
   mergedVolume: string;
 }

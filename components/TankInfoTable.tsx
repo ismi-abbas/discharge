@@ -1,11 +1,8 @@
 import { View, Text, StyleSheet, Platform } from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
 import { typography } from '../theme/typography';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
-import Toast from 'react-native-toast-message';
-import { Dropdown } from 'react-native-element-dropdown';
-import { petrolType } from '../utils/constant';
-import { DropdownList, TankData } from '../utils/types';
+import { TankData } from '../utils/types';
 
 type Props = {
   tableData: TankData[];
@@ -14,7 +11,7 @@ type Props = {
   handleVolumeChange: Function;
 };
 
-const TankInfoTable = ({ tableData, editable, handleCompartmentSelect, handleVolumeChange }: Props) => {
+const TankInfoTable = ({ tableData, editable, handleVolumeChange }: Props) => {
   return (
     <View style={styles.container}>
       <ScrollView

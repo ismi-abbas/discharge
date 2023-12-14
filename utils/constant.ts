@@ -75,7 +75,7 @@ export const compartmentToTank: MergeData[] = [
   {
     id: 1,
     compartmentId: '',
-    compartmenFuelType: '',
+    compartmentFuelType: '',
     compartmentVolume: '',
     tankId: '',
     tankVolume: '',
@@ -86,7 +86,7 @@ export const compartmentToTank: MergeData[] = [
   {
     id: 2,
     compartmentId: '',
-    compartmenFuelType: '',
+    compartmentFuelType: '',
     compartmentVolume: '',
     tankId: '',
     tankVolume: '',
@@ -97,7 +97,7 @@ export const compartmentToTank: MergeData[] = [
   {
     id: 3,
     compartmentId: '',
-    compartmenFuelType: '',
+    compartmentFuelType: '',
     compartmentVolume: '',
     tankId: '',
     tankVolume: '',
@@ -108,7 +108,7 @@ export const compartmentToTank: MergeData[] = [
   {
     id: 4,
     compartmentId: '',
-    compartmenFuelType: '',
+    compartmentFuelType: '',
     compartmentVolume: '',
     tankId: '',
     tankVolume: '',
@@ -119,7 +119,7 @@ export const compartmentToTank: MergeData[] = [
   {
     id: 5,
     compartmentId: '',
-    compartmenFuelType: '',
+    compartmentFuelType: '',
     compartmentVolume: '',
     tankId: '',
     tankVolume: '',

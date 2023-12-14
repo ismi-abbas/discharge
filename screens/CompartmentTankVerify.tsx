@@ -42,7 +42,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
             tankVolume: tank.volume,
             compartmentId: '',
             mergedVolume: '',
-            compartmenFuelType: '',
+            compartmentFuelType: '',
             compartmentVolume: '',
             tankMaxVolume: tank.maxVolume,
           });
@@ -81,7 +81,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
                 ...data,
                 compartmentId: '',
                 compartmentVolume: '',
-                compartmenFuelType: '',
+                compartmentFuelType: '',
                 mergedVolume: '',
               }
             : data
@@ -103,7 +103,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
             ...data,
             compartmentId: compartmentId,
             compartmentVolume: volume,
-            compartmenFuelType: compartmentFuelType,
+            compartmentFuelType,
             mergedVolume: calculateTotal(volume, data.tankVolume),
           }
         : data
@@ -139,6 +139,8 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         return data;
       });
 
+      console.log(updated);
+
       setMergedData(updated);
 
       await save('tankData', tankTableData);
@@ -159,7 +161,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
     const resetCompartment = mergedData.map((item) => {
       item.compartmentId = '';
       item.compartmentVolume = '';
-      item.compartmenFuelType = '';
+      item.compartmentFuelType = '';
       item.mergedVolume = '';
       return item;
     });
@@ -168,50 +170,83 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   };
 
   const verifyAll = () => {
-    let verified = mergedData.every(
-      (x) => x.tankId !== '' && x.mergedVolume !== '' && parseInt(x.mergedVolume) < parseInt(x.tankMaxVolume)
-    );
+    let errors = [];
+    let isVerified = true;
+    let compartmentMap = new Map();
 
-    if (verified) {
-      for (let i = 0; i < mergedData.length; i++) {
-        const currentElement = mergedData[i];
-        const currentCompartmentName = currentElement.compartmentId;
-        const currentTankName = currentElement.tankId;
+    for (let i = 0; i < mergedData.length; i++) {
+      const currentElement = mergedData[i];
 
-        for (let j = 0; j < i; j++) {
-          const compareElement = mergedData[j];
+      // check if values are filled in, not necessary, but need 1 to be filled
+      if (!currentElement.tankId && !currentElement.mergedVolume) {
+        errors.push({
+          type: 'error',
+          text1: 'Empty values',
+          text2: `Please fill in at least one value for row ${i + 1}`,
+          position: 'bottom',
+        });
+        isVerified = false;
+      }
 
-          const compareCompartmentName = compareElement.compartmentId;
+      // mergedVolume cannot exceed the maxVolume
+      if (parseInt(currentElement.mergedVolume) > parseInt(currentElement.tankMaxVolume)) {
+        errors.push({
+          type: 'error',
+          text1: `Exceeded volume for tank ${currentElement.tankId}`,
+          text2: 'Please reduce the volume',
+          position: 'bottom',
+        });
+        isVerified = false;
+      }
 
-          const compareTankName = compareElement.tankId;
+      // if column has chosen the compartmentFuelType, check to make sure it matches the tankFuelType
+      if (currentElement.compartmentFuelType && currentElement.compartmentFuelType !== currentElement.tankFuelType) {
+        errors.push({
+          type: 'error',
+          text1: `Fuel type mismatch for tank ${currentElement.tankId}`,
+          text2: 'Please change the fuel type',
+          position: 'bottom',
+        });
+        isVerified = false;
+      }
 
-          console.log({
-            currentCompartmentName,
-            compareCompartmentName,
-          });
+      const currentCompartmentName = currentElement.compartmentId;
+      const currentTankName = currentElement.tankId;
 
-          if (currentCompartmentName !== '' && compareCompartmentName !== '') {
-            if (currentCompartmentName === compareCompartmentName) {
-              Toast.show({
-                type: 'error',
-                text1: 'Same compartmentId found',
-                text2: `Found tanks with the same compartment: ${currentTankName} and ${compareTankName}`,
-                position: 'bottom',
-                visibilityTime: 2000,
-              });
+      for (let j = 0; j < i; j++) {
+        const compareElement = mergedData[j];
+        const { compartmentId: compareCompartmentName, tankId: compareTankName } = compareElement;
 
-              verified = false;
+        if (currentCompartmentName !== '' && compareCompartmentName !== '') {
+          if (currentCompartmentName === compareCompartmentName) {
+            errors.push({
+              type: 'error',
+              text1: 'Same compartmentId found',
+              text2: `Found tanks with the same compartment: ${currentTankName} and ${compareTankName}`,
+              position: 'bottom',
+              visibilityTime: 2000,
+            });
 
-              return;
-            } else {
-              verified = true;
-            }
+            isVerified = false;
           }
         }
       }
+
+      // mergedVolume cannot be empty, at least a value from the tankVolume
+      if (!currentElement.mergedVolume) {
+        errors.push({
+          type: 'error',
+          text1: `Empty merged volume for tank ${currentElement.tankId}`,
+          text2: 'Please fill in the merged volume',
+          position: 'bottom',
+        });
+        isVerified = false;
+      }
+
+      if (!isVerified) break;
     }
 
-    if (verified) {
+    if (isVerified) {
       setIsVerified(true);
       Toast.show({
         type: 'success',
@@ -225,13 +260,8 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         navigation.navigate('DischargeReport', { reportData: [] });
       }, 2000);
     } else {
-      Toast.show({
-        type: 'error',
-        text1: 'Invalid data',
-        text2: 'Please fill in all the columns',
-        position: 'bottom',
-        visibilityTime: 2000,
-      });
+      // Display the first error message
+      Toast.show(errors[0] as any);
       setIsVerified(false);
     }
   };

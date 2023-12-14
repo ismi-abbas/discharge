@@ -35,7 +35,6 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
   const fetchData = async () => {
     try {
       const initialSetupData = (await load('initialSetup')) as InitialSetupInfo;
-      console.log('🚀 ~ file: OneTimeSetup.tsx:38 ~ fetchData ~ initialSetupData:', initialSetupData);
       const stationInfoData = (await load('stationInfo')) as StationInfo;
 
       if (initialSetupData) {
