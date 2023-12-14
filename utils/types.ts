@@ -72,7 +72,9 @@ export interface StationInfo {
 }
 
 export type AppStackParamList = {
-  OneTimeSetup: undefined;
+  OneTimeSetup: {
+    fromScreen: boolean;
+  };
   Home: undefined;
   CompartmentInfo: undefined;
   TankInfo: undefined;

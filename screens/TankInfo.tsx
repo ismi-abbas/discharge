@@ -1,15 +1,17 @@
-import { View, Text, Pressable, StyleSheet, Button } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
 import FeatherIcons from '@expo/vector-icons/Feather';
-import { tankDefaultData } from '../utils/constant';
 import Toast from 'react-native-toast-message';
 import TankInfoTable from '../components/TankInfoTable';
 import { AppStackScreenProps, DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
-import { load, remove, save } from '../utils/storage';
+import { load, save } from '../utils/storage';
+import { useIsFocused } from '@react-navigation/native';
 
 const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
+  const isFocus = useIsFocused();
+
   const [tankData, setTableData] = useState<TankData[]>();
   const [editable, setEditable] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
@@ -23,12 +25,15 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         const initialTankInfo = (await load('initialSetup')) as InitialSetupInfo;
 
         if (previousTankData) {
-          console.log(previousTankData);
-          previousTankData.forEach((item) => {
-            item.volume = '0';
-          });
+          if (previousTankData.length < initialTankInfo.data.length) {
+            previousTankData.forEach((item) => {
+              item.volume = '0';
+            });
 
-          setTableData(previousTankData);
+            setTableData(previousTankData);
+          } else {
+            setTableData(initialTankInfo.data);
+          }
         }
 
         if (initialTankInfo) {
@@ -39,26 +44,26 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
           setStationInfo(stationInfo);
         }
 
-        const mappedArray = previousTankData.map((item2) => {
-          const correspondingItem = initialTankInfo.data.find(
-            (item1) => item1.id === item2.id && item1.tankId === item2.tankId
-          );
+        // const mappedArray = previousTankData.map((item2) => {
+        //   const correspondingItem = initialTankInfo.data.find(
+        //     (item1) => item1.id === item2.id && item1.tankId === item2.tankId
+        //   );
 
-          if (correspondingItem) {
-            return { ...item2, maxVolume: correspondingItem.maxVolume };
-          }
+        //   if (correspondingItem) {
+        //     return { ...item2, maxVolume: correspondingItem.maxVolume };
+        //   }
 
-          return item2;
-        });
+        //   return item2;
+        // });
 
-        setTableData(mappedArray);
+        // setTableData(mappedArray);
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [isFocus]);
 
   const saveData = async () => {
     try {

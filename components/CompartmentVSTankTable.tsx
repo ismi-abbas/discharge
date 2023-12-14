@@ -4,6 +4,7 @@ import { typography } from '../theme/typography';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 import { CompartmentData, DropdownList, MergeData, TankData } from '../utils/types';
+import { useIsFocused } from '@react-navigation/native';
 
 type Props = {
   tankData: TankData[];
@@ -14,30 +15,19 @@ type Props = {
   mergedData: MergeData[] | undefined;
   handleCompartmentSelect: Function;
   calculateTotal: Function;
+  dropdownList: DropdownList[];
 };
 
-const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleCompartmentSelect }: Props) => {
-  const [dropdownList, setDropDownList] = useState<DropdownList[]>([]);
-
-  if (!mergedData) {
+const CompartmentVSTankTable = ({
+  compartmentData,
+  editable,
+  mergedData,
+  handleCompartmentSelect,
+  dropdownList,
+}: Props) => {
+  if (!mergedData && compartmentData && dropdownList) {
     return null;
   }
-
-  useEffect(() => {
-    let newDropdownList: DropdownList[] = compartmentData.map((data) => ({
-      label: data.compartmentId,
-      value: data.compartmentId
-    }));
-
-    let emptyValue = {
-      label: 'Empty',
-      value: ''
-    };
-
-    newDropdownList.push(emptyValue);
-
-    setDropDownList(newDropdownList);
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -48,7 +38,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
             <View
               style={{
                 ...styles.box,
-                backgroundColor: 'rgba(91, 217, 250, 0.8)'
+                backgroundColor: 'rgba(91, 217, 250, 0.8)',
               }}
             >
               <Text style={styles.header}>{column.tankId}</Text>
@@ -57,7 +47,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
             <View
               style={{
                 ...styles.box,
-                backgroundColor: 'rgba(91, 217, 250, 0.8)'
+                backgroundColor: 'rgba(91, 217, 250, 0.8)',
               }}
             >
               <Text style={styles.text}>{column.tankFuelType}</Text>
@@ -66,7 +56,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
             <View
               style={{
                 ...styles.box,
-                backgroundColor: 'rgba(91, 217, 250, 0.8)'
+                backgroundColor: 'rgba(91, 217, 250, 0.8)',
               }}
             >
               <Text style={styles.text}>{column.tankVolume.concat('L')}</Text>
@@ -81,7 +71,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
               itemTextStyle={{
                 fontFamily: typography.primary.semibold,
                 fontSize: 14,
-                textAlign: 'center'
+                textAlign: 'center',
               }}
               maxHeight={400}
               iconStyle={styles.iconStyle}
@@ -102,7 +92,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
                     ? column.compartmenFuelType === column.tankFuelType
                       ? 'white'
                       : 'red'
-                    : 'white'
+                    : 'white',
               }}
             >
               <Text style={styles.text}>{column.compartmenFuelType}</Text>
@@ -111,7 +101,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
             {/* Compartment Volume */}
             <View
               style={{
-                ...styles.box
+                ...styles.box,
               }}
             >
               <Text style={styles.text}>
@@ -128,7 +118,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
                     ? parseInt(column.mergedVolume) > parseInt(column.tankMaxVolume)
                       ? 'red'
                       : 'white'
-                    : 'white'
+                    : 'white',
               }}
             >
               <Text
@@ -139,7 +129,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
                       ? parseInt(column.mergedVolume) > parseInt(column.tankMaxVolume)
                         ? 'white'
                         : 'black'
-                      : 'white'
+                      : 'white',
                 }}
               >
                 {column.mergedVolume}
@@ -154,7 +144,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
           position: 'absolute',
           width: 333,
           height: 310,
-          zIndex: -10
+          zIndex: -10,
         }}
       >
         <Text
@@ -163,7 +153,7 @@ const CompartmentVSTankTable = ({ compartmentData, editable, mergedData, handleC
             fontFamily: typography.primary.bold,
             textAlign: 'center',
             color: 'black',
-            top: '80%'
+            top: '80%',
           }}
         >
           New Merged Volume
@@ -179,26 +169,26 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: 'black',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   box: {
     justifyContent: 'center',
     width: 100,
     borderWidth: 0.5,
     height: 40,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   text: {
     fontSize: 14,
     fontFamily: typography.primary.medium,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   header: {
     fontSize: 14,
     fontFamily: typography.primary.bold,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   dropdown: {
     height: 40,
@@ -207,19 +197,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   placeholderStyle: {
     fontSize: 14,
-    fontFamily: typography.primary.bold
+    fontFamily: typography.primary.bold,
   },
   selectedTextStyle: {
     fontSize: 14,
-    fontFamily: typography.primary.bold
+    fontFamily: typography.primary.bold,
   },
   iconStyle: {
-    display: 'none'
-  }
+    display: 'none',
+  },
 });
 
 export default CompartmentVSTankTable;

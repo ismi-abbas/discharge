@@ -2,21 +2,21 @@ import { View, TouchableOpacity, Text, SectionList, StyleSheet, Pressable } from
 import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
 import { MainLayout } from '../components/MainLayout';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { load } from '../utils/storage';
 import { AppStackScreenProps, ReportData, ResultItem, StationInfo } from '../utils/types';
-import { useFocusEffect } from '@react-navigation/native';
 import { format } from 'date-fns';
+import { useIsFocused } from '@react-navigation/native';
 
 export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
+  const isFocus = useIsFocused();
+
   const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [listData, setListData] = useState<ResultItem[]>();
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchData();
-    }, [])
-  );
+  useEffect(() => {
+    fetchData();
+  }, [isFocus]);
 
   const fetchData = async () => {
     try {
@@ -73,7 +73,7 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
   return (
     <MainLayout
       stationName={stationInfo?.name!}
-      openSettings={() => navigation.navigate('OneTimeSetup')}
+      openSettings={() => navigation.navigate('OneTimeSetup', { fromScreen: true })}
     >
       <View style={styles.container}>
         <TouchableOpacity

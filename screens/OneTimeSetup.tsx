@@ -8,11 +8,14 @@ import Toast from 'react-native-toast-message';
 import { load, save } from '../utils/storage';
 import DUMMY_DATA from '../dummyData.json';
 import { AppStackScreenProps, DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
+import { useIsFocused } from '@react-navigation/native';
 
-const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
+const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>) => {
+  const isFocus = useIsFocused();
+  const fromScreen = route.params?.fromScreen ?? false;
+
   const [tableData, setTableData] = useState<TankData[]>(tankDefaultData);
   const [editable, setEditable] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
   const [initialSetup, setInitialSetup] = useState<InitialSetupInfo>({
     done: false,
     data: [],
@@ -27,17 +30,21 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [isFocus]);
 
   const fetchData = async () => {
     try {
       const initialSetupData = (await load('initialSetup')) as InitialSetupInfo;
+      console.log('🚀 ~ file: OneTimeSetup.tsx:38 ~ fetchData ~ initialSetupData:', initialSetupData);
       const stationInfoData = (await load('stationInfo')) as StationInfo;
 
       if (initialSetupData) {
         setInitialSetup(initialSetupData);
         setTableData(initialSetupData.data);
-        navigation.navigate('Home');
+
+        if (!fromScreen) {
+          navigation.navigate('Home');
+        }
       } else {
         console.log('Not yet finished initial setup');
       }
@@ -106,6 +113,8 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
       done: true,
       data: data,
     });
+
+    console.log(data);
 
     showToast('success', 'Data save', 'Data saved successfully', 2000);
   };
@@ -359,7 +368,6 @@ const OneTimeSetup = ({ navigation }: AppStackScreenProps<'OneTimeSetup'>) => {
             >
               <Pressable
                 onPress={() => saveDetails({ data: tableData })}
-                aria-disabled={isVerified}
                 style={{
                   ...styles.button,
                   backgroundColor: 'rgba(4, 113, 232, 1)',

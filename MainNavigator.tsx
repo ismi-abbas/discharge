@@ -1,11 +1,11 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import CompartmentInfo from './screens/CompartmentInfo';
 import { Home } from './screens/Home';
+import OneTimeSetup from './screens/OneTimeSetup';
+import { AppStackParamList } from './utils/types';
+import CompartmentInfo from './screens/CompartmentInfo';
 import TankInfo from './screens/TankInfo';
 import CompartmentTankVerify from './screens/CompartmentTankVerify';
 import DischargeReport from './screens/DischargeReport';
-import OneTimeSetup from './screens/OneTimeSetup';
-import { AppStackParamList } from './utils/types';
 import ViewReport from './screens/ViewReport';
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -15,7 +15,7 @@ export default function MainNavigator() {
     <Stack.Navigator
       initialRouteName="OneTimeSetup"
       screenOptions={{
-        headerShown: false
+        headerShown: false,
       }}
     >
       <Stack.Screen

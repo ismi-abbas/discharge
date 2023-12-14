@@ -1,43 +1,42 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppStackScreenProps, ReportData, StationInfo, ViewReportData } from '../utils/types';
 import { load } from '../utils/storage';
 import { MainLayout } from '../components/MainLayout';
-import { format } from 'date-fns';
 import { typography } from '../theme/typography';
-import { useFocusEffect } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
-const ViewReport = ({ navigation, route }: AppStackScreenProps<'ViewReport'>) => {
+const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
+  const isFocus = useIsFocused();
+
   const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [reportData, setReportData] = useState<ViewReportData>();
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchData();
-    }, [])
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      const reportData = (await load('reportData')) as ReportData[];
+      const stationInfoData = (await load('stationInfo')) as StationInfo;
 
-  const fetchData = async () => {
-    const reportData = (await load('reportData')) as ReportData[];
-    const stationInfoData = (await load('stationInfo')) as StationInfo;
+      if (reportData && stationInfoData) {
+        let report = reportData.filter((r) => r.reportId === route.params.reportId)[0];
 
-    if (reportData && stationInfoData) {
-      let report = reportData.filter((r) => r.reportId === route.params.reportId)[0];
+        setReportData({
+          date: report.date,
+          reportId: route.params.reportId,
+          report: report.report,
+          stationName: stationInfoData?.name,
+          stationLocation: stationInfoData?.address!,
+          companyLocation: stationInfoData?.companyAddress!,
+          companyName: stationInfoData?.companyName!,
+          totalDeliverdVolume: route.params.reportData.totalDelivered,
+        });
+      }
 
-      setReportData({
-        date: report.date,
-        reportId: route.params.reportId,
-        report: report.report,
-        stationName: stationInfoData?.name,
-        stationLocation: stationInfoData?.address!,
-        companyLocation: stationInfoData?.companyAddress!,
-        companyName: stationInfoData?.companyName!,
-        totalDeliverdVolume: route.params.reportData.totalDelivered,
-      });
-    }
+      setStationInfo(stationInfoData);
+    };
 
-    setStationInfo(stationInfoData);
-  };
+    fetchData();
+  }, [isFocus]);
 
   return (
     <MainLayout stationName={stationInfo?.name}>

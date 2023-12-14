@@ -7,38 +7,43 @@ import CompartmentInfoTable from '../components/CompartmentInfoTable';
 import Toast from 'react-native-toast-message';
 import { load, save } from '../utils/storage';
 import { AppStackScreenProps, CompartmentData, DropdownList, StationInfo } from '../utils/types';
-import { compartment } from '../utils/constant';
+import { compartmentDefaultData } from '../utils/constant';
+import { useIsFocused } from '@react-navigation/native';
 
 const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>) => {
+  const isFocus = useIsFocused();
+
   const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [editable, setEditable] = useState(false);
-  const [isSaved, setSaved] = useState(false);
   const [compartmentData, setCompartmentData] = useState<CompartmentData[]>();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const compartmentData = (await load('compartmentData')) as CompartmentData[];
+
         const stationInfo = (await load('stationInfo')) as StationInfo;
+
+        console.log('🚀 ~ file: CompartmentInfo.tsx:24 ~ fetchData ~ compartmentData:', compartmentData);
 
         if (compartmentData) {
           setCompartmentData(compartmentData);
         } else {
-          setCompartmentData(compartment);
+          setCompartmentData(compartmentDefaultData);
         }
 
         setStationInfo(stationInfo);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchData();
-  }, []);
+  }, [isFocus]);
 
   const saveData = async () => {
     try {
       await save('compartmentData', compartmentData);
-
-      setSaved(true);
 
       Toast.show({
         type: 'success',
@@ -47,7 +52,9 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
         position: 'bottom',
         visibilityTime: 2000,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCompartment = (action: string) => {
@@ -303,7 +310,6 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   <Pressable
                     onPress={() => {
                       setEditable(!editable);
-                      setSaved(false);
                     }}
                     style={{
                       ...styles.button,

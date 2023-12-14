@@ -2,19 +2,21 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
-import { compartment, compartmentToTank } from '../utils/constant';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import CompartmentVSTankTable from '../components/CompartmentVSTankTable';
-import { AppStackScreenProps, DropdownList, MergeData, StationInfo, TankData } from '../utils/types';
+import { AppStackScreenProps, CompartmentData, DropdownList, MergeData, StationInfo, TankData } from '../utils/types';
 import { load, save } from '../utils/storage';
+import { useIsFocused } from '@react-navigation/native';
 
 const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentTankVerify'>) => {
+  const isFocus = useIsFocused();
+
   const [tankTableData, setTankTableData] = useState<TankData[]>([]);
-  const [compartmentTableData, setCompartmentTableData] = useState(compartment);
-  const [mergedData, setMergedData] = useState<MergeData[]>(compartmentToTank);
+  const [compartmentTableData, setCompartmentTableData] = useState<CompartmentData[]>([]);
+  const [mergedData, setMergedData] = useState<MergeData[]>([]);
   const [stationInfo, setStationInfo] = useState<StationInfo>();
+  const [dropdownList, setDropdownList] = useState<DropdownList[]>([]);
 
   const [editable, setEditable] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
@@ -22,43 +24,51 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await AsyncStorage.multiGet(['tankData', 'mergedData', 'compartmentData']);
         const stationInfo = (await load('stationInfo')) as StationInfo;
+        const tankData = (await load('tankData')) as TankData[];
+        const compartmentData = (await load('compartmentData')) as CompartmentData[];
 
+        setCompartmentTableData(compartmentData);
+        setTankTableData(tankData);
         setStationInfo(stationInfo);
-        data.forEach(([key, value]) => {
-          if (key === 'tankData') {
-            let json: TankData[] = JSON.parse(value!);
-            setTankTableData(json);
 
-            let tableD: MergeData[] = [];
+        let mergedData: MergeData[] = [];
 
-            json.map((tank) => {
-              tableD.push({
-                tankId: tank.tankId,
-                id: tank.id,
-                tankFuelType: tank.fuelType,
-                tankVolume: tank.volume,
-                compartmentId: '',
-                mergedVolume: '',
-                compartmenFuelType: '',
-                compartmentVolume: '',
-                tankMaxVolume: tank.maxVolume,
-              });
-            });
-
-            setMergedData(tableD);
-          } else if (key === 'compartmentData') {
-            setCompartmentTableData(JSON.parse(value!));
-          }
+        tankData.map((tank) => {
+          mergedData.push({
+            tankId: tank.tankId,
+            id: tank.id,
+            tankFuelType: tank.fuelType,
+            tankVolume: tank.volume,
+            compartmentId: '',
+            mergedVolume: '',
+            compartmenFuelType: '',
+            compartmentVolume: '',
+            tankMaxVolume: tank.maxVolume,
+          });
         });
+
+        let newDropdownList: DropdownList[] = compartmentData.map((data) => ({
+          label: data.compartmentId,
+          value: data.compartmentId,
+        }));
+
+        let emptyValue = {
+          label: 'Empty',
+          value: '',
+        };
+
+        newDropdownList.push(emptyValue);
+
+        setDropdownList(newDropdownList);
+        setMergedData(mergedData);
       } catch (err) {
         console.log(err);
       }
     };
 
     fetchData();
-  }, []);
+  }, [isFocus]);
 
   const handleCompartmentSelect = (item: DropdownList, tankId: string) => {
     const compartmentId = item.value;
@@ -87,7 +97,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
     const compartmentFuelType = compartment.fuelType || '';
     const volume = compartment.volume || '';
 
-    const updatedData = mergedData?.map((data) =>
+    const updatedData = mergedData.map((data) =>
       data.tankId === tankId
         ? {
             ...data,
@@ -275,6 +285,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               setCompartmentData={setCompartmentTableData}
               calculateTotal={calculateTotal}
               handleCompartmentSelect={handleCompartmentSelect}
+              dropdownList={dropdownList}
               mergedData={mergedData}
               editable={editable}
             />

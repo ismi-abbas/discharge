@@ -8,8 +8,11 @@ import FeatherIcons from '@expo/vector-icons/Feather';
 import { AppStackScreenProps, MergeData, ReportData, StationInfo } from '../utils/types';
 import { load, save } from '../utils/storage';
 import uuid from 'react-native-uuid';
+import { useIsFocused } from '@react-navigation/native';
 
 const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>) => {
+  const isFocus = useIsFocused();
+
   const [finalReportData, setFinalReportData] = useState(compartmentToTank);
   const [reportListData, setReportListData] = useState<ReportData[]>();
   const [stationInfo, setStationInfo] = useState<StationInfo>();
@@ -36,7 +39,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
     };
 
     getAllData();
-  }, []);
+  }, [isFocus]);
 
   const verifyAll = async () => {
     const newReport: ReportData = {
