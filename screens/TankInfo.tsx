@@ -24,14 +24,10 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         const stationInfo = (await load('stationInfo')) as StationInfo;
         const initialTankInfo = (await load('initialSetup')) as InitialSetupInfo;
 
-        console.log({ previousTankData }, previousTankData.length, initialTankInfo.data.length);
-
-        if (previousTankData) {
-          if (previousTankData.length === initialTankInfo.data.length) {
-            setTableData(previousTankData);
-          } else {
-            setTableData(initialTankInfo.data);
-          }
+        if (previousTankData && previousTankData.length === initialTankInfo.data.length) {
+          setTableData(previousTankData);
+        } else {
+          setTableData(initialTankInfo.data);
         }
 
         if (stationInfo) {
