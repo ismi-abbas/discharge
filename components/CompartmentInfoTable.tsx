@@ -10,9 +10,9 @@ type Props = {
   tableData: CompartmentData[] | undefined;
   editable: boolean;
   setTableData: (data: CompartmentData[]) => void;
-  handleFuelTypeChange: Function;
-  handleVolumeChange: Function;
-  handleCompartmentSelect: Function;
+  handleFuelTypeChange: () => void;
+  handleVolumeChange: (columnId: number, volume: string) => void;
+  handleCompartmentSelect: (item: DropdownList, compartmentId: string) => void;
 };
 
 const CompartmentInfoTable = ({ tableData, editable, handleVolumeChange, handleCompartmentSelect }: Props) => {
@@ -29,7 +29,10 @@ const CompartmentInfoTable = ({ tableData, editable, handleVolumeChange, handleC
 
             <Dropdown
               disable={!editable}
-              style={{ ...styles.dropdown, backgroundColor: editable ? '#ededed' : 'white' }}
+              style={{
+                ...styles.dropdown,
+                backgroundColor: editable ? '#ededed' : 'white',
+              }}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
               iconStyle={styles.iconStyle}
@@ -41,13 +44,18 @@ const CompartmentInfoTable = ({ tableData, editable, handleVolumeChange, handleC
               onChange={(item) => handleCompartmentSelect(item, column.compartmentId)}
             />
 
-            <View style={{ ...styles.box, backgroundColor: editable ? '#ededed' : 'white' }}>
+            <View
+              style={{
+                ...styles.box,
+                backgroundColor: editable ? '#ededed' : 'white',
+              }}
+            >
               <TextInput
                 editable={editable}
                 style={{ ...styles.input, color: 'black' }}
                 value={column.volume}
                 onChangeText={(volume) => handleVolumeChange(column.id, volume)}
-                keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
+                keyboardType={Platform.OS === 'android' ? 'numeric' : 'number-pad'}
               />
             </View>
           </View>

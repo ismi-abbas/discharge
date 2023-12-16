@@ -15,23 +15,21 @@ type Props = {
 export const MainLayout: FC<Props> = ({ children, stationName, openSettings }) => {
   const insets = useSafeAreaInsets();
   return (
-    <View style={{ ...styles.container, paddingTop: insets.top, paddingBottom: insets.bottom }}>
+    <View
+      style={{
+        ...styles.container,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+      }}
+    >
       <StatusBar style="dark" />
       <View style={styles.bar}>
-        <Image
-          style={styles.image}
-          source={require('../assets/tabIcon.png')}
-          transition={1000}
-        />
+        <Image style={styles.image} source={require('../assets/tabIcon.png')} transition={1000} />
         <View>
           <Text style={styles.barTitle}>{stationName}</Text>
         </View>
         <View>
-          <FeatherIcons
-            name="sliders"
-            size={20}
-            onPress={openSettings}
-          />
+          <FeatherIcons name="sliders" size={20} onPress={openSettings} />
         </View>
       </View>
 

@@ -9,7 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ViewStyle } from 'react-native';
 
 export default function App() {
-  let [areFontsLoaded] = useFonts(customFontsToLoad);
+  const [areFontsLoaded] = useFonts(customFontsToLoad);
 
   if (!areFontsLoaded) return null;
 
@@ -26,5 +26,5 @@ export default function App() {
 }
 
 const container: ViewStyle = {
-  flex: 1
+  flex: 1,
 };

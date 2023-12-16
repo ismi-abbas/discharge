@@ -17,6 +17,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
   const [reportListData, setReportListData] = useState<ReportData[]>();
   const [stationInfo, setStationInfo] = useState<StationInfo>();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const getAllData = async () => {
       try {
@@ -89,10 +90,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
               zIndex: 10,
             }}
           >
-            <FeatherIcons
-              name="x"
-              size={20}
-            />
+            <FeatherIcons name="x" size={20} />
           </Pressable>
           <View>
             <Text style={styles.titleBoxText}>New Discharge</Text>
@@ -110,10 +108,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
 
         <View style={{ marginTop: 20 }}>
           <View style={{ borderWidth: 0.5 }}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            >
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {finalReportData?.map((column) => (
                 <View key={column.id}>
                   <View style={styles.box}>

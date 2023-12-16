@@ -12,22 +12,23 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
   const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [reportData, setReportData] = useState<ViewReportData>();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const fetchData = async () => {
       const reportData = (await load('reportData')) as ReportData[];
       const stationInfoData = (await load('stationInfo')) as StationInfo;
 
       if (reportData && stationInfoData) {
-        let report = reportData.filter((r) => r.reportId === route.params.reportId)[0];
+        const report = reportData.filter((r) => r.reportId === route.params.reportId)[0];
 
         setReportData({
           date: report.date,
           reportId: route.params.reportId,
           report: report.report,
           stationName: stationInfoData?.name,
-          stationLocation: stationInfoData?.address!,
-          companyLocation: stationInfoData?.companyAddress!,
-          companyName: stationInfoData?.companyName!,
+          stationLocation: stationInfoData?.address,
+          companyLocation: stationInfoData?.companyAddress,
+          companyName: stationInfoData?.companyName,
           totalDeliverdVolume: route.params.reportData.totalDelivered,
         });
       }
@@ -47,7 +48,13 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
         }}
       >
         <View style={styles.infoBox}>
-          <Text style={{ fontSize: 24, textAlign: 'center', fontFamily: typography.primary.semibold }}>
+          <Text
+            style={{
+              fontSize: 24,
+              textAlign: 'center',
+              fontFamily: typography.primary.semibold,
+            }}
+          >
             Report Details
           </Text>
           <View style={{ marginTop: 10 }}>
@@ -60,10 +67,7 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
         <View style={styles.infoBox}>
           <View style={{ marginTop: 20 }}>
             <View style={{ borderWidth: 0.5 }}>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              >
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {reportData?.report.map((column) => (
                   <View key={column.id}>
                     <View style={styles.box}>

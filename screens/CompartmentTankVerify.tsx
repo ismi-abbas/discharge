@@ -2,7 +2,7 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
-import Toast from 'react-native-toast-message';
+import Toast, { ToastShowParams } from 'react-native-toast-message';
 import FeatherIcons from '@expo/vector-icons/Feather';
 import CompartmentVSTankTable from '../components/CompartmentVSTankTable';
 import { AppStackScreenProps, CompartmentData, DropdownList, MergeData, StationInfo, TankData } from '../utils/types';
@@ -21,6 +21,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   const [editable, setEditable] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -32,7 +33,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         setTankTableData(tankData);
         setStationInfo(stationInfo);
 
-        let mergedData: MergeData[] = [];
+        const mergedData: MergeData[] = [];
 
         tankData.map((tank) => {
           mergedData.push({
@@ -48,12 +49,12 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
           });
         });
 
-        let newDropdownList: DropdownList[] = compartmentData.map((data) => ({
+        const newDropdownList: DropdownList[] = compartmentData.map((data) => ({
           label: data.compartmentId,
           value: data.compartmentId,
         }));
 
-        let emptyValue = {
+        const emptyValue = {
           label: 'Empty',
           value: '',
         };
@@ -111,7 +112,11 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 
     const currentUpdated = updatedData.find((data) => data.tankId === tankId);
 
-    if (parseInt(currentUpdated?.mergedVolume!) > parseInt(currentUpdated?.tankMaxVolume!)) {
+    if (!currentUpdated) {
+      return;
+    }
+
+    if (parseInt(currentUpdated?.mergedVolume) > parseInt(currentUpdated?.tankMaxVolume)) {
       Toast.show({
         type: 'error',
         text1: `Tank ${currentUpdated?.tankId} Max Volume Exceeded`,
@@ -120,7 +125,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
       });
     }
 
-    setMergedData(updatedData!);
+    setMergedData(updatedData);
   };
 
   const calculateTotal = (compartmentVolume: string, tankVolume: string): string => {
@@ -170,9 +175,8 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   };
 
   const verifyAll = () => {
-    let errors = [];
+    const errors: ToastShowParams[] = [];
     let isVerified = true;
-    let compartmentMap = new Map();
 
     for (let i = 0; i < mergedData.length; i++) {
       const currentElement = mergedData[i];
@@ -261,7 +265,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
       }, 2000);
     } else {
       // Display the first error message
-      Toast.show(errors[0] as any);
+      Toast.show(errors[0]);
       setIsVerified(false);
     }
   };
@@ -281,10 +285,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               right: 0,
             }}
           >
-            <FeatherIcons
-              name="x"
-              size={20}
-            />
+            <FeatherIcons name="x" size={20} />
           </Pressable>
           <View>
             <Text style={styles.titleBoxText}>New Discharge</Text>

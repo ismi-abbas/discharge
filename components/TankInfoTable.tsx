@@ -2,22 +2,19 @@ import { View, Text, StyleSheet, Platform } from 'react-native';
 import React from 'react';
 import { typography } from '../theme/typography';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
-import { TankData } from '../utils/types';
+import { DropdownList, TankData } from '../utils/types';
 
 type Props = {
   tableData: TankData[];
   editable: boolean;
-  handleCompartmentSelect: Function;
-  handleVolumeChange: Function;
+  handleCompartmentSelect: (item: DropdownList, tankId: string) => void;
+  handleVolumeChange: (id: number, value: string) => void;
 };
 
 const TankInfoTable = ({ tableData, editable, handleVolumeChange }: Props) => {
   return (
     <View style={styles.container}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      >
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {tableData?.map((column) => (
           <View key={column.id}>
             <View style={styles.box}>
@@ -27,7 +24,12 @@ const TankInfoTable = ({ tableData, editable, handleVolumeChange }: Props) => {
             <View style={styles.box}>
               <Text style={styles.header}>{column.fuelType}</Text>
             </View>
-            <View style={{ ...styles.box, backgroundColor: editable ? '#ededed' : 'white' }}>
+            <View
+              style={{
+                ...styles.box,
+                backgroundColor: editable ? '#ededed' : 'white',
+              }}
+            >
               <View
                 style={{
                   display: 'flex',
@@ -37,7 +39,7 @@ const TankInfoTable = ({ tableData, editable, handleVolumeChange }: Props) => {
                 }}
               >
                 <TextInput
-                  keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
+                  keyboardType={Platform.OS === 'android' ? 'numeric' : 'number-pad'}
                   editable={editable}
                   style={styles.input}
                   value={column.volume}

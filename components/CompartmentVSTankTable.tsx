@@ -12,8 +12,8 @@ type Props = {
   setCompartmentData: (data: CompartmentData[]) => void;
   editable: boolean;
   mergedData: MergeData[] | undefined;
-  handleCompartmentSelect: Function;
-  calculateTotal: Function;
+  handleCompartmentSelect: (item: DropdownList, tankId: string) => void;
+  calculateTotal: (compartmentVolume: string, tankVolume: string) => void;
   dropdownList: DropdownList[];
 };
 

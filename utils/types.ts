@@ -79,7 +79,7 @@ export type AppStackParamList = {
   CompartmentInfo: undefined;
   TankInfo: undefined;
   CompartmentTankVerify: undefined;
-  DischargeReport: {};
+  DischargeReport: object;
   ViewReport: {
     reportId: string;
     reportData: {

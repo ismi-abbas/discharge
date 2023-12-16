@@ -17,6 +17,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
   const [editable, setEditable] = useState(false);
   const [compartmentData, setCompartmentData] = useState<CompartmentData[]>();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -60,7 +61,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
       const id = (compartmentData?.length || 0) + 1;
 
       const newCompartment: CompartmentData = {
-        compartmentId: 'C' + id.toString(),
+        compartmentId: `C${id}`,
         fuelType: '',
         id: (compartmentData?.length || 0) + 1,
         volume: '0',
@@ -82,7 +83,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
         Toast.show({
           type: 'success',
           text1: 'Remove Compartment',
-          text2: `Compartment has been removed`,
+          text2: 'Compartment has been removed',
           position: 'bottom',
         });
       }
@@ -142,14 +143,14 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
       return;
     }
     const updatedData = compartmentData?.map((data) =>
-      data.compartmentId == compartmentId
+      data.compartmentId === compartmentId
         ? {
             ...data,
             fuelType: item.value,
           }
         : data
     );
-    setCompartmentData(updatedData!);
+    setCompartmentData(updatedData);
   };
 
   const date = new Date();
@@ -225,10 +226,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   right: 0,
                 }}
               >
-                <FeatherIcons
-                  name="x"
-                  size={20}
-                />
+                <FeatherIcons name="x" size={20} />
               </Pressable>
             </View>
           </View>

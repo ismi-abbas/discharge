@@ -12,11 +12,12 @@ import { useIsFocused } from '@react-navigation/native';
 const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
   const isFocus = useIsFocused();
 
-  const [tankData, setTableData] = useState<TankData[]>();
+  const [tableData, setTableData] = useState<TankData[]>();
   const [editable, setEditable] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [stationInfo, setStationInfo] = useState<StationInfo>();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,9 +44,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
 
   const saveData = async () => {
     try {
-      await save('tankData', tankData);
-
-      console.log(tankData);
+      await save('tankData', tableData);
 
       Toast.show({
         type: 'success',
@@ -66,7 +65,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
   };
 
   const verifyAll = () => {
-    const verified = tankData?.every((tank) => tank.volume !== '' && tank.volume !== '0' && tank.fuelType !== '');
+    const verified = tableData?.every((tank) => tank.volume !== '' && tank.volume !== '0' && tank.fuelType !== '');
 
     if (verified) {
       setIsVerified(true);
@@ -96,25 +95,29 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
   };
 
   const handleCompartmentSelect = (item: DropdownList, tankId: string) => {
-    const compartment = tankData?.find((data) => data.tankId === tankId);
+    const compartment = tableData?.find((data) => data.tankId === tankId);
     if (!compartment) {
       return;
     }
-    const updatedData = tankData?.map((data) =>
-      data.tankId == tankId
+    const updatedData = tableData?.map((data) =>
+      data.tankId === tankId
         ? {
             ...data,
             fuelType: item.value,
           }
         : data
     );
-    setTableData(updatedData!);
+    setTableData(updatedData);
   };
 
   const handleVolumeChange = (id: number, value: string) => {
-    const updatedTankData = tankData?.map((tank) => (tank.id === id ? { ...tank, volume: value } : tank));
+    const updatedTankData = tableData?.map((tank) => (tank.id === id ? { ...tank, volume: value } : tank));
 
-    const tankWithUpdatedVolume = updatedTankData?.find((tank) => tank.id === id)!;
+    const tankWithUpdatedVolume = updatedTankData?.find((tank) => tank.id === id);
+
+    if (!tankWithUpdatedVolume) {
+      return;
+    }
 
     if (parseInt(tankWithUpdatedVolume.volume) > parseInt(tankWithUpdatedVolume.maxVolume)) {
       Toast.show({
@@ -146,10 +149,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
                 zIndex: 20,
               }}
             >
-              <FeatherIcons
-                name="x"
-                size={20}
-              />
+              <FeatherIcons name="x" size={20} />
             </Pressable>
             <Text style={styles.titleBoxText}>New Discharge</Text>
             <Text
@@ -163,7 +163,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
             </Text>
 
             <TankInfoTable
-              tableData={tankData!}
+              tableData={tableData ?? []}
               editable={editable}
               handleCompartmentSelect={handleCompartmentSelect}
               handleVolumeChange={handleVolumeChange}

@@ -28,6 +28,7 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
     companyName: '',
   });
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     fetchData();
   }, [isFocus]);
@@ -86,7 +87,7 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
   const addTank = () => {
     const id = (tableData?.length || 0) + 1;
     const newTank: TankData = {
-      tankId: 'T' + id.toString(),
+      tankId: `T${id}`,
       fuelType: '',
       id: id,
       volume: '0',
@@ -153,17 +154,20 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
 
   return (
     <MainLayout stationName={stationInfo.name}>
-      <ScrollView
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
         <View style={styles.wrapper}>
           <KeyboardAvoidingView>
             <View style={styles.dischargeBox}>
               <View style={styles.titleBox}>
                 <View>
                   <Text style={styles.titleBoxText}>Tank Preset</Text>
-                  <View style={{ borderWidth: editable ? 0.5 : 0, padding: editable ? 2 : 0, borderRadius: 10 }}>
+                  <View
+                    style={{
+                      borderWidth: editable ? 0.5 : 0,
+                      padding: editable ? 2 : 0,
+                      borderRadius: 10,
+                    }}
+                  >
                     <View style={{ marginTop: 2 }}>
                       <TextInput
                         keyboardType="default"
@@ -199,7 +203,12 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
                             color: editable ? 'gray' : 'black',
                           }}
                           value={stationInfo.companyName}
-                          onChangeText={(companyName) => setStationInfo({ ...stationInfo, companyName: companyName })}
+                          onChangeText={(companyName) =>
+                            setStationInfo({
+                              ...stationInfo,
+                              companyName: companyName,
+                            })
+                          }
                         />
 
                         <TextInput
@@ -212,13 +221,22 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
                           }}
                           value={stationInfo.companyAddress}
                           onChangeText={(companyAddress) =>
-                            setStationInfo({ ...stationInfo, companyAddress: companyAddress })
+                            setStationInfo({
+                              ...stationInfo,
+                              companyAddress: companyAddress,
+                            })
                           }
                         />
                       </View>
                     </View>
 
-                    <Text style={{ marginTop: 10, fontFamily: typography.primary.normal, fontSize: 12 }}>
+                    <Text
+                      style={{
+                        marginTop: 10,
+                        fontFamily: typography.primary.normal,
+                        fontSize: 12,
+                      }}
+                    >
                       Date: {new Date().toDateString()}
                     </Text>
                   </View>
@@ -234,10 +252,7 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
                   </Text>
 
                   <View style={styles.container}>
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                    >
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                       {tableData?.map((column) => (
                         <View key={column.id}>
                           <View style={styles.tableBox}>
@@ -277,7 +292,7 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
                               }}
                             >
                               <TextInput
-                                keyboardType={Platform.OS == 'android' ? 'numeric' : 'number-pad'}
+                                keyboardType={Platform.OS === 'android' ? 'numeric' : 'number-pad'}
                                 editable={editable}
                                 style={styles.input}
                                 value={column.maxVolume}
