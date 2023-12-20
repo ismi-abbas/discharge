@@ -90,7 +90,10 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
               zIndex: 10,
             }}
           >
-            <FeatherIcons name="x" size={20} />
+            <FeatherIcons
+              name="x"
+              size={20}
+            />
           </Pressable>
           <View>
             <Text style={styles.titleBoxText}>New Discharge</Text>
@@ -108,7 +111,10 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
 
         <View style={{ marginTop: 20 }}>
           <View style={{ borderWidth: 0.5 }}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
               {finalReportData?.map((column) => (
                 <View key={column.id}>
                   <View style={styles.box}>

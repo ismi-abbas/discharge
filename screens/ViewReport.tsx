@@ -67,7 +67,10 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
         <View style={styles.infoBox}>
           <View style={{ marginTop: 20 }}>
             <View style={{ borderWidth: 0.5 }}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              >
                 {reportData?.report.map((column) => (
                   <View key={column.id}>
                     <View style={styles.box}>
@@ -76,9 +79,11 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
                     <View style={styles.box}>
                       <Text style={styles.columnText}>{column.tankFuelType}</Text>
                     </View>
+                    <View style={{ ...styles.box, marginTop: 40 }}>
+                      <Text style={styles.columnText}>{column.compartmentId}</Text>
+                    </View>
                     <View
                       style={{
-                        marginTop: 40,
                         ...styles.box,
                       }}
                     >
@@ -115,7 +120,7 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
                   fontFamily: typography.primary.bold,
                   textAlign: 'center',
                   color: 'black',
-                  top: '37%',
+                  top: '38%',
                 }}
               >
                 Delivery Order
@@ -126,7 +131,7 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
                   fontFamily: typography.primary.bold,
                   textAlign: 'center',
                   color: 'black',
-                  top: '62%',
+                  top: '79%',
                 }}
               >
                 Final Volume at Tank
