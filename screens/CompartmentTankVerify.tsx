@@ -122,7 +122,6 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 
     const compartmentFuelType = compartment.fuelType;
     const volume = !compartmentId ? '' : compartment.volume;
-    console.log({ compartmentId });
 
     const updatedData = mergedData.map((data) => {
       if (data.tankId === tankId) {
@@ -192,6 +191,10 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         position: 'bottom',
         visibilityTime: 2000,
       });
+
+      setTimeout(() => {
+        navigation.navigate('DischargeReport', { reportData: [] });
+      }, 2000);
     } catch (error) {}
   };
 
@@ -207,101 +210,101 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
     setMergedData(resetCompartment);
   };
 
-  const verifyAll = () => {
-    const errors: ToastShowParams[] = [];
-    let isVerified = true;
+  // const verifyAll = () => {
+  //   const errors: ToastShowParams[] = [];
+  //   let isVerified = true;
 
-    for (let i = 0; i < mergedData.length; i++) {
-      const currentElement = mergedData[i];
+  //   for (let i = 0; i < mergedData.length; i++) {
+  //     const currentElement = mergedData[i];
 
-      // check if values are filled in, not necessary, but need 1 to be filled
-      if (!currentElement.tankId && !currentElement.mergedVolume) {
-        errors.push({
-          type: 'error',
-          text1: 'Empty values',
-          text2: `Please fill in at least one value for row ${i + 1}`,
-          position: 'bottom',
-        });
-        isVerified = false;
-      }
+  //     // check if values are filled in, not necessary, but need 1 to be filled
+  //     if (!currentElement.tankId && !currentElement.mergedVolume) {
+  //       errors.push({
+  //         type: 'error',
+  //         text1: 'Empty values',
+  //         text2: `Please fill in at least one value for row ${i + 1}`,
+  //         position: 'bottom',
+  //       });
+  //       isVerified = false;
+  //     }
 
-      // mergedVolume cannot exceed the maxVolume
-      if (parseInt(currentElement.mergedVolume) > parseInt(currentElement.tankMaxVolume)) {
-        errors.push({
-          type: 'error',
-          text1: `Exceeded volume for tank ${currentElement.tankId}`,
-          text2: 'Please reduce the volume',
-          position: 'bottom',
-        });
-        isVerified = false;
-      }
+  //     // mergedVolume cannot exceed the maxVolume
+  //     if (parseInt(currentElement.mergedVolume) > parseInt(currentElement.tankMaxVolume)) {
+  //       errors.push({
+  //         type: 'error',
+  //         text1: `Exceeded volume for tank ${currentElement.tankId}`,
+  //         text2: 'Please reduce the volume',
+  //         position: 'bottom',
+  //       });
+  //       isVerified = false;
+  //     }
 
-      // if column has chosen the compartmentFuelType, check to make sure it matches the tankFuelType
-      if (currentElement.compartmentFuelType && currentElement.compartmentFuelType !== currentElement.tankFuelType) {
-        errors.push({
-          type: 'error',
-          text1: `Fuel type mismatch for tank ${currentElement.tankId}`,
-          text2: 'Please change the fuel type',
-          position: 'bottom',
-        });
-        isVerified = false;
-      }
+  //     // if column has chosen the compartmentFuelType, check to make sure it matches the tankFuelType
+  //     if (currentElement.compartmentFuelType && currentElement.compartmentFuelType !== currentElement.tankFuelType) {
+  //       errors.push({
+  //         type: 'error',
+  //         text1: `Fuel type mismatch for tank ${currentElement.tankId}`,
+  //         text2: 'Please change the fuel type',
+  //         position: 'bottom',
+  //       });
+  //       isVerified = false;
+  //     }
 
-      const currentCompartmentName = currentElement.compartmentId;
-      const currentTankName = currentElement.tankId;
+  //     const currentCompartmentName = currentElement.compartmentId;
+  //     const currentTankName = currentElement.tankId;
 
-      for (let j = 0; j < i; j++) {
-        const compareElement = mergedData[j];
-        const { compartmentId: compareCompartmentName, tankId: compareTankName } = compareElement;
+  //     for (let j = 0; j < i; j++) {
+  //       const compareElement = mergedData[j];
+  //       const { compartmentId: compareCompartmentName, tankId: compareTankName } = compareElement;
 
-        if (currentCompartmentName !== '' && compareCompartmentName !== '') {
-          if (currentCompartmentName === compareCompartmentName) {
-            errors.push({
-              type: 'error',
-              text1: 'Same compartmentId found',
-              text2: `Found tanks with the same compartment: ${currentTankName} and ${compareTankName}`,
-              position: 'bottom',
-              visibilityTime: 2000,
-            });
+  //       if (currentCompartmentName !== '' && compareCompartmentName !== '') {
+  //         if (currentCompartmentName === compareCompartmentName) {
+  //           errors.push({
+  //             type: 'error',
+  //             text1: 'Same compartmentId found',
+  //             text2: `Found tanks with the same compartment: ${currentTankName} and ${compareTankName}`,
+  //             position: 'bottom',
+  //             visibilityTime: 2000,
+  //           });
 
-            isVerified = false;
-          }
-        }
-      }
+  //           isVerified = false;
+  //         }
+  //       }
+  //     }
 
-      // mergedVolume cannot be empty, at least a value from the tankVolume
-      if (!currentElement.mergedVolume) {
-        errors.push({
-          type: 'error',
-          text1: `Empty merged volume for tank ${currentElement.tankId}`,
-          text2: 'Please fill in the merged volume',
-          position: 'bottom',
-        });
-        isVerified = false;
-      }
+  //     // mergedVolume cannot be empty, at least a value from the tankVolume
+  //     if (!currentElement.mergedVolume) {
+  //       errors.push({
+  //         type: 'error',
+  //         text1: `Empty merged volume for tank ${currentElement.tankId}`,
+  //         text2: 'Please fill in the merged volume',
+  //         position: 'bottom',
+  //       });
+  //       isVerified = false;
+  //     }
 
-      if (!isVerified) break;
-    }
+  //     if (!isVerified) break;
+  //   }
 
-    if (isVerified) {
-      setIsVerified(true);
-      Toast.show({
-        type: 'success',
-        text1: 'Data Verified',
-        text2: 'All data has been verified',
-        position: 'bottom',
-        visibilityTime: 2000,
-      });
+  //   if (isVerified) {
+  //     setIsVerified(true);
+  //     Toast.show({
+  //       type: 'success',
+  //       text1: 'Data Verified',
+  //       text2: 'All data has been verified',
+  //       position: 'bottom',
+  //       visibilityTime: 2000,
+  //     });
 
-      setTimeout(() => {
-        navigation.navigate('DischargeReport', { reportData: [] });
-      }, 2000);
-    } else {
-      // Display the first error message
-      Toast.show(errors[0]);
-      setIsVerified(false);
-    }
-  };
+  //     setTimeout(() => {
+  //       navigation.navigate('DischargeReport', { reportData: [] });
+  //     }, 2000);
+  //   } else {
+  //     // Display the first error message
+  //     Toast.show(errors[0]);
+  //     setIsVerified(false);
+  //   }
+  // };
 
   return (
     <MainLayout stationName={stationInfo?.name}>
@@ -424,7 +427,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         >
           <Text style={{ ...styles.text, color: 'white' }}>Save</Text>
         </Pressable>
-        <Pressable
+        {/* <Pressable
           onPress={verifyAll}
           style={{
             ...styles.button,
@@ -432,7 +435,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
           }}
         >
           <Text style={styles.text}>Verify</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     </MainLayout>
   );

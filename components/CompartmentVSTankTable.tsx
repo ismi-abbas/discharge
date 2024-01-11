@@ -118,7 +118,15 @@ const CompartmentVSTankTable = ({
 
             <View
               style={{
+                ...styles.box,
                 marginTop: 40,
+              }}
+            >
+              <Text style={styles.header}>Added Volume</Text>
+            </View>
+
+            <View
+              style={{
                 ...styles.box,
                 backgroundColor:
                   column.mergedVolume !== ''
@@ -163,9 +171,7 @@ const CompartmentVSTankTable = ({
             borderColor: 'black',
             top: 850,
           }}
-        >
-          New Merged Volume
-        </Text>
+        ></Text>
       </View>
     </View>
   );
@@ -181,7 +187,7 @@ const styles = StyleSheet.create({
   },
   box: {
     justifyContent: 'center',
-    width: 100,
+    width: 110,
     borderWidth: 0.5,
     height: 40,
     backgroundColor: '#fff',

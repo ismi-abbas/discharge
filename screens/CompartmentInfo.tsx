@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
   box: {
     fontFamily: typography.primary.semibold,
     flex: 1,
-    width: 100,
+    width: 110,
     height: 40,
     backgroundColor: 'rgba(64, 175, 247, 0.69)',
     borderWidth: 0.5,

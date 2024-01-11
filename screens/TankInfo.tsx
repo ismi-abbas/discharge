@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   },
   box: {
     fontFamily: typography.primary.semibold,
-    width: 100,
+    width: 110,
     height: 40,
     borderWidth: 0.5,
     textAlign: 'center',

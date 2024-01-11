@@ -54,7 +54,7 @@ const CompartmentInfoTable = ({ tableData, editable, handleVolumeChange, handleC
                 editable={editable}
                 style={{ ...styles.input, color: 'black' }}
                 value={column.volume}
-                onChangeText={(volume) => handleVolumeChange(column.id, volume)}
+                onChangeText={(volume) => handleVolumeChange(column.id!, volume)}
                 keyboardType={Platform.OS === 'android' ? 'numeric' : 'number-pad'}
               />
             </View>
