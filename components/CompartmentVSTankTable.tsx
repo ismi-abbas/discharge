@@ -12,7 +12,7 @@ type Props = {
   setCompartmentData: (data: CompartmentData[]) => void;
   editable: boolean;
   mergedData: MergeData[] | undefined;
-  handleCompartmentSelect: (item: DropdownList, tankId: string) => void;
+  handleCompartmentSelect: (item: DropdownList, tankId: string, compartmentIndex: any) => void;
   calculateTotal: (compartmentVolume: string, tankVolume: string) => void;
   dropdownList: DropdownList[];
 };
@@ -63,7 +63,7 @@ const CompartmentVSTankTable = ({
 
             {column.compartmentList.map((compartment, index) => {
               return (
-                <View>
+                <View key={index}>
                   <Dropdown
                     keyboardAvoiding
                     disable={!editable}
@@ -82,7 +82,9 @@ const CompartmentVSTankTable = ({
                     valueField="value"
                     placeholder="Select"
                     value={compartment.compartmentId}
-                    onChange={(item) => handleCompartmentSelect(item, column.tankId)}
+                    onChange={(item) => {
+                      handleCompartmentSelect(item, column.tankId, index);
+                    }}
                   />
 
                   {/* Compartment Type */}
@@ -90,8 +92,8 @@ const CompartmentVSTankTable = ({
                     style={{
                       ...styles.box,
                       backgroundColor:
-                        column.compartmentFuelType !== ''
-                          ? column.compartmentFuelType === column.tankFuelType
+                        compartment.fuelType !== ''
+                          ? compartment.fuelType === column.tankFuelType
                             ? 'white'
                             : 'red'
                           : 'white',

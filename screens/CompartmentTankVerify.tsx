@@ -79,22 +79,38 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
     fetchData();
   }, [isFocus]);
 
-  const handleCompartmentSelect = (item: DropdownList, tankId: string) => {
+  const handleCompartmentSelect = (item: DropdownList, tankId: string, compartmentIndex: number) => {
     const compartmentId = item.value;
 
     if (compartmentId === '') {
       setMergedData(
-        mergedData?.map((data) =>
-          data.tankId === tankId
-            ? {
-                ...data,
-                compartmentId: '',
-                compartmentVolume: '',
-                compartmentFuelType: '',
-                mergedVolume: '',
-              }
-            : data
-        )
+        mergedData?.map((data) => {
+          if (data.tankId === tankId) {
+            const indexToUpdate = compartmentIndex;
+
+            data.compartmentList.splice(indexToUpdate, 1, {
+              compartmentId,
+              fuelType: '',
+              id: compartmentIndex,
+              volume: '',
+            });
+
+            const totalAddedCompartment = data.compartmentList.reduce((acc, currentValue) => {
+              const volume = currentValue.volume === '' ? '0' : currentValue.volume;
+              return acc + parseInt(volume);
+            }, 0);
+
+            return {
+              ...data,
+              compartmentId: compartmentId,
+              compartmentList: data.compartmentList,
+              compartmentVolume: volume,
+              compartmentFuelType,
+              mergedVolume: (totalAddedCompartment + parseInt(data.tankVolume)).toString(),
+            };
+          }
+          return data;
+        })
       );
     }
 
@@ -104,34 +120,42 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
       return;
     }
 
-    const compartmentFuelType = compartment.fuelType || '';
-    const volume = compartment.volume || '';
+    const compartmentFuelType = compartment.fuelType;
+    const volume = !compartmentId ? '' : compartment.volume;
+    console.log({ compartmentId });
 
-    const updatedData = mergedData.map((data) =>
-      data.tankId === tankId
-        ? {
-            ...data,
-            compartmentId: compartmentId,
-            compartmentVolume: volume,
-            compartmentFuelType,
-            mergedVolume: calculateTotal(volume, data.tankVolume),
-          }
-        : data
-    );
+    const updatedData = mergedData.map((data) => {
+      if (data.tankId === tankId) {
+        const indexToUpdate = compartmentIndex;
+
+        data.compartmentList.splice(indexToUpdate, 1, {
+          compartmentId,
+          fuelType: compartmentFuelType,
+          id: compartmentIndex,
+          volume: volume,
+        });
+
+        const totalAddedCompartment = data.compartmentList.reduce((acc, currentValue) => {
+          const volume = currentValue.volume === '' ? '0' : currentValue.volume;
+          return acc + parseInt(volume);
+        }, 0);
+
+        return {
+          ...data,
+          compartmentId: compartmentId,
+          compartmentList: data.compartmentList,
+          compartmentVolume: volume,
+          compartmentFuelType,
+          mergedVolume: (totalAddedCompartment + parseInt(data.tankVolume)).toString(),
+        };
+      }
+      return data;
+    });
 
     const currentUpdated = updatedData.find((data) => data.tankId === tankId);
 
     if (!currentUpdated) {
       return;
-    }
-
-    if (parseInt(currentUpdated?.mergedVolume) > parseInt(currentUpdated?.tankMaxVolume)) {
-      Toast.show({
-        type: 'error',
-        text1: `Tank ${currentUpdated?.tankId} Max Volume Exceeded`,
-        text2: `Max Volume: ${currentUpdated?.tankMaxVolume}L. Please reduce the volume`,
-        position: 'bottom',
-      });
     }
 
     setMergedData(updatedData);

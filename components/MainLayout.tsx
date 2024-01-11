@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import React, { FC, ReactNode } from 'react';
 import { Image } from 'expo-image';
-import FeatherIcons from '@expo/vector-icons/Feather';
 import { typography } from '../theme/typography';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/native';
 
 type Props = {
   children: ReactNode;
@@ -14,6 +14,13 @@ type Props = {
 
 export const MainLayout: FC<Props> = ({ children, stationName, openSettings }) => {
   const insets = useSafeAreaInsets();
+  const { getState } = useNavigation();
+
+  // 0 - OneTimeSetup
+  // 1 - Home
+  // 2 - CompartmentInfo
+  const currentTab = getState().index;
+
   return (
     <View
       style={{
@@ -33,11 +40,18 @@ export const MainLayout: FC<Props> = ({ children, stationName, openSettings }) =
           <Text style={styles.barTitle}>{stationName}</Text>
         </View>
         <View>
-          <FeatherIcons
-            name="sliders"
-            size={20}
-            onPress={openSettings}
-          />
+          {currentTab === 1 || currentTab === 2 ? (
+            <Pressable onPress={openSettings}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontSize: 16,
+                }}
+              >
+                Edit
+              </Text>
+            </Pressable>
+          ) : null}
         </View>
       </View>
 
