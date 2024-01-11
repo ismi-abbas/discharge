@@ -7,7 +7,7 @@ import CompartmentInfoTable from '../components/CompartmentInfoTable';
 import Toast from 'react-native-toast-message';
 import { load, save } from '../utils/storage';
 import { AppStackScreenProps, CompartmentData, DropdownList, StationInfo } from '../utils/types';
-import { compartmentDefaultData } from '../utils/constant';
+import { APP_TEXT, compartmentDefaultData } from '../utils/constant';
 import { useIsFocused } from '@react-navigation/native';
 
 const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>) => {
@@ -39,22 +39,6 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
 
     fetchData();
   }, [isFocus]);
-
-  const saveData = async () => {
-    try {
-      await save('compartmentData', compartmentData);
-
-      Toast.show({
-        type: 'success',
-        text1: 'Data Saved',
-        text2: 'Tank details has been saved 👍🏻',
-        position: 'bottom',
-        visibilityTime: 2000,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleCompartment = (action: string) => {
     if (action === 'add') {
@@ -90,8 +74,15 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
     }
   };
 
-  const verifyAll = () => {
+  const saveAndVerify = async () => {
+    try {
+      await save('compartmentData', compartmentData);
+    } catch (error) {
+      console.log(error);
+    }
+
     const verified = compartmentData?.every((data) => data.fuelType !== '' && data.volume !== '');
+    console.log({ verified, compartmentData });
 
     if (verified) {
       Toast.show({
@@ -226,7 +217,10 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   right: 0,
                 }}
               >
-                <FeatherIcons name="x" size={20} />
+                <FeatherIcons
+                  name="x"
+                  size={20}
+                />
               </Pressable>
             </View>
           </View>
@@ -250,7 +244,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   textTransform: 'capitalize',
                 }}
               >
-                Please key in truck delivery details compartment(C)
+                {APP_TEXT.COMPARTMENT_INFO_TEXT}
               </Text>
 
               <KeyboardAvoidingView>
@@ -332,24 +326,15 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
           >
             <Pressable
               disabled={editable}
-              onPress={saveData}
+              onPress={() => {
+                saveAndVerify();
+              }}
               style={{
                 ...styles.button,
                 backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
               }}
             >
               <Text style={styles.buttonText}>Save</Text>
-            </Pressable>
-
-            <Pressable
-              onPress={verifyAll}
-              disabled={editable}
-              style={{
-                ...styles.button,
-                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
-              }}
-            >
-              <Text style={styles.buttonText}>Verify</Text>
             </Pressable>
           </View>
         </View>

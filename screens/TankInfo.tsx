@@ -8,6 +8,7 @@ import TankInfoTable from '../components/TankInfoTable';
 import { AppStackScreenProps, DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
 import { load, save } from '../utils/storage';
 import { useIsFocused } from '@react-navigation/native';
+import { APP_TEXT } from '../utils/constant';
 
 const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
   const isFocus = useIsFocused();
@@ -62,9 +63,6 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
         visibilityTime: 2000,
       });
     }
-  };
-
-  const verifyAll = () => {
     const verified = tableData?.every((tank) => tank.volume !== '' && tank.volume !== '0' && tank.fuelType !== '');
 
     if (verified) {
@@ -149,7 +147,10 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
                 zIndex: 20,
               }}
             >
-              <FeatherIcons name="x" size={20} />
+              <FeatherIcons
+                name="x"
+                size={20}
+              />
             </Pressable>
             <Text style={styles.titleBoxText}>New Discharge</Text>
             <Text
@@ -159,7 +160,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
                 fontSize: 17,
               }}
             >
-              Please Key In Your Station Tank Latest Details, Tank(T)
+              {APP_TEXT.TANK_INFO_TEXT}
             </Text>
 
             <TankInfoTable
@@ -221,15 +222,6 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
           style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}
         >
           <Text style={{ ...styles.buttonText, color: 'white' }}>Save</Text>
-        </Pressable>
-        <Pressable
-          onPress={verifyAll}
-          style={{
-            ...styles.button,
-            backgroundColor: 'rgba(215, 215, 215, 0.8)',
-          }}
-        >
-          <Text style={styles.text}>Verify</Text>
         </Pressable>
       </View>
     </MainLayout>

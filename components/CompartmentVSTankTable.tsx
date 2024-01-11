@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import React from 'react';
 import { typography } from '../theme/typography';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -60,53 +60,59 @@ const CompartmentVSTankTable = ({
             >
               <Text style={styles.text}>{column.tankVolume.concat('L')}</Text>
             </View>
-            {/* Compartment Select */}
-            <Dropdown
-              keyboardAvoiding
-              disable={!editable}
-              style={styles.dropdown}
-              placeholderStyle={styles.placeholderStyle}
-              selectedTextStyle={styles.selectedTextStyle}
-              itemTextStyle={{
-                fontFamily: typography.primary.semibold,
-                fontSize: 14,
-                textAlign: 'center',
-              }}
-              maxHeight={400}
-              iconStyle={styles.iconStyle}
-              data={dropdownList}
-              labelField="label"
-              valueField="value"
-              placeholder="Select"
-              value={column.compartmentId}
-              onChange={(item) => handleCompartmentSelect(item, column.tankId)}
-            />
 
-            {/* Compartment Type */}
-            <View
-              style={{
-                ...styles.box,
-                backgroundColor:
-                  column.compartmentFuelType !== ''
-                    ? column.compartmentFuelType === column.tankFuelType
-                      ? 'white'
-                      : 'red'
-                    : 'white',
-              }}
-            >
-              <Text style={styles.text}>{column.compartmentFuelType}</Text>
-            </View>
+            {column.compartmentList.map((compartment, index) => {
+              return (
+                <View>
+                  <Dropdown
+                    keyboardAvoiding
+                    disable={!editable}
+                    style={styles.dropdown}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    itemTextStyle={{
+                      fontFamily: typography.primary.semibold,
+                      fontSize: 14,
+                      textAlign: 'center',
+                    }}
+                    maxHeight={400}
+                    iconStyle={styles.iconStyle}
+                    data={dropdownList}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select"
+                    value={compartment.compartmentId}
+                    onChange={(item) => handleCompartmentSelect(item, column.tankId)}
+                  />
 
-            {/* Compartment Volume */}
-            <View
-              style={{
-                ...styles.box,
-              }}
-            >
-              <Text style={styles.text}>
-                {column.compartmentVolume ? column.compartmentVolume.concat('L') : column.compartmentVolume}
-              </Text>
-            </View>
+                  {/* Compartment Type */}
+                  <View
+                    style={{
+                      ...styles.box,
+                      backgroundColor:
+                        column.compartmentFuelType !== ''
+                          ? column.compartmentFuelType === column.tankFuelType
+                            ? 'white'
+                            : 'red'
+                          : 'white',
+                    }}
+                  >
+                    <Text style={styles.text}>{compartment.fuelType}</Text>
+                  </View>
+
+                  {/* Compartment Volume */}
+                  <View
+                    style={{
+                      ...styles.box,
+                    }}
+                  >
+                    <Text style={styles.text}>
+                      {compartment.volume ? compartment.volume.concat('L') : compartment.volume}
+                    </Text>
+                  </View>
+                </View>
+              );
+            })}
 
             <View
               style={{
@@ -152,7 +158,8 @@ const CompartmentVSTankTable = ({
             fontFamily: typography.primary.bold,
             textAlign: 'center',
             color: 'black',
-            top: '80%',
+            borderColor: 'black',
+            top: 850,
           }}
         >
           New Merged Volume
@@ -212,3 +219,11 @@ const styles = StyleSheet.create({
 });
 
 export default CompartmentVSTankTable;
+
+type compartmentDropdownProps = {
+  editable: boolean;
+  dropdownList: any;
+  column: any;
+  compartmentId: string;
+  handleCompartmentSelect: (item: any, tankId: any) => void;
+};

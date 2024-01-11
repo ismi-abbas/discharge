@@ -10,7 +10,7 @@ type Props = {
   tableData: CompartmentData[] | undefined;
   editable: boolean;
   setTableData: (data: CompartmentData[]) => void;
-  handleFuelTypeChange: () => void;
+  handleFuelTypeChange: (rowIndex: number, col: string, value: string) => void;
   handleVolumeChange: (columnId: number, volume: string) => void;
   handleCompartmentSelect: (item: DropdownList, compartmentId: string) => void;
 };

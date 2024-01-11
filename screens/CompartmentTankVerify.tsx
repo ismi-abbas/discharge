@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
@@ -8,6 +8,7 @@ import CompartmentVSTankTable from '../components/CompartmentVSTankTable';
 import { AppStackScreenProps, CompartmentData, DropdownList, MergeData, StationInfo, TankData } from '../utils/types';
 import { load, save } from '../utils/storage';
 import { useIsFocused } from '@react-navigation/native';
+import { APP_TEXT } from '../utils/constant';
 
 const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentTankVerify'>) => {
   const isFocus = useIsFocused();
@@ -21,7 +22,6 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   const [editable, setEditable] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -42,6 +42,14 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
             tankFuelType: tank.fuelType,
             tankVolume: tank.volume,
             compartmentId: '',
+            compartmentList: [
+              { compartmentId: '', fuelType: '', id: null, volume: '' },
+              { compartmentId: '', fuelType: '', id: null, volume: '' },
+              { compartmentId: '', fuelType: '', id: null, volume: '' },
+              { compartmentId: '', fuelType: '', id: null, volume: '' },
+              { compartmentId: '', fuelType: '', id: null, volume: '' },
+              { compartmentId: '', fuelType: '', id: null, volume: '' },
+            ],
             mergedVolume: '',
             compartmentFuelType: '',
             compartmentVolume: '',
@@ -91,6 +99,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
     }
 
     const compartment = compartmentTableData.find((data) => data.compartmentId === compartmentId);
+
     if (!compartment) {
       return;
     }
@@ -285,7 +294,10 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               right: 0,
             }}
           >
-            <FeatherIcons name="x" size={20} />
+            <FeatherIcons
+              name="x"
+              size={20}
+            />
           </Pressable>
           <View>
             <Text style={styles.titleBoxText}>New Discharge</Text>
@@ -296,7 +308,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
                 fontSize: 17,
               }}
             >
-              Truck Compartment (C) to Station Tank (T) Petrol Match
+              {APP_TEXT.COMPARTMENT_TANK_VERIFY_TEXT}
             </Text>
 
             <Text
@@ -309,17 +321,23 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               Please match Compartment (C)to Tank (V)
             </Text>
 
-            <CompartmentVSTankTable
-              tankData={tankTableData}
-              setTankData={setTankTableData}
-              compartmentData={compartmentTableData}
-              setCompartmentData={setCompartmentTableData}
-              calculateTotal={calculateTotal}
-              handleCompartmentSelect={handleCompartmentSelect}
-              dropdownList={dropdownList}
-              mergedData={mergedData}
-              editable={editable}
-            />
+            <ScrollView
+              style={{ height: 400 }}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ flexGrow: 1 }}
+            >
+              <CompartmentVSTankTable
+                tankData={tankTableData}
+                setTankData={setTankTableData}
+                compartmentData={compartmentTableData}
+                setCompartmentData={setCompartmentTableData}
+                calculateTotal={calculateTotal}
+                handleCompartmentSelect={handleCompartmentSelect}
+                dropdownList={dropdownList}
+                mergedData={mergedData}
+                editable={editable}
+              />
+            </ScrollView>
           </View>
         </View>
         <View

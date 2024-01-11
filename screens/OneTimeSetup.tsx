@@ -2,7 +2,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
-import { petrolType, tankDefaultData } from '../utils/constant';
+import { APP_TEXT, petrolType, tankDefaultData } from '../utils/constant';
 import { Dropdown } from 'react-native-element-dropdown';
 import Toast from 'react-native-toast-message';
 import { load, save } from '../utils/storage';
@@ -28,7 +28,6 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
     companyName: '',
   });
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     fetchData();
   }, [isFocus]);
@@ -109,30 +108,22 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
   };
 
   const saveDetails = async ({ data }: { data: TankData[] }) => {
-    setInitialSetup({
-      done: true,
-      data: data,
-    });
-
-    console.log(data);
-
-    showToast('success', 'Data save', 'Data saved successfully', 2000);
-  };
-
-  const verifyData = async () => {
-    const verified = initialSetup.data.every((d) => d.volume !== '' && d.fuelType !== '');
+    const verified = data.every((d) => d.volume !== '' && d.fuelType !== '');
     const stationInfoVerified =
       stationInfo.address !== '' &&
       stationInfo.companyAddress !== '' &&
       stationInfo.companyName !== '' &&
       stationInfo.name !== '';
 
-    setInitialSetup({ ...initialSetup, done: true });
-
     if (verified && stationInfoVerified) {
       try {
-        await save('initialSetup', initialSetup);
+        await save('initialSetup', {
+          data: data,
+          done: true,
+        });
         await save('stationInfo', stationInfo);
+
+        showToast('success', 'Data save', 'Data saved successfully', 2000);
         navigation.navigate('Home');
       } catch (error) {
         showToast('error', 'Error saving data', 'Error saving preset data');
@@ -154,7 +145,10 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
 
   return (
     <MainLayout stationName={stationInfo.name}>
-      <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.wrapper}>
           <KeyboardAvoidingView>
             <View style={styles.dischargeBox}>
@@ -245,14 +239,17 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
                     style={{
                       marginTop: 20,
                       fontFamily: typography.primary.light,
-                      fontSize: 17,
+                      fontSize: 14,
                     }}
                   >
-                    Please Key In Your Current Station Tank Details
+                    {APP_TEXT.PRE_SETUP_TEXT}
                   </Text>
 
                   <View style={styles.container}>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                    >
                       {tableData?.map((column) => (
                         <View key={column.id}>
                           <View style={styles.tableBox}>
@@ -388,15 +385,6 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
                 }}
               >
                 <Text style={{ ...styles.buttonText, color: 'white' }}>Save</Text>
-              </Pressable>
-              <Pressable
-                onPress={verifyData}
-                style={{
-                  ...styles.button,
-                  backgroundColor: 'rgba(215, 215, 215, 0.8)',
-                }}
-              >
-                <Text style={styles.buttonText}>Verify</Text>
               </Pressable>
             </View>
           </KeyboardAvoidingView>

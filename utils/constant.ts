@@ -82,6 +82,7 @@ export const compartmentToTank: MergeData[] = [
     tankFuelType: '',
     mergedVolume: '',
     tankMaxVolume: '',
+    compartmentList: [],
   },
   {
     id: 2,
@@ -93,6 +94,7 @@ export const compartmentToTank: MergeData[] = [
     tankFuelType: '',
     mergedVolume: '',
     tankMaxVolume: '',
+    compartmentList: [],
   },
   {
     id: 3,
@@ -104,6 +106,7 @@ export const compartmentToTank: MergeData[] = [
     tankFuelType: '',
     mergedVolume: '',
     tankMaxVolume: '',
+    compartmentList: [],
   },
   {
     id: 4,
@@ -115,6 +118,7 @@ export const compartmentToTank: MergeData[] = [
     tankFuelType: '',
     mergedVolume: '',
     tankMaxVolume: '',
+    compartmentList: [],
   },
   {
     id: 5,
@@ -126,6 +130,7 @@ export const compartmentToTank: MergeData[] = [
     tankFuelType: '',
     mergedVolume: '',
     tankMaxVolume: '',
+    compartmentList: [],
   },
 ];
 
@@ -151,4 +156,11 @@ export const petrolType = [
     value: 'AGO',
   },
 ];
-// truck limit 100000 per Compartment
+
+export const APP_TEXT = {
+  PRE_SETUP_TEXT: 'Please key in company details, station tank max capacity, number and product type.',
+  PRE_SETUP_TABLE_HELPER: 'Scroll to the right for more info. 3rd row is the max volume for tank.',
+  TANK_INFO_TEXT: 'Please key in your latest tank dipping (T).',
+  COMPARTMENT_INFO_TEXT: 'Please Key In Your Station Tank Latest Details, Tank(T).',
+  COMPARTMENT_TANK_VERIFY_TEXT: 'Station Tank (T) to Tanker Compartment (C) fuel match.',
+};

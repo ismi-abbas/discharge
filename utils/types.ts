@@ -27,7 +27,7 @@ export interface ResultItem {
 }
 
 export interface CompartmentData {
-  id: number;
+  id: number | null;
   compartmentId: string;
   fuelType: string;
   volume: string;
@@ -43,6 +43,7 @@ export interface MergeData {
   compartmentFuelType: string;
   compartmentVolume: string;
   mergedVolume: string;
+  compartmentList: CompartmentData[];
 }
 
 export interface DropdownList {
