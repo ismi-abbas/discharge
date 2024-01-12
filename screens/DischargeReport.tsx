@@ -17,30 +17,6 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
   const [reportListData, setReportListData] = useState<ReportData[]>();
   const [stationInfo, setStationInfo] = useState<StationInfo>();
 
-  useEffect(() => {
-    const getAllData = async () => {
-      try {
-        const stationInfoData = (await load('stationInfo')) as StationInfo;
-        const completedData = (await load('mergedData')) as MergeData[];
-        const reportListData = (await load('reportData')) as ReportData[];
-
-        console.log(completedData);
-
-        setFinalReportData(completedData);
-        setReportListData(reportListData);
-        setStationInfo(stationInfoData);
-      } catch (error) {
-        Toast.show({
-          type: 'error',
-          text1: 'Data load',
-          text2: 'No previous data found',
-        });
-      }
-    };
-
-    getAllData();
-  }, [isFocus]);
-
   const verifyAll = async () => {
     const newReport: ReportData = {
       reportId: uuid.v4().toString(),
@@ -70,6 +46,35 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
       console.log(error);
     }
   };
+
+  const calculateUlage = (addedVolume: string, maxVolumne: string) => {
+    const ulage = parseInt(maxVolumne, 10) - parseInt(addedVolume, 10);
+
+    let final = ulage < 0 ? ulage : 0;
+    return final.toString();
+  };
+
+  useEffect(() => {
+    const getAllData = async () => {
+      try {
+        const stationInfoData = (await load('stationInfo')) as StationInfo;
+        const completedData = (await load('mergedData')) as MergeData[];
+        const reportListData = (await load('reportData')) as ReportData[];
+
+        setFinalReportData(completedData);
+        setReportListData(reportListData);
+        setStationInfo(stationInfoData);
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Data load',
+          text2: 'No previous data found',
+        });
+      }
+    };
+
+    getAllData();
+  }, [isFocus]);
 
   return (
     <MainLayout stationName={stationInfo?.name}>
@@ -170,14 +175,16 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
                       ...styles.box,
                     }}
                   >
-                    <Text style={styles.columnText}>{column.tankVolume.concat('L')}</Text>
+                    <Text style={styles.columnText}>{column.addedVolume?.concat('L')}</Text>
                   </View>
                   <View
                     style={{
                       ...styles.box,
                     }}
                   >
-                    <Text style={styles.columnText}>{column.tankVolume} Ulage</Text>
+                    <Text style={styles.columnText}>
+                      {calculateUlage(column.mergedVolume, column.tankMaxVolume)} Ulage
+                    </Text>
                   </View>
 
                   <View
@@ -190,9 +197,18 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
                   <View
                     style={{
                       ...styles.box,
+                      backgroundColor:
+                        parseInt(column.tankMaxVolume) - parseInt(column.mergedVolume) < 0 ? 'red' : 'white',
                     }}
                   >
-                    <Text style={styles.header}>{column.mergedVolume.concat('L')} Total</Text>
+                    <Text
+                      style={{
+                        ...styles.header,
+                        color: parseInt(column.tankMaxVolume) - parseInt(column.mergedVolume) < 0 ? 'white' : 'black',
+                      }}
+                    >
+                      {column.mergedVolume.concat('L')} Total
+                    </Text>
                   </View>
                 </View>
               ))}

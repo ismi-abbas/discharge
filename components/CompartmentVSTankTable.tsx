@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { ScrollView } from 'react-native-gesture-handler';
 import { typography } from '../theme/typography';
@@ -99,7 +99,19 @@ const CompartmentVSTankTable = ({
                           : 'white',
                     }}
                   >
-                    <Text style={styles.text}>{compartment.fuelType}</Text>
+                    <Text
+                      style={{
+                        ...styles.text,
+                        color:
+                          compartment.fuelType !== ''
+                            ? compartment.fuelType === column.tankFuelType
+                              ? 'black'
+                              : 'white'
+                            : 'black',
+                      }}
+                    >
+                      {compartment.fuelType}
+                    </Text>
                   </View>
 
                   {/* Compartment Volume */}

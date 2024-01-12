@@ -44,6 +44,7 @@ export interface MergeData {
   compartmentVolume: string;
   mergedVolume: string;
   compartmentList: CompartmentData[];
+  addedVolume?: string;
 }
 
 export interface DropdownList {

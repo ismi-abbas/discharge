@@ -95,7 +95,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               volume: '',
             });
 
-            const totalAddedCompartment = data.compartmentList.reduce((acc, currentValue) => {
+            const totalAddedVolume = data.compartmentList.reduce((acc, currentValue) => {
               const volume = currentValue.volume === '' ? '0' : currentValue.volume;
               return acc + parseInt(volume);
             }, 0);
@@ -106,7 +106,8 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               compartmentList: data.compartmentList,
               compartmentVolume: volume,
               compartmentFuelType,
-              mergedVolume: (totalAddedCompartment + parseInt(data.tankVolume)).toString(),
+              mergedVolume: (totalAddedVolume + parseInt(data.tankVolume)).toString(),
+              addedVolume: totalAddedVolume.toString(),
             };
           }
           return data;
@@ -134,7 +135,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
           volume: volume,
         });
 
-        const totalAddedCompartment = data.compartmentList.reduce((acc, currentValue) => {
+        const totalAddedVolume = data.compartmentList.reduce((acc, currentValue) => {
           const volume = currentValue.volume === '' ? '0' : currentValue.volume;
           return acc + parseInt(volume);
         }, 0);
@@ -145,7 +146,8 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
           compartmentList: data.compartmentList,
           compartmentVolume: volume,
           compartmentFuelType,
-          mergedVolume: (totalAddedCompartment + parseInt(data.tankVolume)).toString(),
+          mergedVolume: (totalAddedVolume + parseInt(data.tankVolume)).toString(),
+          addedVolume: totalAddedVolume.toString(),
         };
       }
       return data;

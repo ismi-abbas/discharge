@@ -12,7 +12,13 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
   const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [reportData, setReportData] = useState<ViewReportData>();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  const calculateUlage = (addedVolume: string, maxVolumne: string) => {
+    const ulage = parseInt(maxVolumne, 10) - parseInt(addedVolume, 10);
+
+    let final = ulage < 0 ? ulage : 0;
+    return final.toString();
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const reportData = (await load('reportData')) as ReportData[];
@@ -64,20 +70,78 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
             <Text style={{ fontSize: 16 }}>Company Name: {reportData?.companyLocation}</Text>
           </View>
         </View>
+
         <View style={styles.infoBox}>
-          <View style={{ marginTop: 20 }}>
+          <ScrollView style={{ height: '70%' }}>
             <View style={{ borderWidth: 0.5 }}>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {reportData?.report.map((column) => (
                   <View key={column.id}>
+                    {/* ======================= */}
                     <View style={styles.box}>
                       <Text style={styles.header}>{column.tankId}</Text>
                     </View>
                     <View style={styles.box}>
                       <Text style={styles.columnText}>{column.tankFuelType}</Text>
                     </View>
-                    <View style={{ ...styles.box, marginTop: 40 }}>
-                      <Text style={styles.columnText}>{column.compartmentId}</Text>
+                    <View style={styles.box}>
+                      <Text style={styles.columnText}>{column.tankVolume.concat('L')}</Text>
+                    </View>
+                    <View style={styles.box}>
+                      <Text style={{ ...styles.columnText, fontStyle: 'italic' }}>
+                        {column.tankMaxVolume.concat('L')} Max
+                      </Text>
+                    </View>
+
+                    {column?.compartmentList.map((item, index) => (
+                      <View key={index}>
+                        <View style={styles.box}>
+                          <Text style={styles.header}>{item.compartmentId !== '' ? item.compartmentId : 'Empty'}</Text>
+                        </View>
+                        <View
+                          style={{
+                            ...styles.box,
+                            backgroundColor:
+                              item.fuelType !== ''
+                                ? item.fuelType === column.tankFuelType
+                                  ? 'white'
+                                  : 'red'
+                                : 'white',
+                          }}
+                        >
+                          <Text
+                            style={{
+                              ...styles.columnText,
+                              color:
+                                item.fuelType !== ''
+                                  ? item.fuelType === column.tankFuelType
+                                    ? 'black'
+                                    : 'white'
+                                  : 'black',
+                            }}
+                          >
+                            {item.fuelType}
+                          </Text>
+                        </View>
+                        <View style={styles.box}>
+                          <Text style={styles.columnText}>{item.volume}</Text>
+                        </View>
+                      </View>
+                    ))}
+
+                    <View
+                      style={{
+                        ...styles.box,
+                      }}
+                    >
+                      <Text style={styles.header}>Added Volume</Text>
+                    </View>
+                    <View
+                      style={{
+                        ...styles.box,
+                      }}
+                    >
+                      <Text style={styles.columnText}>{column.addedVolume?.concat('L')}</Text>
                     </View>
                     <View
                       style={{
@@ -85,56 +149,38 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
                       }}
                     >
                       <Text style={styles.columnText}>
-                        {parseInt(column.compartmentVolume) > 0
-                          ? column.compartmentVolume.concat('L')
-                          : '0'.concat('L')}
+                        {calculateUlage(column.mergedVolume, column.tankMaxVolume)} Ulage
                       </Text>
                     </View>
+
                     <View
                       style={{
-                        marginTop: 40,
                         ...styles.box,
                       }}
                     >
-                      <Text style={styles.columnText}>{column.mergedVolume.concat('L')}</Text>
+                      <Text style={styles.header}>Final Volume</Text>
+                    </View>
+                    <View
+                      style={{
+                        ...styles.box,
+                        backgroundColor:
+                          parseInt(column.tankMaxVolume) - parseInt(column.mergedVolume) < 0 ? 'red' : 'white',
+                      }}
+                    >
+                      <Text
+                        style={{
+                          ...styles.header,
+                          color: parseInt(column.tankMaxVolume) - parseInt(column.mergedVolume) < 0 ? 'white' : 'black',
+                        }}
+                      >
+                        {column.mergedVolume.concat('L')} Total
+                      </Text>
                     </View>
                   </View>
                 ))}
               </ScrollView>
             </View>
-
-            <View
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: 240,
-                zIndex: -10,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontFamily: typography.primary.bold,
-                  textAlign: 'center',
-                  color: 'black',
-                  top: '38%',
-                }}
-              >
-                Delivery Order
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontFamily: typography.primary.bold,
-                  textAlign: 'center',
-                  color: 'black',
-                  top: '79%',
-                }}
-              >
-                Final Volume at Tank
-              </Text>
-            </View>
-          </View>
+          </ScrollView>
         </View>
       </View>
     </MainLayout>
