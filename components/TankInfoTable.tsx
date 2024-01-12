@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, Platform } from 'react-native';
 import React from 'react';
-import { typography } from '../theme/typography';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import { typography } from '../theme/typography';
 import { DropdownList, TankData } from '../utils/types';
 
 type Props = {
@@ -14,10 +14,7 @@ type Props = {
 const TankInfoTable = ({ tableData, editable, handleVolumeChange }: Props) => {
   return (
     <View style={styles.container}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      >
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {tableData?.map((column) => (
           <View key={column.id}>
             <View style={styles.box}>

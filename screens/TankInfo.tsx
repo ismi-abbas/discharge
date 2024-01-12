@@ -1,14 +1,14 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { MainLayout } from '../components/MainLayout';
-import { typography } from '../theme/typography';
 import FeatherIcons from '@expo/vector-icons/Feather';
-import Toast from 'react-native-toast-message';
-import TankInfoTable from '../components/TankInfoTable';
-import { AppStackScreenProps, DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
-import { load, save } from '../utils/storage';
 import { useIsFocused } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Toast from 'react-native-toast-message';
+import { MainLayout } from '../components/MainLayout';
+import TankInfoTable from '../components/TankInfoTable';
+import { typography } from '../theme/typography';
 import { APP_TEXT } from '../utils/constant';
+import { load, save } from '../utils/storage';
+import { AppStackScreenProps, DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
 
 const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
   const isFocus = useIsFocused();
@@ -147,10 +147,7 @@ const TankInfo = ({ navigation }: AppStackScreenProps<'TankInfo'>) => {
                 zIndex: 20,
               }}
             >
-              <FeatherIcons
-                name="x"
-                size={20}
-              />
+              <FeatherIcons name="x" size={20} />
             </Pressable>
             <Text style={styles.titleBoxText}>New Discharge</Text>
             <Text

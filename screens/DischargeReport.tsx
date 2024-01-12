@@ -1,14 +1,14 @@
-import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
+import FeatherIcons from '@expo/vector-icons/Feather';
+import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import Toast from 'react-native-toast-message';
+import uuid from 'react-native-uuid';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
-import Toast from 'react-native-toast-message';
 import { compartmentToTank } from '../utils/constant';
-import FeatherIcons from '@expo/vector-icons/Feather';
-import { AppStackScreenProps, MergeData, ReportData, StationInfo } from '../utils/types';
 import { load, save } from '../utils/storage';
-import uuid from 'react-native-uuid';
-import { useIsFocused } from '@react-navigation/native';
+import { AppStackScreenProps, MergeData, ReportData, StationInfo } from '../utils/types';
 
 const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>) => {
   const isFocus = useIsFocused();
@@ -17,7 +17,6 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
   const [reportListData, setReportListData] = useState<ReportData[]>();
   const [stationInfo, setStationInfo] = useState<StationInfo>();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const getAllData = async () => {
       try {
@@ -90,10 +89,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
               zIndex: 10,
             }}
           >
-            <FeatherIcons
-              name="x"
-              size={20}
-            />
+            <FeatherIcons name="x" size={20} />
           </Pressable>
           <View>
             <Text style={styles.titleBoxText}>New Discharge</Text>
@@ -109,37 +105,94 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
           </View>
         </View>
 
-        <View style={{ marginTop: 20 }}>
+        <ScrollView style={{ marginTop: 20, height: 500 }}>
           <View style={{ borderWidth: 0.5 }}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            >
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {finalReportData?.map((column) => (
                 <View key={column.id}>
+                  {/* ======================= */}
                   <View style={styles.box}>
                     <Text style={styles.header}>{column.tankId}</Text>
                   </View>
                   <View style={styles.box}>
                     <Text style={styles.columnText}>{column.tankFuelType}</Text>
                   </View>
+                  <View style={styles.box}>
+                    <Text style={styles.columnText}>{column.tankVolume.concat('L')}</Text>
+                  </View>
+                  <View style={styles.box}>
+                    <Text style={{ ...styles.columnText, fontStyle: 'italic' }}>
+                      {column.tankMaxVolume.concat('L')} Max
+                    </Text>
+                  </View>
+
+                  {column?.compartmentList.map((item, index) => (
+                    <View key={index}>
+                      <View style={styles.box}>
+                        <Text style={styles.header}>{item.compartmentId !== '' ? item.compartmentId : 'Empty'}</Text>
+                      </View>
+                      <View
+                        style={{
+                          ...styles.box,
+                          backgroundColor:
+                            item.fuelType !== '' ? (item.fuelType === column.tankFuelType ? 'white' : 'red') : 'white',
+                        }}
+                      >
+                        <Text
+                          style={{
+                            ...styles.columnText,
+                            color:
+                              item.fuelType !== ''
+                                ? item.fuelType === column.tankFuelType
+                                  ? 'black'
+                                  : 'white'
+                                : 'black',
+                          }}
+                        >
+                          {item.fuelType}
+                        </Text>
+                      </View>
+                      <View style={styles.box}>
+                        <Text style={styles.columnText}>{item.volume}</Text>
+                      </View>
+                    </View>
+                  ))}
+
                   <View
                     style={{
-                      marginTop: 40,
                       ...styles.box,
                     }}
                   >
-                    <Text style={styles.columnText}>
-                      {parseInt(column.compartmentVolume) > 0 ? column.compartmentVolume.concat('L') : '0'.concat('L')}
-                    </Text>
+                    <Text style={styles.header}>Added Volume</Text>
                   </View>
                   <View
                     style={{
-                      marginTop: 40,
                       ...styles.box,
                     }}
                   >
-                    <Text style={styles.columnText}>{column.mergedVolume.concat('L')}</Text>
+                    <Text style={styles.columnText}>{column.tankVolume.concat('L')}</Text>
+                  </View>
+                  <View
+                    style={{
+                      ...styles.box,
+                    }}
+                  >
+                    <Text style={styles.columnText}>{column.tankVolume} Ulage</Text>
+                  </View>
+
+                  <View
+                    style={{
+                      ...styles.box,
+                    }}
+                  >
+                    <Text style={styles.header}>Final Volume</Text>
+                  </View>
+                  <View
+                    style={{
+                      ...styles.box,
+                    }}
+                  >
+                    <Text style={styles.header}>{column.mergedVolume.concat('L')} Total</Text>
                   </View>
                 </View>
               ))}
@@ -178,7 +231,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
               Final Volume at Tank
             </Text>
           </View>
-        </View>
+        </ScrollView>
       </View>
 
       <View

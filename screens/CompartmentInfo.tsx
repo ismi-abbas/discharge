@@ -1,14 +1,14 @@
+import FeatherIcons from '@expo/vector-icons/Feather';
+import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { MainLayout } from '../components/MainLayout';
-import FeatherIcons from '@expo/vector-icons/Feather';
-import { typography } from '../theme/typography';
-import CompartmentInfoTable from '../components/CompartmentInfoTable';
 import Toast from 'react-native-toast-message';
+import CompartmentInfoTable from '../components/CompartmentInfoTable';
+import { MainLayout } from '../components/MainLayout';
+import { typography } from '../theme/typography';
+import { APP_TEXT, compartmentDefaultData } from '../utils/constant';
 import { load, save } from '../utils/storage';
 import { AppStackScreenProps, CompartmentData, DropdownList, StationInfo } from '../utils/types';
-import { APP_TEXT, compartmentDefaultData } from '../utils/constant';
-import { useIsFocused } from '@react-navigation/native';
 
 const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>) => {
   const isFocus = useIsFocused();
@@ -217,10 +217,7 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
                   right: 0,
                 }}
               >
-                <FeatherIcons
-                  name="x"
-                  size={20}
-                />
+                <FeatherIcons name="x" size={20} />
               </Pressable>
             </View>
           </View>

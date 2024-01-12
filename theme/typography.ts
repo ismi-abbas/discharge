@@ -1,6 +1,4 @@
-import { Platform } from 'react-native';
 import {
-  Inter_900Black as InterBlack,
   Inter_100Thin as InterThin,
   Inter_200ExtraLight as InterExtraLight,
   Inter_300Light as InterLight,
@@ -9,7 +7,9 @@ import {
   Inter_600SemiBold as InterSemiBold,
   Inter_700Bold as InterBold,
   Inter_800ExtraBold as InterExtraBold,
+  Inter_900Black as InterBlack,
 } from '@expo-google-fonts/inter';
+import { Platform } from 'react-native';
 
 export const customFontsToLoad = {
   InterBlack,

@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, Platform } from 'react-native';
 import React, { useState } from 'react';
-import { typography } from '../theme/typography';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import { typography } from '../theme/typography';
 import { petrolType } from '../utils/constant';
 import { CompartmentData, DropdownList } from '../utils/types';
 

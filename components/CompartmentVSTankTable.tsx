@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, Button } from 'react-native';
 import React from 'react';
-import { typography } from '../theme/typography';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import { ScrollView } from 'react-native-gesture-handler';
+import { typography } from '../theme/typography';
 import { CompartmentData, DropdownList, MergeData, TankData } from '../utils/types';
 
 type Props = {
@@ -171,7 +171,7 @@ const CompartmentVSTankTable = ({
             borderColor: 'black',
             top: 850,
           }}
-        ></Text>
+        />
       </View>
     </View>
   );

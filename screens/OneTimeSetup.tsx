@@ -1,14 +1,14 @@
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { MainLayout } from '../components/MainLayout';
-import { typography } from '../theme/typography';
-import { APP_TEXT, petrolType, tankDefaultData } from '../utils/constant';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import Toast from 'react-native-toast-message';
-import { load, save } from '../utils/storage';
+import { MainLayout } from '../components/MainLayout';
 import DUMMY_DATA from '../dummyData.json';
+import { typography } from '../theme/typography';
+import { APP_TEXT, petrolType, tankDefaultData } from '../utils/constant';
+import { load, save } from '../utils/storage';
 import { AppStackScreenProps, DropdownList, InitialSetupInfo, StationInfo, TankData } from '../utils/types';
-import { useIsFocused } from '@react-navigation/native';
 
 const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>) => {
   const isFocus = useIsFocused();
@@ -145,10 +145,7 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
 
   return (
     <MainLayout stationName={stationInfo.name}>
-      <ScrollView
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
         <View style={styles.wrapper}>
           <KeyboardAvoidingView>
             <View style={styles.dischargeBox}>
@@ -246,10 +243,7 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
                   </Text>
 
                   <View style={styles.container}>
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                    >
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                       {tableData?.map((column) => (
                         <View key={column.id}>
                           <View style={styles.tableBox}>

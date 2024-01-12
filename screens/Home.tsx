@@ -1,12 +1,12 @@
-import { View, TouchableOpacity, Text, SectionList, StyleSheet, Pressable } from 'react-native';
 import FeatherIcons from '@expo/vector-icons/Feather';
-import { typography } from '../theme/typography';
-import { MainLayout } from '../components/MainLayout';
+import { useIsFocused } from '@react-navigation/native';
+import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
+import { Pressable, SectionList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { MainLayout } from '../components/MainLayout';
+import { typography } from '../theme/typography';
 import { load } from '../utils/storage';
 import { AppStackScreenProps, ReportData, ResultItem, StationInfo } from '../utils/types';
-import { format } from 'date-fns';
-import { useIsFocused } from '@react-navigation/native';
 
 export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
   const isFocus = useIsFocused();
@@ -25,33 +25,36 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
           let totalCompartmentBefore = 0;
           let totalTankVolumeBefore = 0;
 
-          const totalsByDate = reportData.reduce((result, array) => {
-            const date = array.date;
+          const totalsByDate = reportData.reduce(
+            (result, array) => {
+              const date = array.date;
 
-            const { totalTankVolume, totalAddedCompartmentVolumne } = array.report.reduce(
-              (accumulator, tank) => {
-                accumulator.totalTankVolume += parseInt(tank.tankVolume) || 0;
-                accumulator.totalAddedCompartmentVolumne += parseInt(tank.compartmentVolume) || 0;
-                return accumulator;
-              },
-              { totalTankVolume: 0, totalAddedCompartmentVolumne: 0 }
-            );
+              const { totalTankVolume, totalAddedCompartmentVolumne } = array.report.reduce(
+                (accumulator, tank) => {
+                  accumulator.totalTankVolume += parseInt(tank.tankVolume) || 0;
+                  accumulator.totalAddedCompartmentVolumne += parseInt(tank.compartmentVolume) || 0;
+                  return accumulator;
+                },
+                { totalTankVolume: 0, totalAddedCompartmentVolumne: 0 }
+              );
 
-            totalCompartmentBefore = +totalAddedCompartmentVolumne;
-            totalTankVolumeBefore = +totalTankVolume;
+              totalCompartmentBefore = +totalAddedCompartmentVolumne;
+              totalTankVolumeBefore = +totalTankVolume;
 
-            result.push({
-              reportId: array.reportId,
-              date,
-              totalTankVolume,
-              totalAddedCompartmentVolumne,
-              status: 'normal',
-              totalCurrentTankVolume: totalTankVolumeBefore,
-            });
+              result.push({
+                reportId: array.reportId,
+                date,
+                totalTankVolume,
+                totalAddedCompartmentVolumne,
+                status: 'normal',
+                totalCurrentTankVolume: totalTankVolumeBefore,
+              });
 
-            console.log(result);
-            return result;
-          }, [] as ResultItem[]);
+              console.log(result);
+              return result;
+            },
+            [] as ResultItem[]
+          );
 
           console.log(totalCompartmentBefore, totalTankVolumeBefore);
 
@@ -76,27 +79,18 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
       openSettings={() => navigation.navigate('OneTimeSetup', { fromScreen: true })}
     >
       <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('CompartmentInfo')}
-          style={styles.newItemBox}
-        >
+        <TouchableOpacity onPress={() => navigation.navigate('CompartmentInfo')} style={styles.newItemBox}>
           <View>
             <Text style={styles.newItemText}>New Discharge</Text>
           </View>
           <View>
-            <FeatherIcons
-              name="chevron-down"
-              size={25}
-            />
+            <FeatherIcons name="chevron-down" size={25} />
           </View>
         </TouchableOpacity>
 
         <View style={styles.sortingTab}>
           <View style={styles.sortingTabItem}>
-            <FeatherIcons
-              name="chevron-up"
-              size={20}
-            />
+            <FeatherIcons name="chevron-up" size={20} />
             <Text
               style={{
                 fontSize: 15,
@@ -119,10 +113,7 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
             >
               Last 25h
             </Text>
-            <FeatherIcons
-              name="chevron-down"
-              size={20}
-            />
+            <FeatherIcons name="chevron-down" size={20} />
           </View>
         </View>
 
@@ -149,11 +140,7 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
                   backgroundColor: `${item.status === 'normal' ? 'rgba(0, 186, 78, 1)' : 'rgba(255, 216, 45, 1)'}`,
                 }}
               >
-                <FeatherIcons
-                  name="dollar-sign"
-                  size={30}
-                  color="white"
-                />
+                <FeatherIcons name="dollar-sign" size={30} color="white" />
               </View>
               <View>
                 <Text style={{ ...styles.textSemiBold, fontSize: 15 }}>{format(new Date(item.date), 'dd-MMM-yy')}</Text>

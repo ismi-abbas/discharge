@@ -1,10 +1,10 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { AppStackScreenProps, ReportData, StationInfo, ViewReportData } from '../utils/types';
-import { load } from '../utils/storage';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
-import { useIsFocused } from '@react-navigation/native';
+import { load } from '../utils/storage';
+import { AppStackScreenProps, ReportData, StationInfo, ViewReportData } from '../utils/types';
 
 const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
   const isFocus = useIsFocused();
@@ -67,10 +67,7 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
         <View style={styles.infoBox}>
           <View style={{ marginTop: 20 }}>
             <View style={{ borderWidth: 0.5 }}>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              >
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {reportData?.report.map((column) => (
                   <View key={column.id}>
                     <View style={styles.box}>

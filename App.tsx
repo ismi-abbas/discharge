@@ -1,12 +1,12 @@
-import 'react-native-gesture-handler';
-import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
-import { useFonts } from 'expo-font';
-import { customFontsToLoad } from './theme/typography';
 import { NavigationContainer } from '@react-navigation/native';
-import MainNavigator from './MainNavigator';
-import Toast from 'react-native-toast-message';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useFonts } from 'expo-font';
 import { ViewStyle } from 'react-native';
+import 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
+import MainNavigator from './MainNavigator';
+import { customFontsToLoad } from './theme/typography';
 
 export default function App() {
   const [areFontsLoaded] = useFonts(customFontsToLoad);

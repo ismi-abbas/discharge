@@ -1,14 +1,14 @@
-import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
+import FeatherIcons from '@expo/vector-icons/Feather';
+import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import Toast from 'react-native-toast-message';
+import CompartmentVSTankTable from '../components/CompartmentVSTankTable';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
-import Toast, { ToastShowParams } from 'react-native-toast-message';
-import FeatherIcons from '@expo/vector-icons/Feather';
-import CompartmentVSTankTable from '../components/CompartmentVSTankTable';
-import { AppStackScreenProps, CompartmentData, DropdownList, MergeData, StationInfo, TankData } from '../utils/types';
-import { load, save } from '../utils/storage';
-import { useIsFocused } from '@react-navigation/native';
 import { APP_TEXT } from '../utils/constant';
+import { load, save } from '../utils/storage';
+import { AppStackScreenProps, CompartmentData, DropdownList, MergeData, StationInfo, TankData } from '../utils/types';
 
 const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentTankVerify'>) => {
   const isFocus = useIsFocused();
@@ -20,7 +20,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   const [dropdownList, setDropdownList] = useState<DropdownList[]>([]);
 
   const [editable, setEditable] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
+  // const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -176,9 +176,8 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         return data;
       });
 
-      console.log(updated);
-
       setMergedData(updated);
+      console.log(JSON.stringify(updated));
 
       await save('tankData', tankTableData);
       await save('compartmentData', compartmentTableData);
@@ -321,10 +320,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
               right: 0,
             }}
           >
-            <FeatherIcons
-              name="x"
-              size={20}
-            />
+            <FeatherIcons name="x" size={20} />
           </Pressable>
           <View>
             <Text style={styles.titleBoxText}>New Discharge</Text>
@@ -420,11 +416,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
           paddingLeft: 20,
         }}
       >
-        <Pressable
-          aria-disabled={isVerified}
-          onPress={saveData}
-          style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}
-        >
+        <Pressable onPress={saveData} style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}>
           <Text style={{ ...styles.text, color: 'white' }}>Save</Text>
         </Pressable>
         {/* <Pressable
