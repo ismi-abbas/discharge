@@ -314,22 +314,15 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
             style={{
               display: 'flex',
               flexDirection: 'row',
-              justifyContent: 'flex-start',
-              width: '95%',
+              width: '85%',
               marginTop: 10,
-              marginLeft: 20,
-              gap: 10,
             }}
           >
             <Pressable
-              disabled={editable}
               onPress={() => {
                 saveAndVerify();
               }}
-              style={{
-                ...styles.button,
-                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
-              }}
+              style={styles.button}
             >
               <Text style={styles.buttonText}>Save</Text>
             </Pressable>
@@ -392,6 +385,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 16,
     borderRadius: 4,
+    backgroundColor: 'rgba(4, 113, 232, 1)',
   },
   compartmentButton: {
     alignItems: 'center',

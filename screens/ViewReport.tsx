@@ -15,7 +15,7 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
   const calculateUlage = (addedVolume: string, maxVolumne: string) => {
     const ulage = parseInt(maxVolumne, 10) - parseInt(addedVolume, 10);
 
-    let final = ulage < 0 ? ulage : 0;
+    const final = ulage < 0 ? ulage : 0;
     return final.toString();
   };
 

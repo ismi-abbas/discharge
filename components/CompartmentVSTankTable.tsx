@@ -43,21 +43,11 @@ const CompartmentVSTankTable = ({
               <Text style={styles.header}>{column.tankId}</Text>
             </View>
             {/* Tank Petrol Type */}
-            <View
-              style={{
-                ...styles.box,
-                backgroundColor: 'rgba(91, 217, 250, 0.8)',
-              }}
-            >
+            <View style={styles.box}>
               <Text style={styles.text}>{column.tankFuelType}</Text>
             </View>
             {/* Tank Volume */}
-            <View
-              style={{
-                ...styles.box,
-                backgroundColor: 'rgba(91, 217, 250, 0.8)',
-              }}
-            >
+            <View style={styles.box}>
               <Text style={styles.text}>{column.tankVolume.concat('L')}</Text>
             </View>
 

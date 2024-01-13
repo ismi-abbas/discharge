@@ -161,6 +161,6 @@ export const APP_TEXT = {
   PRE_SETUP_TEXT: 'Please key in company details, station tank max capacity, number and product type.',
   PRE_SETUP_TABLE_HELPER: 'Scroll to the right for more info. 3rd row is the max volume for tank.',
   TANK_INFO_TEXT: 'Please key in your latest tank dipping (T).',
-  COMPARTMENT_INFO_TEXT: 'Please Key In Your Station Tank Latest Details, Tank(T).',
+  COMPARTMENT_INFO_TEXT: 'Please key in the Tanker compartment details, Compartment (C).',
   COMPARTMENT_TANK_VERIFY_TEXT: 'Station Tank (T) to Tanker Compartment (C) fuel match.',
 };

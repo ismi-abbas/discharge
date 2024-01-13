@@ -309,119 +309,130 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 
   return (
     <MainLayout stationName={stationInfo?.name}>
-      <View style={styles.dischargeBox}>
-        <View style={styles.titleBox}>
-          <Pressable
-            onPress={() => navigation.navigate('Home')}
-            style={{
-              backgroundColor: 'rgba(215, 215, 215, 0.8)',
-              padding: 2,
-              borderRadius: 5,
-              position: 'absolute',
-              top: 0,
-              right: 0,
-            }}
-          >
-            <FeatherIcons name="x" size={20} />
-          </Pressable>
-          <View>
-            <Text style={styles.titleBoxText}>New Discharge</Text>
-            <Text
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{
+          display: 'flex',
+          width: '100%',
+        }}
+        contentContainerStyle={{
+          width: '95%',
+          height: 700,
+        }}
+      >
+        <View style={styles.dischargeBox}>
+          <View style={styles.titleBox}>
+            <Pressable
+              onPress={() => navigation.navigate('Home')}
               style={{
-                marginTop: 20,
-                fontFamily: typography.primary.semibold,
-                fontSize: 17,
+                backgroundColor: 'rgba(215, 215, 215, 0.8)',
+                padding: 2,
+                borderRadius: 5,
+                position: 'absolute',
+                top: 0,
+                right: 0,
               }}
             >
-              {APP_TEXT.COMPARTMENT_TANK_VERIFY_TEXT}
-            </Text>
+              <FeatherIcons name="x" size={20} />
+            </Pressable>
+            <View>
+              <Text style={styles.titleBoxText}>New Discharge</Text>
+              <Text
+                style={{
+                  marginTop: 20,
+                  fontFamily: typography.primary.semibold,
+                  fontSize: 17,
+                }}
+              >
+                {APP_TEXT.COMPARTMENT_TANK_VERIFY_TEXT}
+              </Text>
 
-            <Text
-              style={{
-                marginTop: 20,
-                fontFamily: typography.primary.light,
-                fontSize: 14,
-              }}
-            >
-              Please match Compartment (C)to Tank (V)
-            </Text>
+              <Text
+                style={{
+                  marginTop: 20,
+                  fontFamily: typography.primary.light,
+                  fontSize: 14,
+                }}
+              >
+                Please match Compartment (C)to Tank (V)
+              </Text>
 
-            <ScrollView
-              style={{ height: 400 }}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ flexGrow: 1 }}
-            >
-              <CompartmentVSTankTable
-                tankData={tankTableData}
-                setTankData={setTankTableData}
-                compartmentData={compartmentTableData}
-                setCompartmentData={setCompartmentTableData}
-                calculateTotal={calculateTotal}
-                handleCompartmentSelect={handleCompartmentSelect}
-                dropdownList={dropdownList}
-                mergedData={mergedData}
-                editable={editable}
-              />
-            </ScrollView>
+              <ScrollView
+                style={{ height: '60%' }}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1 }}
+              >
+                <CompartmentVSTankTable
+                  tankData={tankTableData}
+                  setTankData={setTankTableData}
+                  compartmentData={compartmentTableData}
+                  setCompartmentData={setCompartmentTableData}
+                  calculateTotal={calculateTotal}
+                  handleCompartmentSelect={handleCompartmentSelect}
+                  dropdownList={dropdownList}
+                  mergedData={mergedData}
+                  editable={editable}
+                />
+              </ScrollView>
+            </View>
           </View>
-        </View>
-        <View
-          style={{
-            display: 'flex',
-            marginTop: 20,
-            alignItems: 'flex-start',
-            width: '95%',
-          }}
-        >
           <View
             style={{
               display: 'flex',
-              flexDirection: 'row',
-              gap: 10,
-              marginTop: 4,
+              marginTop: 20,
+              alignItems: 'flex-start',
+              width: '95%',
             }}
           >
-            <Pressable
-              onPress={() => {
-                setEditable(!editable);
-              }}
+            <View
               style={{
-                ...styles.button,
-                backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
+                display: 'flex',
+                flexDirection: 'row',
+                gap: 10,
+                marginTop: 4,
               }}
             >
-              <Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
-            </Pressable>
+              <Pressable
+                onPress={() => {
+                  setEditable(!editable);
+                }}
+                style={{
+                  ...styles.button,
+                  backgroundColor: !editable ? 'rgba(4, 113, 232, 1)' : 'gray',
+                }}
+              >
+                <Text style={{ ...styles.text, color: 'white' }}>Edit</Text>
+              </Pressable>
 
-            <Pressable
-              onPress={resetData}
-              style={{
-                ...styles.button,
-                backgroundColor: 'rgba(4, 113, 232, 1)',
-              }}
-            >
-              <Text style={{ ...styles.text, color: 'white' }}>Reset</Text>
-            </Pressable>
+              <Pressable
+                onPress={resetData}
+                style={{
+                  ...styles.button,
+                  backgroundColor: 'rgba(4, 113, 232, 1)',
+                }}
+              >
+                <Text style={{ ...styles.text, color: 'white' }}>Reset</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
-      </View>
 
-      <View
-        style={{
-          marginTop: 10,
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          width: '95%',
-          gap: 10,
-          paddingLeft: 20,
-        }}
-      >
-        <Pressable onPress={saveData} style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}>
-          <Text style={{ ...styles.text, color: 'white' }}>Save</Text>
-        </Pressable>
-        {/* <Pressable
+        <View
+          style={{
+            marginTop: 10,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            width: '95%',
+            gap: 10,
+            paddingLeft: 20,
+          }}
+        >
+          <Pressable onPress={saveData} style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}>
+            <Text style={{ ...styles.text, color: 'white' }}>Save</Text>
+          </Pressable>
+          {/* <Pressable
           onPress={verifyAll}
           style={{
             ...styles.button,
@@ -430,7 +441,8 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         >
           <Text style={styles.text}>Verify</Text>
         </Pressable> */}
-      </View>
+        </View>
+      </ScrollView>
     </MainLayout>
   );
 };
@@ -442,7 +454,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
-    width: '95%',
   },
   titleBox: {
     display: 'flex',

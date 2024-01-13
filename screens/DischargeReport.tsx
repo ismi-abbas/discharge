@@ -8,7 +8,7 @@ import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
 import { compartmentToTank } from '../utils/constant';
 import { load, save } from '../utils/storage';
-import { AppStackScreenProps, MergeData, ReportData, StationInfo } from '../utils/types';
+import { AppStackScreenProps, MergeData, ReportData, StationInfo, TankData } from '../utils/types';
 
 const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>) => {
   const isFocus = useIsFocused();
@@ -16,6 +16,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
   const [finalReportData, setFinalReportData] = useState(compartmentToTank);
   const [reportListData, setReportListData] = useState<ReportData[]>();
   const [stationInfo, setStationInfo] = useState<StationInfo>();
+  const [latestDippedData, setLatestDippedData] = useState<TankData[]>();
 
   const verifyAll = async () => {
     const newReport: ReportData = {
@@ -50,7 +51,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
   const calculateUlage = (addedVolume: string, maxVolumne: string) => {
     const ulage = parseInt(maxVolumne, 10) - parseInt(addedVolume, 10);
 
-    let final = ulage < 0 ? ulage : 0;
+    const final = ulage < 0 ? ulage : 0;
     return final.toString();
   };
 
@@ -60,10 +61,12 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
         const stationInfoData = (await load('stationInfo')) as StationInfo;
         const completedData = (await load('mergedData')) as MergeData[];
         const reportListData = (await load('reportData')) as ReportData[];
+        const latestDippedData = (await load('tankData')) as TankData[];
 
         setFinalReportData(completedData);
         setReportListData(reportListData);
         setStationInfo(stationInfoData);
+        setLatestDippedData(latestDippedData);
       } catch (error) {
         Toast.show({
           type: 'error',
@@ -78,7 +81,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
 
   return (
     <MainLayout stationName={stationInfo?.name}>
-      <View style={styles.dischargeBox}>
+      <View style={{ ...styles.dischargeBox, height: '90%' }}>
         <View style={styles.titleBox}>
           <Pressable
             onPress={() => {
@@ -110,30 +113,57 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
           </View>
         </View>
 
-        <ScrollView style={{ marginTop: 20, height: 500 }}>
+        <Text style={{ marginTop: 20 }}>Latest Dipped Station Tank Volume</Text>
+        <View
+          style={{
+            marginTop: 4,
+            borderColor: 'black',
+            borderWidth: 0.5,
+            flexDirection: 'row',
+            minWidth: '100%',
+            maxWidth: '100%',
+          }}
+        >
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {latestDippedData?.map((column) => (
+              <View key={column.id}>
+                <View style={{ ...styles.box, backgroundColor: 'rgba(91, 217, 250, 0.8)' }}>
+                  <Text style={styles.header}>{column.tankId}</Text>
+                </View>
+                <View style={styles.box}>
+                  <Text style={styles.columnText}>{column.fuelType}</Text>
+                </View>
+                <View style={styles.box}>
+                  <Text style={styles.columnText}>{column.volume.concat('L')}</Text>
+                </View>
+                <View style={styles.box}>
+                  <Text style={{ ...styles.columnText, fontStyle: 'italic' }}>{column.maxVolume.concat('L')} Max</Text>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
+        <Text style={{ marginTop: 20 }}>Station Tank - Compartment Match</Text>
+        <ScrollView showsVerticalScrollIndicator={false} style={{ height: 500, marginTop: 4 }}>
           <View style={{ borderWidth: 0.5 }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {finalReportData?.map((column) => (
                 <View key={column.id}>
                   {/* ======================= */}
-                  <View style={styles.box}>
+                  <View style={{ ...styles.box, backgroundColor: 'rgba(91, 217, 250, 0.8)' }}>
                     <Text style={styles.header}>{column.tankId}</Text>
                   </View>
                   <View style={styles.box}>
                     <Text style={styles.columnText}>{column.tankFuelType}</Text>
                   </View>
                   <View style={styles.box}>
-                    <Text style={styles.columnText}>{column.tankVolume.concat('L')}</Text>
-                  </View>
-                  <View style={styles.box}>
-                    <Text style={{ ...styles.columnText, fontStyle: 'italic' }}>
-                      {column.tankMaxVolume.concat('L')} Max
-                    </Text>
+                    <Text style={styles.columnText}>{column.tankVolume}</Text>
                   </View>
 
                   {column?.compartmentList.map((item, index) => (
                     <View key={index}>
-                      <View style={styles.box}>
+                      <View style={{ ...styles.box, backgroundColor: 'rgba(91, 217, 250, 0.8)' }}>
                         <Text style={styles.header}>{item.compartmentId !== '' ? item.compartmentId : 'Empty'}</Text>
                       </View>
                       <View
@@ -214,64 +244,31 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
               ))}
             </ScrollView>
           </View>
-
-          {/* Delivery order and final volume text */}
-          <View
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: 240,
-              zIndex: -10,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 14,
-                fontFamily: typography.primary.bold,
-                textAlign: 'center',
-                color: 'black',
-                top: '37%',
-              }}
-            >
-              Delivery Order
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                fontFamily: typography.primary.bold,
-                textAlign: 'center',
-                color: 'black',
-                top: '62%',
-              }}
-            >
-              Final Volume at Tank
-            </Text>
-          </View>
         </ScrollView>
-      </View>
 
-      <View
-        style={{
-          marginTop: 10,
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '85%',
-          gap: 10,
-          paddingLeft: 20,
-        }}
-      >
-        <Pressable onPress={verifyAll}>
-          <Text
-            style={{
-              ...styles.text,
-              backgroundColor: 'rgba(208, 208, 208, 1)',
-            }}
-          >
-            Verify and Close Report
-          </Text>
-        </Pressable>
+        <View
+          style={{
+            marginTop: 10,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '85%',
+            gap: 10,
+            paddingLeft: 20,
+          }}
+        >
+          <Pressable onPress={verifyAll}>
+            <Text
+              style={{
+                ...styles.text,
+                backgroundColor: 'rgba(208, 208, 208, 1)',
+              }}
+            >
+              Verify and Close Report
+            </Text>
+          </Pressable>
+        </View>
       </View>
     </MainLayout>
   );

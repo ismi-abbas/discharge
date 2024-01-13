@@ -117,6 +117,8 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
 
     if (verified && stationInfoVerified) {
       try {
+        await save('tankData', data);
+
         await save('initialSetup', {
           data: data,
           done: true,
