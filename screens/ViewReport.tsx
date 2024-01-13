@@ -49,8 +49,9 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
     <MainLayout stationName={stationInfo?.name}>
       <View
         style={{
-          display: 'flex',
+          flex: 1,
           width: '100%',
+          marginBottom: 20,
         }}
       >
         <View style={styles.infoBox}>
@@ -72,9 +73,12 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
         </View>
 
         <View style={styles.infoBox}>
-          <ScrollView style={{ height: '70%' }}>
+          <ScrollView style={{ height: '65%' }}>
             <View style={{ borderWidth: 0.5 }}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              >
                 {reportData?.report.map((column) => (
                   <View key={column.id}>
                     {/* ======================= */}

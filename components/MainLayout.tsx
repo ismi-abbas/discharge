@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import { StatusBar } from 'expo-status-bar';
 import React, { FC, ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { typography } from '../theme/typography';
 
@@ -31,7 +31,11 @@ export const MainLayout: FC<Props> = ({ children, stationName, openSettings }) =
     >
       <StatusBar style="dark" />
       <View style={styles.bar}>
-        <Image style={styles.image} source={require('../assets/tabIcon.png')} transition={1000} />
+        <Image
+          style={styles.image}
+          source={require('../assets/tabIcon.png')}
+          transition={1000}
+        />
         <View>
           <Text style={styles.barTitle}>{stationName}</Text>
         </View>
@@ -59,6 +63,7 @@ export const MainLayout: FC<Props> = ({ children, stationName, openSettings }) =
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: Dimensions.get('window').height,
     backgroundColor: '#EAECEC',
     alignItems: 'center',
     justifyContent: 'flex-start',

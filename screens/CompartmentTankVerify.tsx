@@ -320,7 +320,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
           height: 700,
         }}
       >
-        <View style={styles.dischargeBox}>
+        <View style={{ ...styles.dischargeBox, height: 500 }}>
           <View style={styles.titleBox}>
             <Pressable
               onPress={() => navigation.navigate('Home')}
@@ -333,7 +333,10 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
                 right: 0,
               }}
             >
-              <FeatherIcons name="x" size={20} />
+              <FeatherIcons
+                name="x"
+                size={20}
+              />
             </Pressable>
             <View>
               <Text style={styles.titleBoxText}>New Discharge</Text>
@@ -429,7 +432,10 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
             paddingLeft: 20,
           }}
         >
-          <Pressable onPress={saveData} style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}>
+          <Pressable
+            onPress={saveData}
+            style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}
+          >
             <Text style={{ ...styles.text, color: 'white' }}>Save</Text>
           </Pressable>
           {/* <Pressable
