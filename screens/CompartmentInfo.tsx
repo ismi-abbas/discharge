@@ -82,7 +82,6 @@ const CompartmentInfo = ({ navigation }: AppStackScreenProps<'CompartmentInfo'>)
     }
 
     const verified = compartmentData?.every((data) => data.fuelType !== '' && data.volume !== '');
-    console.log({ verified, compartmentData });
 
     if (verified) {
       Toast.show({

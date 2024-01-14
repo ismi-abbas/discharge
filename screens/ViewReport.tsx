@@ -12,13 +12,14 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
   const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [reportData, setReportData] = useState<ViewReportData>();
 
-  const calculateUlage = (addedVolume: string, maxVolumne: string) => {
-    const ulage = parseInt(maxVolumne, 10) - parseInt(addedVolume, 10);
+  const calculateUlage = (maxVolume: string, mergedVolume: string) => {
+    const ulage = parseInt(maxVolume, 10) - parseInt(mergedVolume, 10);
 
-    const final = ulage < 0 ? ulage : 0;
+    const final = ulage ? ulage : 0;
     return final.toString();
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const fetchData = async () => {
       const reportData = (await load('reportData')) as ReportData[];
@@ -75,10 +76,7 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
         <View style={styles.infoBox}>
           <ScrollView style={{ height: '65%' }}>
             <View style={{ borderWidth: 0.5 }}>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              >
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {reportData?.report.map((column) => (
                   <View key={column.id}>
                     {/* ======================= */}
@@ -98,6 +96,7 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
                     </View>
 
                     {column?.compartmentList.map((item, index) => (
+                      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                       <View key={index}>
                         <View style={styles.box}>
                           <Text style={styles.header}>{item.compartmentId !== '' ? item.compartmentId : 'Empty'}</Text>
@@ -153,7 +152,7 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
                       }}
                     >
                       <Text style={styles.columnText}>
-                        {calculateUlage(column.mergedVolume, column.tankMaxVolume)} Ulage
+                        {calculateUlage(column.tankMaxVolume, column.mergedVolume)} Ulage
                       </Text>
                     </View>
 

@@ -28,6 +28,7 @@ const OneTimeSetup = ({ navigation, route }: AppStackScreenProps<'OneTimeSetup'>
     companyName: '',
   });
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     fetchData();
   }, [isFocus]);
@@ -444,7 +445,7 @@ const styles = StyleSheet.create({
   },
   tableBox: {
     justifyContent: 'center',
-    width: 70,
+    width: 80,
     borderWidth: 0.5,
     height: 40,
     backgroundColor: '#fff',

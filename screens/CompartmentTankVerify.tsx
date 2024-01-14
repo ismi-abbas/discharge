@@ -22,6 +22,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   const [editable, setEditable] = useState(false);
   // const [isVerified, setIsVerified] = useState(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,12 +44,12 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
             tankVolume: tank.volume,
             compartmentId: '',
             compartmentList: [
-              { compartmentId: '', fuelType: '', id: null, volume: '' },
-              { compartmentId: '', fuelType: '', id: null, volume: '' },
-              { compartmentId: '', fuelType: '', id: null, volume: '' },
-              { compartmentId: '', fuelType: '', id: null, volume: '' },
-              { compartmentId: '', fuelType: '', id: null, volume: '' },
-              { compartmentId: '', fuelType: '', id: null, volume: '' },
+              { compartmentId: '', fuelType: '', id: 0, volume: '' },
+              { compartmentId: '', fuelType: '', id: 1, volume: '' },
+              { compartmentId: '', fuelType: '', id: 2, volume: '' },
+              { compartmentId: '', fuelType: '', id: 3, volume: '' },
+              { compartmentId: '', fuelType: '', id: 4, volume: '' },
+              { compartmentId: '', fuelType: '', id: 5, volume: '' },
             ],
             mergedVolume: '',
             compartmentFuelType: '',
@@ -179,7 +180,6 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
       });
 
       setMergedData(updated);
-      console.log(JSON.stringify(updated));
 
       await save('tankData', tankTableData);
       await save('compartmentData', compartmentTableData);
@@ -333,10 +333,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
                 right: 0,
               }}
             >
-              <FeatherIcons
-                name="x"
-                size={20}
-              />
+              <FeatherIcons name="x" size={20} />
             </Pressable>
             <View>
               <Text style={styles.titleBoxText}>New Discharge</Text>
@@ -432,10 +429,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
             paddingLeft: 20,
           }}
         >
-          <Pressable
-            onPress={saveData}
-            style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}
-          >
+          <Pressable onPress={saveData} style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}>
             <Text style={{ ...styles.text, color: 'white' }}>Save</Text>
           </Pressable>
           {/* <Pressable

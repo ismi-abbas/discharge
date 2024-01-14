@@ -48,13 +48,14 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
     }
   };
 
-  const calculateUlage = (addedVolume: string, maxVolumne: string) => {
-    const ulage = parseInt(maxVolumne, 10) - parseInt(addedVolume, 10);
+  const calculateUlage = (maxVolume: string, mergedVolume: string) => {
+    const ulage = parseInt(maxVolume, 10) - parseInt(mergedVolume, 10);
 
-    const final = ulage < 0 ? ulage : 0;
+    const final = ulage ? ulage : 0;
     return final.toString();
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const getAllData = async () => {
       try {
@@ -97,10 +98,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
               zIndex: 10,
             }}
           >
-            <FeatherIcons
-              name="x"
-              size={20}
-            />
+            <FeatherIcons name="x" size={20} />
           </Pressable>
           <View>
             <Text style={styles.titleBoxText}>New Discharge</Text>
@@ -127,10 +125,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
             maxWidth: '100%',
           }}
         >
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          >
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {latestDippedData?.map((column) => (
               <View key={column.id}>
                 <View style={{ ...styles.box, backgroundColor: 'rgba(91, 217, 250, 0.8)' }}>
@@ -151,15 +146,9 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
         </View>
 
         <Text style={{ marginTop: 20 }}>Station Tank - Compartment Match</Text>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{ height: 500, marginTop: 4 }}
-        >
+        <ScrollView showsVerticalScrollIndicator={false} style={{ height: 500, marginTop: 4 }}>
           <View style={{ borderWidth: 0.5 }}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            >
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {finalReportData?.map((column) => (
                 <View key={column.id}>
                   {/* ======================= */}
@@ -174,6 +163,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
                   </View>
 
                   {column?.compartmentList.map((item, index) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                     <View key={index}>
                       <View style={{ ...styles.box, backgroundColor: 'rgba(91, 217, 250, 0.8)' }}>
                         <Text style={styles.header}>{item.compartmentId !== '' ? item.compartmentId : 'Empty'}</Text>
@@ -225,7 +215,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
                     }}
                   >
                     <Text style={styles.columnText}>
-                      {calculateUlage(column.mergedVolume, column.tankMaxVolume)} Ulage
+                      {calculateUlage(column.tankMaxVolume, column.mergedVolume)} Ulage
                     </Text>
                   </View>
 

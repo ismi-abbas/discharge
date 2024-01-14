@@ -12,7 +12,7 @@ type Props = {
   setCompartmentData: (data: CompartmentData[]) => void;
   editable: boolean;
   mergedData: MergeData[] | undefined;
-  handleCompartmentSelect: (item: DropdownList, tankId: string, compartmentIndex: any) => void;
+  handleCompartmentSelect: (item: DropdownList, tankId: string, compartmentIndex: number) => void;
   calculateTotal: (compartmentVolume: string, tankVolume: string) => void;
   dropdownList: DropdownList[];
 };
@@ -53,6 +53,7 @@ const CompartmentVSTankTable = ({
 
             {column.compartmentList.map((compartment, index) => {
               return (
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 <View key={index}>
                   <Dropdown
                     keyboardAvoiding
@@ -229,11 +230,3 @@ const styles = StyleSheet.create({
 });
 
 export default CompartmentVSTankTable;
-
-type compartmentDropdownProps = {
-  editable: boolean;
-  dropdownList: any;
-  column: any;
-  compartmentId: string;
-  handleCompartmentSelect: (item: any, tankId: any) => void;
-};

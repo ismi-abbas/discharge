@@ -31,11 +31,7 @@ export const MainLayout: FC<Props> = ({ children, stationName, openSettings }) =
     >
       <StatusBar style="dark" />
       <View style={styles.bar}>
-        <Image
-          style={styles.image}
-          source={require('../assets/tabIcon.png')}
-          transition={1000}
-        />
+        <Image style={styles.image} source={require('../assets/tabIcon.png')} transition={1000} />
         <View>
           <Text style={styles.barTitle}>{stationName}</Text>
         </View>

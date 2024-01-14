@@ -54,7 +54,7 @@ const CompartmentInfoTable = ({ tableData, editable, handleVolumeChange, handleC
                 editable={editable}
                 style={{ ...styles.input, color: 'black' }}
                 value={column.volume}
-                onChangeText={(volume) => handleVolumeChange(column.id!, volume)}
+                onChangeText={(volume) => handleVolumeChange(column.id || 0, volume)}
                 keyboardType={Platform.OS === 'android' ? 'numeric' : 'number-pad'}
               />
             </View>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   box: {
     justifyContent: 'center',
-    width: 70,
+    width: 90,
     borderWidth: 0.5,
     height: 40,
     backgroundColor: '#fff',
@@ -99,9 +99,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    textAlign: 'center',
   },
   placeholderStyle: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: typography.primary.bold,
   },
   selectedTextStyle: {

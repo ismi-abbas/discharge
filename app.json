@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "discharge",
+    "name": "PDP Call",
     "slug": "discharge-app",
     "version": "1.0.10",
     "orientation": "portrait",
@@ -24,7 +24,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.ismiabbas.dischargeapp",
-      "versionCode": 27,
+      "versionCode": 31,
       "versionName": "1.0"
     },
     "web": {

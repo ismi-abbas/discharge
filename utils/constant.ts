@@ -140,20 +140,16 @@ export const petrolType = [
     value: 'U95',
   },
   {
-    label: 'V97',
-    value: 'V97',
+    label: 'VP97',
+    value: 'VP97',
   },
   {
-    label: 'E7',
-    value: 'E7',
+    label: 'E5B20',
+    value: 'E5B20',
   },
   {
-    label: 'EUROB7',
-    value: 'EUROB7',
-  },
-  {
-    label: 'AGO',
-    value: 'AGO',
+    label: 'E5B7',
+    value: 'E5B7',
   },
 ];
 

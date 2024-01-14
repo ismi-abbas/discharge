@@ -2,7 +2,7 @@ import FeatherIcons from '@expo/vector-icons/Feather';
 import { useIsFocused } from '@react-navigation/native';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
-import { Pressable, SectionList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Pressable, SectionList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { MainLayout } from '../components/MainLayout';
 import { typography } from '../theme/typography';
 import { load } from '../utils/storage';
@@ -50,13 +50,10 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
                 totalCurrentTankVolume: totalTankVolumeBefore,
               });
 
-              console.log(result);
               return result;
             },
             [] as ResultItem[]
           );
-
-          console.log(totalCompartmentBefore, totalTankVolumeBefore);
 
           setListData(totalsByDate);
           setListData(totalsByDate);
@@ -120,7 +117,9 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
         <SectionList
           style={styles.sectionListBox}
           showsVerticalScrollIndicator={false}
-          sections={[{ data: listData ? listData : [] }]}
+          sections={[
+            { data: listData ? listData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) : [] },
+          ]}
           renderItem={({ item }) => (
             <Pressable
               onPress={() => {
@@ -130,7 +129,6 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
                     totalDelivered: item.totalAddedCompartmentVolumne,
                   },
                 });
-                console.log(item);
               }}
               style={styles.dischargeBoxItem}
             >
@@ -234,6 +232,7 @@ const styles = StyleSheet.create({
   sectionListBox: {
     width: '95%',
     minWidth: '95%',
+    height: Dimensions.get('window').height / 2,
   },
   sortingTab: {
     display: 'flex',
