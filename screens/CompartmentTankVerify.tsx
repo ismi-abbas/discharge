@@ -18,6 +18,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   const [mergedData, setMergedData] = useState<MergeData[]>([]);
   const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [dropdownList, setDropdownList] = useState<DropdownList[]>([]);
+  const [selectedCompartments, setSelectedCompartments] = useState<string[]>([]);
 
   const [editable, setEditable] = useState(false);
   // const [isVerified, setIsVerified] = useState(false);
@@ -170,6 +171,17 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
     return result;
   };
 
+  const verifyFuelType = (tankList: MergeData[]): boolean => {
+    for (const tank of tankList) {
+      for (const compartment of tank.compartmentList) {
+        if (compartment.fuelType !== '' && compartment.fuelType !== tank.tankFuelType) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
   const saveData = async () => {
     try {
       const updated = mergedData.map((data) => {
@@ -180,6 +192,21 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
       });
 
       setMergedData(updated);
+
+      for (const item of mergedData) {
+        const same = verifyFuelType(mergedData);
+        if (!same) {
+          console.log('not same fuel type', item.tankId);
+          Toast.show({
+            type: 'error',
+            text1: 'Mismatched fuel type',
+            text2: 'Please check the fuel type',
+            position: 'bottom',
+            visibilityTime: 2000,
+          });
+          return;
+        }
+      }
 
       await save('tankData', tankTableData);
       await save('compartmentData', compartmentTableData);

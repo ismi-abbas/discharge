@@ -20,10 +20,10 @@ export interface ViewReportData {
 export interface ResultItem {
   reportId: string;
   date: Date;
-  totalTankVolume: number;
-  totalAddedCompartmentVolumne: number;
+  totalTankBefore: number;
+  totalTankNow: number;
+  totalCompartmentAdded: number;
   status: string;
-  totalCurrentTankVolume: number;
 }
 
 export interface CompartmentData {

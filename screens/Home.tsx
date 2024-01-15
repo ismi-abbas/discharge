@@ -22,32 +22,30 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
         const stationInfoData = (await load('stationInfo')) as StationInfo;
 
         if (reportData) {
-          let totalCompartmentBefore = 0;
-          let totalTankVolumeBefore = 0;
-
           const totalsByDate = reportData.reduce(
             (result, array) => {
               const date = array.date;
 
-              const { totalTankVolume, totalAddedCompartmentVolumne } = array.report.reduce(
+              const { totalTankNow, totalCompartmentAdded, totalTankBefore } = array.report.reduce(
                 (accumulator, tank) => {
-                  accumulator.totalTankVolume += parseInt(tank.tankVolume) || 0;
-                  accumulator.totalAddedCompartmentVolumne += parseInt(tank.compartmentVolume) || 0;
+                  accumulator.totalTankNow += parseInt(tank.mergedVolume) || 0;
+
+                  accumulator.totalCompartmentAdded += parseInt(tank.addedVolume || '0') || 0;
+
+                  accumulator.totalTankBefore += parseInt(tank.tankVolume || '0');
+
                   return accumulator;
                 },
-                { totalTankVolume: 0, totalAddedCompartmentVolumne: 0 }
+                { totalTankNow: 0, totalCompartmentAdded: 0, totalTankBefore: 0 }
               );
-
-              totalCompartmentBefore = +totalAddedCompartmentVolumne;
-              totalTankVolumeBefore = +totalTankVolume;
 
               result.push({
                 reportId: array.reportId,
                 date,
-                totalTankVolume,
-                totalAddedCompartmentVolumne,
+                totalCompartmentAdded,
+                totalTankBefore,
+                totalTankNow,
                 status: 'normal',
-                totalCurrentTankVolume: totalTankVolumeBefore,
               });
 
               return result;
@@ -126,7 +124,7 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
                 navigation.navigate('ViewReport', {
                   reportId: item.reportId,
                   reportData: {
-                    totalDelivered: item.totalAddedCompartmentVolumne,
+                    totalDelivered: item.totalCompartmentAdded,
                   },
                 });
               }}
@@ -140,16 +138,30 @@ export const Home = ({ navigation }: AppStackScreenProps<'Home'>) => {
               >
                 <FeatherIcons name="dollar-sign" size={30} color="white" />
               </View>
-              <View>
+              <View
+                style={{
+                  height: '100%',
+                }}
+              >
                 <Text style={{ ...styles.textSemiBold, fontSize: 15 }}>{format(new Date(item.date), 'dd-MMM-yy')}</Text>
-                {/* Total Current Compartment volumne */}
-                <Text>{item.totalTankVolume} Litre</Text>
+                <Text style={{ fontSize: 12, fontFamily: typography.primary.medium }}>
+                  {format(new Date(item.date), 'h:mm a')}
+                </Text>
+
+                {/* Total Current Compartment volume */}
+                <Text>{item.totalTankBefore} Litre</Text>
               </View>
-              <View>
+              <View
+                style={{
+                  height: '100%',
+                  width: 80,
+                }}
+              >
                 {/* Current Tank Volume */}
-                <Text style={{ ...styles.textSemiBold, fontSize: 15 }}>{item.totalCurrentTankVolume}L</Text>
+                <Text style={{ ...styles.textSemiBold, fontSize: 15 }}>{item.totalTankNow}L</Text>
+
                 {/* additional total compartment volume */}
-                <Text style={styles.amountIndicatorText}>{item.totalAddedCompartmentVolumne}L</Text>
+                <Text style={styles.amountIndicatorText}>+ {item.totalCompartmentAdded}L</Text>
               </View>
             </Pressable>
           )}

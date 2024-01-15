@@ -14,10 +14,7 @@ type Props = {
 const TankInfoTable = ({ tableData, editable, handleVolumeChange }: Props) => {
   return (
     <View style={styles.container}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      >
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {tableData?.map((column) => (
           <View key={column.id}>
             <View style={styles.box}>
