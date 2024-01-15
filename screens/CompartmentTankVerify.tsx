@@ -18,7 +18,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   const [mergedData, setMergedData] = useState<MergeData[]>([]);
   const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [dropdownList, setDropdownList] = useState<DropdownList[]>([]);
-  const [selectedCompartments, setSelectedCompartments] = useState<string[]>([]);
+  const [selectedCompartments, setSelectedCompartments] = useState<Set<string>>(new Set());
 
   const [editable, setEditable] = useState(false);
   // const [isVerified, setIsVerified] = useState(false);
@@ -34,6 +34,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
         setCompartmentTableData(compartmentData);
         setTankTableData(tankData);
         setStationInfo(stationInfo);
+        setSelectedCompartments(new Set());
 
         const mergedData: MergeData[] = [];
 
@@ -83,6 +84,55 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
 
   const handleCompartmentSelect = (item: DropdownList, tankId: string, compartmentIndex: number) => {
     const compartmentId = item.value;
+
+    if (selectedCompartments.has(compartmentId)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Same compartment selected',
+        text2: 'Please select another compartment',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
+
+      setMergedData(
+        mergedData?.map((data) => {
+          if (data.tankId === tankId) {
+            const indexToUpdate = compartmentIndex;
+
+            data.compartmentList.splice(indexToUpdate, 1, {
+              compartmentId,
+              fuelType: '',
+              id: compartmentIndex,
+              volume: '',
+            });
+
+            const totalAddedVolume = data.compartmentList.reduce((acc, currentValue) => {
+              const volume = currentValue.volume === '' ? '0' : currentValue.volume;
+              return acc + parseInt(volume);
+            }, 0);
+
+            return {
+              ...data,
+              compartmentId: compartmentId,
+              compartmentList: data.compartmentList,
+              compartmentVolume: volume,
+              compartmentFuelType,
+              mergedVolume: (totalAddedVolume + parseInt(data.tankVolume)).toString(),
+              addedVolume: totalAddedVolume.toString(),
+            };
+          }
+          return data;
+        })
+      );
+      return;
+    }
+
+    // If not selected, mark it as selected
+    setSelectedCompartments((prevSelected: Set<string>) => {
+      const newSelected = new Set<string>(prevSelected);
+      newSelected.add(compartmentId);
+      return newSelected;
+    });
 
     if (compartmentId === '') {
       setMergedData(
@@ -226,16 +276,22 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
     } catch (error) {}
   };
 
-  const resetData = async () => {
-    const resetCompartment = mergedData.map((item) => {
-      item.compartmentId = '';
-      item.compartmentVolume = '';
-      item.compartmentFuelType = '';
-      item.mergedVolume = '';
-      return item;
-    });
+  const resetData = () => {
+    const resetted = [];
 
-    setMergedData(resetCompartment);
+    for (const item of mergedData) {
+      item.addedVolume = '';
+      item.mergedVolume = '';
+      for (const i of item.compartmentList) {
+        i.fuelType = '';
+        i.compartmentId = '';
+        i.volume = '';
+      }
+      resetted.push(item);
+    }
+
+    setMergedData(resetted);
+    setSelectedCompartments(new Set());
   };
 
   // const verifyAll = () => {
