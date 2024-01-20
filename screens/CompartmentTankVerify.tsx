@@ -21,44 +21,39 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   const [selectedCompartments, setSelectedCompartments] = useState<Set<string>>(new Set());
 
   const [editable, setEditable] = useState(false);
-  // const [isVerified, setIsVerified] = useState(false);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const stationInfo = (await load('stationInfo')) as StationInfo;
-        const tankData = (await load('tankData')) as TankData[];
-        const compartmentData = (await load('compartmentData')) as CompartmentData[];
+        const [stationInfo, tankData, compartmentData] = await Promise.all([
+          load('stationInfo') as unknown as StationInfo,
+          load('tankData') as unknown as TankData[],
+          load('compartmentData') as unknown as CompartmentData[],
+        ]);
 
         setCompartmentTableData(compartmentData);
         setTankTableData(tankData);
         setStationInfo(stationInfo);
         setSelectedCompartments(new Set());
 
-        const mergedData: MergeData[] = [];
-
-        tankData.map((tank) => {
-          mergedData.push({
-            tankId: tank.tankId,
-            id: tank.id,
-            tankFuelType: tank.fuelType,
-            tankVolume: tank.volume,
+        const mergedData = tankData.map((tank) => ({
+          tankId: tank.tankId,
+          id: tank.id,
+          tankFuelType: tank.fuelType,
+          tankVolume: tank.volume,
+          compartmentId: '',
+          compartmentList: Array.from({ length: 6 }, (_, index) => ({
             compartmentId: '',
-            compartmentList: [
-              { compartmentId: '', fuelType: '', id: 0, volume: '' },
-              { compartmentId: '', fuelType: '', id: 1, volume: '' },
-              { compartmentId: '', fuelType: '', id: 2, volume: '' },
-              { compartmentId: '', fuelType: '', id: 3, volume: '' },
-              { compartmentId: '', fuelType: '', id: 4, volume: '' },
-              { compartmentId: '', fuelType: '', id: 5, volume: '' },
-            ],
-            mergedVolume: '',
-            compartmentFuelType: '',
-            compartmentVolume: '',
-            tankMaxVolume: tank.maxVolume,
-          });
-        });
+            fuelType: '',
+            id: index,
+            volume: '',
+          })),
+          mergedVolume: '',
+          compartmentFuelType: '',
+          compartmentVolume: '',
+          tankMaxVolume: tank.maxVolume,
+        }));
 
         const newDropdownList: DropdownList[] = compartmentData.map((data) => ({
           label: data.compartmentId,
@@ -211,7 +206,7 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
       return;
     }
 
-    setMergedData(updatedData);
+    setMergedData((prevData) => updatedData);
   };
 
   const calculateTotal = (compartmentVolume: string, tankVolume: string): string => {

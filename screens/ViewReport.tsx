@@ -12,10 +12,11 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
   const [stationInfo, setStationInfo] = useState<StationInfo>();
   const [reportData, setReportData] = useState<ViewReportData>();
 
-  const calculateUlage = (maxVolume: string, mergedVolume: string) => {
-    const ulage = parseInt(maxVolume, 10) - parseInt(mergedVolume, 10);
-
+  const calculateUlage = (maxVolume: string, addedVolume: string) => {
+    // max value - latest dipped volume
+    const ulage = parseInt(maxVolume, 10) - parseInt(addedVolume, 10);
     const final = ulage ? ulage : 0;
+    console.log(maxVolume, addedVolume, final);
     return final.toString();
   };
 
@@ -152,7 +153,7 @@ const ViewReport = ({ route }: AppStackScreenProps<'ViewReport'>) => {
                       }}
                     >
                       <Text style={styles.columnText}>
-                        {calculateUlage(column.tankMaxVolume, column.mergedVolume)} Ulage
+                        {calculateUlage(column.tankMaxVolume, column.addedVolume?.toString() || '0')} Ullage
                       </Text>
                     </View>
 
