@@ -49,13 +49,8 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
   };
 
   const calculateUlage = (maxVolume: string, addedVolume: string) => {
-    // max value - latest dipped volume
     const ullage = parseInt(maxVolume, 10) - parseInt(addedVolume, 10);
-
     const final = ullage ? ullage : 0;
-
-    console.log(maxVolume, addedVolume, final);
-
     return final.toString();
   };
 
