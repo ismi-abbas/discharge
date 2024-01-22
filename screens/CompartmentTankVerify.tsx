@@ -80,54 +80,54 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
   const handleCompartmentSelect = (item: DropdownList, tankId: string, compartmentIndex: number) => {
     const compartmentId = item.value;
 
-    if (selectedCompartments.has(compartmentId)) {
-      Toast.show({
-        type: 'error',
-        text1: 'Same compartment selected',
-        text2: 'Please select another compartment',
-        position: 'bottom',
-        visibilityTime: 2000,
-      });
+    // if (selectedCompartments.has(compartmentId)) {
+    //   Toast.show({
+    //     type: 'error',
+    //     text1: 'Same compartment selected',
+    //     text2: 'Please select another compartment',
+    //     position: 'bottom',
+    //     visibilityTime: 2000,
+    //   });
 
-      setMergedData(
-        mergedData?.map((data) => {
-          if (data.tankId === tankId) {
-            const indexToUpdate = compartmentIndex;
+    //   setMergedData(
+    //     mergedData?.map((data) => {
+    //       if (data.tankId === tankId) {
+    //         const indexToUpdate = compartmentIndex;
 
-            data.compartmentList.splice(indexToUpdate, 1, {
-              compartmentId,
-              fuelType: '',
-              id: compartmentIndex,
-              volume: '',
-            });
+    //         data.compartmentList.splice(indexToUpdate, 1, {
+    //           compartmentId,
+    //           fuelType: '',
+    //           id: compartmentIndex,
+    //           volume: '',
+    //         });
 
-            const totalAddedVolume = data.compartmentList.reduce((acc, currentValue) => {
-              const volume = currentValue.volume === '' ? '0' : currentValue.volume;
-              return acc + parseInt(volume);
-            }, 0);
+    //         const totalAddedVolume = data.compartmentList.reduce((acc, currentValue) => {
+    //           const volume = currentValue.volume === '' ? '0' : currentValue.volume;
+    //           return acc + parseInt(volume);
+    //         }, 0);
 
-            return {
-              ...data,
-              compartmentId: compartmentId,
-              compartmentList: data.compartmentList,
-              compartmentVolume: volume,
-              compartmentFuelType,
-              mergedVolume: (totalAddedVolume + parseInt(data.tankVolume)).toString(),
-              addedVolume: totalAddedVolume.toString(),
-            };
-          }
-          return data;
-        })
-      );
-      return;
-    }
+    //         return {
+    //           ...data,
+    //           compartmentId: compartmentId,
+    //           compartmentList: data.compartmentList,
+    //           compartmentVolume: volume,
+    //           compartmentFuelType,
+    //           mergedVolume: (totalAddedVolume + parseInt(data.tankVolume)).toString(),
+    //           addedVolume: totalAddedVolume.toString(),
+    //         };
+    //       }
+    //       return data;
+    //     })
+    //   );
+    //   return;
+    // }
 
     // If not selected, mark it as selected
-    setSelectedCompartments((prevSelected: Set<string>) => {
-      const newSelected = new Set<string>(prevSelected);
-      newSelected.add(compartmentId);
-      return newSelected;
-    });
+    // setSelectedCompartments((prevSelected: Set<string>) => {
+    //   const newSelected = new Set<string>(prevSelected);
+    //   newSelected.add(compartmentId);
+    //   return newSelected;
+    // });
 
     if (compartmentId === '') {
       setMergedData(
@@ -207,6 +207,20 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
     }
 
     setMergedData((prevData) => updatedData);
+
+    const sameCompartmentSelected = verifySameCompartment(updatedData);
+    console.log(sameCompartmentSelected);
+    if (sameCompartmentSelected) {
+      Toast.show({
+        type: 'error',
+        text1: 'Same compartment selected',
+        text2: 'Please select another compartment',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
+
+      return;
+    }
   };
 
   const calculateTotal = (compartmentVolume: string, tankVolume: string): string => {
@@ -227,6 +241,23 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
     return true;
   };
 
+  const verifySameCompartment = (data: MergeData[]): boolean => {
+    const seenCompartments: Set<string> = new Set();
+
+    for (const tank of data) {
+      for (const compartment of tank.compartmentList) {
+        if (seenCompartments.has(compartment.compartmentId)) {
+          return true; // Duplicate compartment found
+        }
+
+        if (compartment.compartmentId !== '') {
+          seenCompartments.add(compartment.compartmentId);
+        }
+      }
+    }
+    return false; // No duplicate compartments found
+  };
+
   const saveData = async () => {
     try {
       const updated = mergedData.map((data) => {
@@ -239,7 +270,21 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
       setMergedData(updated);
 
       for (const item of mergedData) {
+        const sameCompartmentSelected = verifySameCompartment(mergedData);
         const same = verifyFuelType(mergedData);
+
+        if (sameCompartmentSelected) {
+          Toast.show({
+            type: 'error',
+            text1: 'Same compartment selected',
+            text2: 'Please select another compartment',
+            position: 'bottom',
+            visibilityTime: 2000,
+          });
+
+          return;
+        }
+
         if (!same) {
           console.log('not same fuel type', item.tankId);
           Toast.show({
@@ -249,7 +294,8 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
             position: 'bottom',
             visibilityTime: 2000,
           });
-          return;
+          // proceed to save
+          // return;
         }
       }
 
@@ -411,7 +457,10 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
                 right: 0,
               }}
             >
-              <FeatherIcons name="x" size={20} />
+              <FeatherIcons
+                name="x"
+                size={20}
+              />
             </Pressable>
             <View>
               <Text style={styles.titleBoxText}>New Discharge</Text>
@@ -507,7 +556,10 @@ const CompartmentTankVerify = ({ navigation }: AppStackScreenProps<'CompartmentT
             paddingLeft: 20,
           }}
         >
-          <Pressable onPress={saveData} style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}>
+          <Pressable
+            onPress={saveData}
+            style={{ ...styles.button, backgroundColor: 'rgba(4, 113, 232, 1)' }}
+          >
             <Text style={{ ...styles.text, color: 'white' }}>Save</Text>
           </Pressable>
           {/* <Pressable

@@ -50,7 +50,7 @@ export interface MergeData {
 export interface DropdownList {
   label: string;
   value: string;
-  isSelected: boolean;
+  isSelected?: boolean;
 }
 
 export interface TankData {

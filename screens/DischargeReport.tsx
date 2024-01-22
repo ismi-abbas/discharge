@@ -214,7 +214,7 @@ const DischargeReport = ({ navigation }: AppStackScreenProps<'DischargeReport'>)
                     }}
                   >
                     <Text style={styles.columnText}>
-                      {calculateUlage(column.tankMaxVolume, column.addedVolume?.toString() || '0')} Ulage
+                      {calculateUlage(column.tankMaxVolume, column.tankVolume?.toString() || '0')} Ulage
                     </Text>
                   </View>
 
